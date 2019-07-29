@@ -1,0 +1,29 @@
+---
+title: "Download Gapminder Data"
+output:
+  md_document:
+    variant: markdown_github
+---
+
+This will download the gapminder data into a directory named `r_lessons` in your home directory
+
+```{r}
+# setup download directory
+data.dir = path.expand("/data/tutorial_data/")
+dir.create(data.dir)
+data.url = "http://www.mothur.org/w/images/d/d6/MiSeqSOPData.zip"
+zipfile.path = file.path(data.dir, basename(data.url))
+
+download.file(data.url,zipfile.path)
+unzip(zipfile.path, exdir=data.dir)
+```
+
+```{r cleanup}
+list.files(data.dir)
+file.remove(zipfile.path)
+
+unlink(file.path(data.dir, "__MACOSX"), 
+       recursive=TRUE)
+list.files(data.dir)
+```
+

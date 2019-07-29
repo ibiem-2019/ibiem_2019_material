@@ -1,0 +1,130 @@
+---
+title: "Abundance and Diversity Plots"
+output:
+  md_document:
+     variant: markdown_github
+---
+
+```{r global_options, include=FALSE}
+knitr::opts_chunk$set(echo=TRUE, include=TRUE)
+```
+
+
+## Resources
+This draws from [phyloseq plot_bar tutorial](https://joey711.github.io/phyloseq/plot_bar-examples.html).
+
+## Data
+This tutorial uses the 10% Atacama subset data (note that for the demux and dada2 tutorial we used the 1% Atacama subset)
+
+# Getting ready
+
+First we load libraries.
+```{r libraries, message=FALSE, warning=FALSE}
+library(readr)
+library(phyloseq)
+```
+
+
+
+```{r files_and_directories, include=FALSE}
+# Directories
+atacama.rds = "/data/tutorial_data/atacama_10pct.rds"
+
+```
+
+```{r}
+atacama.ps = read_rds(atacama.rds)
+print(atacama.ps)
+```
+
+
+## Simple absolute abundance plot
+Let's start by making a simple absolute abundance bar plot with samples on the x-axis and absolute abundance on the y-axis.  
+```{r}
+plot_bar(atacama.ps)
+```
+
+
+### Absolute abundance plot with kingdom
+Now let's look add the kingdom distribution of the reads.  This is a good sanity check for contamination - we expect the *vast* majority of our reads to be bacterial.
+
+First let's look up the names of the taxonomic levels
+
+```{r}
+rank_names(atacama.ps)
+```
+
+
+```{r}
+plot_bar(atacama.ps, fill="Kingdom")
+```
+
+### Getting rid of annoying black lines
+You may have noticed that the bars are divided by short horizontal black lines.  This is because each bar actually consists of a stack of sub-bars, each representing a different OTU.  Usually the sub-bars delineation are more confusing than helpful, so I prefer to get rid of it.  This isn't that hard to do!  by default `plot_bar` outlines each sub-bar in black, but if we outline sub-bars with the same color as the bar fill, we get rid of the delineation.  Let's re-make the *Absolute abundance plot with kingdom* from above, but without the black sub-bar outlines.
+
+```{r}
+plot_bar(atacama.ps, fill="Kingdom") +
+  geom_bar(aes(color=Kingdom, fill=Kingdom), stat="identity", position="stack")
+```
+
+
+### Absolute abundance plot with phyllum
+Now do the same as above, but with coloring by phyllum instead of by kingdom.
+```{r}
+plot_bar(atacama.ps, fill="Phylum") +
+  geom_bar(aes(color=Phylum, fill=Phylum), stat="identity", position="stack")
+```
+
+## Facet Abundance Plots
+From our plots so far, we see some variation in number of reads per sample.  This is to be expected, but we want to be sure that there are no confounding problems, for example, categories of samples that are outliers.  To this end, we can make facet plots to group samples by different metadata features.  Let's remake the kingdom absolute abundance plot so that samples are grouped by a variable, this will give us an idea if there is a correlation between the variable and abundance. 
+
+
+First let's see what variables are available.
+
+```{r}
+sample_variables(atacama.ps)
+```
+
+```{r}
+get_variable(atacama.ps,"SiteName") %>%
+  unique()
+```
+That's a lot of different values, it's going to make an illegible plot.  Let's try another one.
+
+
+```{r}
+get_variable(atacama.ps,"TransectName")  %>%
+  unique()
+
+```
+Two different values seems better
+
+```{r}
+plot_bar(atacama.ps, facet_grid=~TransectName, fill="Phylum") +
+  geom_bar(aes(color=Phylum, fill=Phylum), stat="identity", position="stack")
+```
+
+You might notice something weird things about the plot: There are large spaces between samples without bars.  Let's try to fix this.
+
+### "Missing" Values in Facet Plots
+By default, the facets of a facet plot use the same scale.  Often this is the right thing to do - if the y-axis of each of the abundance plots had a different scale, it would be hard to compare bars between the facets.  But sometimes it is not, such as our case.  For the TransectName facet plot, since the x-axis is samples, each sample has a place in each facet, even though TransectName is mutually exclusive - each sample corresponds to a specific site and depth combination, and each site occurs in only one of the transects.  Let's fix the TransectName facet plot so that each facet only shows the samples that correspond to that Transect.
+
+```{r}
+plot_bar(atacama.ps, facet_grid=~TransectName, fill="Phylum") +
+  geom_bar(aes(color=Phylum, fill=Phylum), stat="identity", position="stack") +
+  facet_grid(~TransectName, scale="free_x")
+```
+
+Once we fix that, you may notice that the facets default to being the same size, despite the number of bars in the facet.  Let's adjust the facet plot so the bars are all the same width, by making the size of the facet proportional to the number bars in it by using the `space` argument to `facet_grid`
+```{r}
+plot_bar(atacama.ps, facet_grid=~TransectName, fill="Phylum") +
+  geom_bar(aes(color=Phylum, fill=Phylum), stat="identity", position="stack") +
+  facet_grid(~TransectName, scale="free_x", space = "free_x")
+```
+
+# Session Info
+Always print `sessionInfo` for reproducibility!
+```{r}
+sessionInfo()
+```
+

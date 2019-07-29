@@ -1,0 +1,38 @@
+---
+title: "CSP2"
+output:
+  md_document:
+    variant: markdown_github
+---
+
+```{r global_options, include=FALSE}
+library(knitr)
+# rm(list=ls()) ### To clear namespace
+opts_chunk$set(echo=TRUE, include=FALSE, warning=FALSE, message=FALSE, eval=FALSE)
+```
+
+```{r eval=TRUE, echo=FALSE}
+library(readr)
+```
+
+```{r eval=TRUE, echo=FALSE, include=TRUE, results="asis"}
+library(readr)
+library(dplyr)
+read_lines("misc/csp2_overview_schedule.org") %>%
+  cat(fill=TRUE)
+```
+
+
+```{r}
+library(dplyr)
+library(tibble)
+library(fs)
+getwd()
+list.files(recursive = TRUE, pattern = ".pdf") %>%
+  as.tibble
+#  file.mtime
+
+dir_info(recursive = TRUE, glob = "*.pdf") %>%
+  arrange(modification_time)
+```
+

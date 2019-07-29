@@ -1,0 +1,303 @@
+---
+title: "Demultiplex"
+output:
+  md_document:
+    variant: markdown_github
+  html_document:
+    df_print: paged
+---
+
+# Atacama Data
+Atacama data is from https://docs.qiime2.org/2018.11/tutorials/atacama-soils/#subsample-data
+
+# Setup
+
+First we load libraries.
+```{r libraries, message=FALSE, warning=FALSE}
+library(readr)
+library(fs)
+```
+
+## Paths, Directories, and Shell Variables
+To keep the code readable and portable, it is nice to assign paths to variables.  We also need to use the R `Sys.setenv` command to make shell variables that can be used in the bash chunks below.
+
+```{r files_and_directories}
+# Directories
+data.dir = "/data/tutorial_data/atacama_1pct"
+output.dir = path.expand("~/scratch/atacama_1pct")
+demux.dir = file.path(output.dir, "demux")
+
+# make directory for output
+if (dir_exists(demux.dir)) {dir_delete(demux.dir)}
+dir_create(demux.dir)
+
+# Files
+map.file = file.path(data.dir,"sample_metadata.tsv")
+barcode.fastq = file.path(data.dir,"barcodes.fastq.gz")
+r1.fastq = file.path(data.dir,"forward.fastq.gz")
+r2.fastq = file.path(data.dir,"reverse.fastq.gz")
+
+# Set variables for bash
+Sys.setenv(MAP_FILE = map.file)
+Sys.setenv(OUT_DIR = output.dir)
+Sys.setenv(DEMUX_DIR = demux.dir)
+Sys.setenv(RAW_FASTQ_DIR = data.dir)
+Sys.setenv(BARCODE_FASTQ = barcode.fastq)
+```
+
+## Check Data Integrity
+```{bash check_md5sum}
+cd $RAW_FASTQ_DIR
+md5sum -c md5sum.txt
+```
+
+# Assemble Metadata Table (Map)
+You are in luck, because you there is a metadata table already made for you.  Let's check it out
+## Examine Metadata Table (Map)
+```{r load_map}
+meta.df = read_tsv(map.file)
+head(meta.df)
+```
+
+## Check  Map File
+QIIME is inflexible about map file formatting.  Fortunately, QIIME includes the 
+[validate_mapping_file.py](http://qiime.org/scripts/validate_mapping_file.html)
+script that checks your map file to see if the format meets its specifications.  Unfortunately the script is not very robust, so incorrectly formated map files sometimes make it crash without giving a useful error message.  Let's run it anyway . . .
+
+```{bash}
+validate_mapping_file.py -m $MAP_FILE -o $OUT_DIR/validate_mapfile
+```
+Once you have run `validate_mapping_file.py` you can view the report through RStudio:
+
+  1. In the *Files* pane, Navigate to `r file.path(output.dir, "validate_mapfile")`
+  2. Click on `sample_metadata.tsv.html` and select *View in Web Browser*
+  3. Look around the output! How does it look?
+
+# Demultiplexing
+Remember from the map file that our dataset consists of reads from multiple samples.  In order to tally the number of different bacteria corresponding to each sample, we need to separate reads according to the sample of origin.
+
+We will be using `split_libraries_fastq.py` and  `split_sequence_file_on_sample_ids.py` to demultiplex the data.  The documentation for these programs is available here:
+  - [split_libraries_fastq.py](http://qiime.org/scripts/split_libraries_fastq.html)
+  - [split_sequence_file_on_sample_ids.py](http://qiime.org/scripts/split_sequence_file_on_sample_ids.html)
+
+Alternatively we can get some instructions if we run the programs with the `--help` command line option.
+
+```{bash error=TRUE}
+split_libraries_fastq.py --help
+```
+
+
+## Running split_libraries_fastq.py
+We are now ready to run `split_libraries_fastq.py`.  Here is an explanation for the command line options that we use
+
+- Quality Parameters: `split_libraries_fastq.py` can do quality filtering, but we don't want it to  because we will be doing quality filtering in DADA2, so we will set these paramters to the least stringent values possible to be sure that nothing gets filtered
+    - -r, --max_bad_run_length
+    - -p, --min_per_read_length_fraction
+    - -n, --sequence_max_n
+    - -q, --phred_quality_threshold
+- --sequence_read_fps : this is the FASTQ that is being demuxtiplexed, we have to run `split_libraries_fastq.py` separately on the R1 and R2 files
+- --output_dir : the output directory; there is more than one output file
+- --barcode_read_fps : the barcode FASTQ
+- --mapping_fps : the file mapping samples to barcodes (and other metadata)
+- --phred_offset : are the FASTQs phred33 or phred66?
+- --barcode_type : Are the barcodes EMP golay codes? How long are they
+- --store_demultiplexed_fastq : save demultiplexed FASTQs (default is to only generate a FASTA because that's what the qiime pipeline uses after this point)
+-	--retain_unassigned_reads : be a packrat - don't throw out reads that don't match a barcode
+
+```{bash error=TRUE}
+set -u
+TAGDIR=$DEMUX_DIR/tagged_1
+split_libraries_fastq.py -r 999 -n 999 -q 0 -p 0.0001 \
+		--sequence_read_fps $RAW_FASTQ_DIR/forward.fastq.gz \
+		--output_dir $TAGDIR \
+		--barcode_read_fps $BARCODE_FASTQ \
+		--mapping_fps $MAP_FILE \
+		--phred_offset 33 \
+		--barcode_type golay_12 \
+		--store_demultiplexed_fastq \
+		--retain_unassigned_reads
+```
+
+Hmm, an error message!  Let's read it carefully to see what it says.
+
+It is saying that some of the barcodes are not valid golay codes.  We know that these barcodes are golay barcodes (as is common with 16s barcodes), so that can't be right.
+
+It says that we could disable barcode error correction with the `--barcode_type 12` option, but that's a bit like disabling the brakes in our car because they squeal.
+
+It asks if they "need to be reverse complemented".  There are two options for doing that:
+- --rev_comp_barcode: Reverse complement barcode reads before lookup [default: False]
+- --rev_comp_mapping_barcodes: Reverse complement barcode in mapping before lookup (useful if barcodes in mapping file are reverse complements of golay codes) [default: False]
+
+Let's try one
+
+
+```{bash error=TRUE}
+set -u
+TAGDIR=$DEMUX_DIR/tagged_2
+split_libraries_fastq.py -r 999 -n 999 -q 0 -p 0.0001 \
+		--sequence_read_fps $RAW_FASTQ_DIR/forward.fastq.gz \
+		--output_dir $TAGDIR \
+		--barcode_read_fps $BARCODE_FASTQ \
+		--mapping_fps $MAP_FILE \
+		--phred_offset 33 \
+		--barcode_type golay_12 \
+		--rev_comp_barcode \
+		--store_demultiplexed_fastq \
+		--retain_unassigned_reads
+```
+
+That didn't work, let's try both
+
+```{bash}
+set -u
+TAGDIR=$DEMUX_DIR/tagged_3
+split_libraries_fastq.py -r 999 -n 999 -q 0 -p 0.0001 \
+		--sequence_read_fps $RAW_FASTQ_DIR/forward.fastq.gz \
+		--output_dir $TAGDIR \
+		--barcode_read_fps $BARCODE_FASTQ \
+		--mapping_fps $MAP_FILE \
+		--phred_offset 33 \
+		--barcode_type golay_12 \
+		--rev_comp_barcode \
+		--rev_comp_mapping_barcodes \
+		--store_demultiplexed_fastq \
+		--retain_unassigned_reads
+```
+
+That's better, let's check the output:
+```{bash}
+ls $DEMUX_DIR/tagged_3/
+```
+
+```{bash}
+cat $DEMUX_DIR/tagged_3/histograms.txt
+```
+
+```{bash}
+cat $DEMUX_DIR/tagged_3/split_library_log.txt
+```
+
+`split_library_log.txt` gives us some summary statistics: total number of reads processed, number of reads that fail various quality tests, number of reads assigned to each sample (based on their barcode), and total number of reads that were assigned to all barcodes.
+
+This doesn't look so good! 
+
+"Total number of input sequences: 135487"
+
+So we are inputting 135487 reads into `split_libraries_fastq.py` (Is this what you expected?), but only 2712 are assigned to a barcode (confusingly 2711 are assigned to the "Unassigned" barcode, so only one read is assigned to a sample).  We are losing almost all of our reds!
+
+The quality filtering looks good, except "Barcode errors exceed max: 132775"; that's where the most of the reads are going (98%). This could be a problem with our data, but it suggests that there might be a problem with our analysis, particularly how we are handling the barcodes.  Perhaps we still haven't figured it out yet!  Let's try this:
+
+```{bash}
+set -u
+TAGDIR=$DEMUX_DIR/tagged_4
+split_libraries_fastq.py -r 999 -n 999 -q 0 -p 0.0001 \
+		--sequence_read_fps $RAW_FASTQ_DIR/forward.fastq.gz \
+		--output_dir $TAGDIR \
+		--barcode_read_fps $BARCODE_FASTQ \
+		--mapping_fps $MAP_FILE \
+		--phred_offset 33 \
+		--barcode_type golay_12 \
+		--rev_comp_mapping_barcodes \
+		--store_demultiplexed_fastq \
+		--retain_unassigned_reads
+```
+
+```{bash}
+cat $DEMUX_DIR/tagged_4/split_library_log.txt
+```
+
+We still have a bunch of Barcode errors but many fewer (17% instead of 98%).  Many are still Unassigned, but most of our samples have some reads, and many of our samples have a large number.  It looks like we needed to reverse complement both the barcodes as supplied in the map file and the barcodes as sequenced.
+
+## Running `split_sequence_file_on_sample_ids.py`
+
+Despite its name `split_libraries_fastq.py` does not actually *spilt* the FASTQ, it just relabels or "tags" it.  To actually do the demultiplexing we need another program: `split_sequence_file_on_sample_ids.py`.  Fortunately the commands for `split_sequence_file_on_sample_ids.py` are a little simpler.
+
+```{bash error=TRUE}
+split_sequence_file_on_sample_ids.py -h
+```
+
+Here's what we will use: 
+
+- --input_seqs_fp: the "tagged" fastq
+- --file_type: FASTA or FASTQ?
+- --output_dir: where to put the demuxed FASTQs
+
+```{bash}
+TAGDIR=$DEMUX_DIR/tagged_4
+SPLITDIR=$DEMUX_DIR/split_4
+split_sequence_file_on_sample_ids.py --input_seqs_fp $TAGDIR/seqs.fastq \
+					 --file_type fastq \
+					 --output_dir $SPLITDIR
+```
+
+Now let's check that it worked
+```{bash}
+ls -lSrh $DEMUX_DIR/split_4
+```
+
+Looks good like we generated a demultiplexed FASTQ for each sample!
+
+### Putting it together for R1 and R2
+This will run `split_libraries_fastq.py` and `split_sequence_file_on_sample_ids.py` on both R1 and R2, and do a little cleanup (get rid of the results of `split_libraries_fastq.py` once we have demuxed it.  We can drop "--retain_unassigned_reads" since we have already reviewed the results.
+```{bash}
+set -u
+for CURREAD in "forward" "reverse"
+do
+   CURREAD_DIR=$DEMUX_DIR/${CURREAD}
+   TAGDIR=$CURREAD_DIR/tagged
+ 	split_libraries_fastq.py -r 999 -n 999 -q 0 -p 0.0001 \
+		--sequence_read_fps $RAW_FASTQ_DIR/${CURREAD}.fastq.gz \
+		--output_dir $TAGDIR \
+		--barcode_read_fps $BARCODE_FASTQ \
+		--mapping_fps $MAP_FILE \
+		--phred_offset 33 \
+		--barcode_type golay_12 \
+		--rev_comp_mapping_barcodes \
+		--store_demultiplexed_fastq 
+		
+	split_sequence_file_on_sample_ids.py --input_seqs_fp $TAGDIR/seqs.fastq \
+					 --file_type fastq \
+					 --output_dir $CURREAD_DIR
+					 
+	rm -rf $TAGDIR
+done
+```
+
+```{bash}
+ls $DEMUX_DIR/
+```
+
+```{bash}
+ls $DEMUX_DIR/forward $DEMUX_DIR/reverse
+
+```
+
+So the demuxed forward reads are in the `forward` directory and the demuxed reverse reads are in the `reverse` directory.  We are ready for DADA2!
+
+
+## Bonus: Rename and move split FASTQs
+```{r}
+for (curread in c("forward","reverse")) {
+  curpath = file.path(demux.dir,curread)
+  print(curpath)
+  # cur_fastqs = list.files(curpath, full.names = TRUE,pattern = ".fastq")
+  # print(cur_fastqs)
+  for (fastq_path in list.files(curpath, full.names = TRUE,pattern = ".fastq")){
+    print(fastq_path)
+    new_path = path_ext_remove(fastq_path)
+    print(new_path)
+    new_path = path_file(new_path)
+    print(new_path)
+    new_path = path(demux.dir, new_path, ext=paste0(curread,".fastq"))
+    print(new_path)
+    file_move(fastq_path, new_path)
+  }
+}
+```
+
+# Session Info
+Always print `sessionInfo` for reproducibility!
+```{r}
+sessionInfo()
+```
+

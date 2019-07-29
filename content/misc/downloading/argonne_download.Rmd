@@ -1,0 +1,99 @@
+---
+title: "Download From Argonne National Labs"
+output:
+  md_document:
+    variant: markdown_github
+  html_document:
+    toc: false
+---
+<!-- 
+R -e "rmarkdown::render('misc/argonne_download.Rmd', output_format=c('html_document', 'md_document'))" 
+R -e "rmarkdown::render('misc/argonne_download.Rmd')" 
+-->
+
+># NOTE: This notebook is for example purposes only.  It no longer works because the data is not available for download anymore.
+
+```{r global_options, include=FALSE}
+library(knitr)
+# rm(list=ls()) ### To clear namespace
+opts_chunk$set(echo=TRUE, warning=FALSE, message=FALSE, eval=FALSE)
+```
+
+# Load Libraries
+```{r}
+suppressPackageStartupMessages(library(ShortRead))
+suppressPackageStartupMessages(library(dplyr))
+suppressPackageStartupMessages(library(knitr))
+```
+
+# Set up directory to receive data
+```{r}
+raw.data="/sharedspace/its_and_18s_data"
+Sys.setenv(RAW_DATA=raw.data)
+dir.create(raw.data, recursive = TRUE, showWarnings = FALSE)
+```
+
+
+# Download data
+```{bash}
+wget --continue --recursive --no-verbose --no-host-directories --cut-dirs=2 \
+  --directory-prefix $RAW_DATA \
+  ftp://ftp.igsb.anl.gov/jobs/23ce422d165831c252e02c100340fdda/
+```
+
+# Sanity Checks
+Check that:
+
+1. FASTQs have same number of lines
+2. FASTQs have same first read ID
+3. FASTQs have same last read ID
+
+```{r}
+
+fastq_stats = function(fastq.file){
+  # cat("File:", fastq.file, fill = TRUE)
+  stream <- FastqStreamer(fastq.file, 100000)
+  firstchunk = yield(stream)
+  fqcount = length(firstchunk)
+  first_read = toString(ShortRead::id(firstchunk[1]))
+  # cat("First Read:", first_read, fill = TRUE)
+
+  while (length(fq <- yield(stream))) {
+    lastchunk = fq
+    fqcount = fqcount + length(fq)
+  }
+  close(stream)
+  last_read = toString(ShortRead::id(lastchunk[length(lastchunk)]))
+  # cat("Last Read:", last_read, fill = TRUE)
+  # cat("Read Count:", fqcount, fill = TRUE)
+  return(c(fastq=basename(fastq.file),
+              num_reads = fqcount,
+              first_read_id = first_read, 
+              last_read_id = last_read))
+}
+```
+
+
+```{r results='asis'}
+for (curdir in list.files(raw.data, full.names = TRUE)) {
+  fastq_qc = lapply(list.files(curdir, full.names = TRUE), fastq_stats)
+  fastq_qc.df = bind_rows(lapply(fastq_qc, as.data.frame.list))
+
+  cat("### ", dirname(curdir), fill = TRUE)
+  cat(kable(fastq_qc.df[1:2]), fill = TRUE)
+  cat(print(kable(fastq_qc.df[c(1,3)])), fill = TRUE)
+  cat(print(kable(fastq_qc.df[c(1,4)])), fill = TRUE)
+}
+```
+
+# Run md5sum
+```{bash}
+cd $RAW_DATA
+find -type f -exec md5sum "{}" + > $RAW_DATA/md5sum.txt
+cat $RAW_DATA/md5sum.txt
+```
+
+# Make the data directory read-only
+```{bash}
+chmod -R a-w $RAW_DATA
+```

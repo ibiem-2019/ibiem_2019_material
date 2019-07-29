@@ -1,0 +1,18 @@
+---
+title: "Test Transabyss"
+output:
+  html_document:
+    df_print: paged
+---
+
+The following chunk tests the transabyss installation to be sure that it runs correctly
+```{bash}
+cp -r /opt/share/transabyss_sample_dataset .
+chmod -R u+w transabyss_sample_dataset/
+bash transabyss_sample_dataset/assemble.sh
+```
+
+The following chunk cleans up afterwards
+```{bash}
+rm -rf transabyss_sample_dataset
+```

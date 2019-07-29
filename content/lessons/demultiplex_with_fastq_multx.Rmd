@@ -1,0 +1,97 @@
+---
+title: "Demultiplex"
+output:
+  md_document:
+    variant: markdown_github
+---
+
+# Setup
+## Paths, Directories, and Shell Variables
+To keep the code readable and portable, it is nice to assign paths to variables.  We also need to use the R `Sys.setenv` command to make shell variables that can be used in the bash chunks below.
+
+```{r files_and_directories}
+# Directories
+# data.dir = "/data/ibiem_2016_data"
+data.dir = "/data/tutorial_data/ibiem2016_subset"
+scratch.dir = path.expand("/tmp/scratch/demux_tutorial")
+demux.dir = file.path(scratch.dir, "demux")
+
+# make directory for output
+# dir.create(scratch.dir, recursive = TRUE)
+dir.create(demux.dir, recursive = TRUE)
+
+# Files
+map.file = file.path(data.dir,"ibiem_2017_map_v3.txt")
+decoder.file = file.path(data.dir,"ibiem_2017_map_v3_decoder.csv")
+barcode.table = file.path(scratch.dir,"barcodes_for_fastqmultx.tsv")
+barcode.fastq = file.path(data.dir,"Undetermined_S0_L001_I1_001.fastq.gz")
+r1.fastq = file.path(data.dir,"Undetermined_S0_L001_R1_001.fastq.gz")
+r2.fastq = file.path(data.dir,"Undetermined_S0_L001_R2_001.fastq.gz")
+
+# Set variables for bash
+Sys.setenv(MAP_FILE = map.file)
+Sys.setenv(DEMUX_DIR = demux.dir)
+Sys.setenv(RAW_FASTQ_DIR = data.dir)
+Sys.setenv(BARCODE_TABLE = barcode.table)
+Sys.setenv(BARCODE_FASTQ = barcode.fastq)
+Sys.setenv(R1_FASTQ = r1.fastq)
+Sys.setenv(R2_FASTQ = r2.fastq)
+```
+
+## Check Data Integrity
+```{bash check_md5sum}
+cd $RAW_FASTQ_DIR
+md5sum -c md5sum.txt
+```
+
+
+# Demultiplexing
+We will be using `fastq-multx` to demultiplex the data.  It does not have very good documentation.  But, we can get some instructions if we run it without any command line options.
+```{bash error=TRUE}
+fastq-multx
+```
+
+## Barcode Table
+The `fastq-multx` help tells us that we can supply it with a tab-separated file specifying the sample ID in the first column and the barcode sequence that corresponds with it in the second column.  We can easily generate a file like this from our map file using the unix `cut` command.  The purpose of `cut` is to extract specific columns from files.  The sample IDs and barcode sequences are in columns (fields) 1 and 2 of the map file.  Here is the command that we want to use.
+```{bash}
+set -u
+cut --fields 1,2 $MAP_FILE > $BARCODE_TABLE
+```
+
+Now let's take a peek at the barcode tsv that we have generated to be sure it looks as expected.
+```{bash}
+set -u
+head $BARCODE_TABLE
+```
+
+## Running fastq-multx
+We now have everything we need to run `fastq-multx`.  Here is an explanation for the command line options that we use
+
+-m : number of mismatches to allow in barcode (relative to the barcode supplied in the barcode table)
+-x : don’t trim barcodes (this isn't necessary)
+-B BARCODE_FILE : a list of known barcodes, and the associated sample names
+-d : minimum edit distance between the best and next best match
+BARCODE_FASTQ : the index read FASTQ, which will be used to demultiplex other reads
+R1_FASTQ : the R1 raw data to demultiplex
+R2_FASTQ : (optional) if data is paired-end, the R2 raw data to demultiplex
+
+-o OUTPUT_FILE(s) : fastq-multx will produce a separate file for each barcode (two files when paired-end reads are input, three files when barcodes are in a separate I1 FASTQ). This option provides a template for naming the output file - the program will fill in the “%” with the barcode.
+
+Because of the way `fastq-multx` is designed (to allow demuxing of FASTQs that have the barcode embeded in the R1 sequence), it will actually demux the I1 FASTQ.  Since we are only interesed in the R1 and R2, we can ignore the demuxed I1 files.
+```{bash}
+set -u
+fastq-multx -m 3 -d 2 -x -B $BARCODE_TABLE \
+  $BARCODE_FASTQ \
+  $R1_FASTQ \
+  $R2_FASTQ \
+  -o $DEMUX_DIR/%_I1.fastq.gz \
+  -o $DEMUX_DIR/%_R1.fastq.gz \
+  -o $DEMUX_DIR/%_R2.fastq.gz
+```
+
+# Session Info
+Always print `sessionInfo` for reproducibility!
+```{r}
+sessionInfo()
+```
+

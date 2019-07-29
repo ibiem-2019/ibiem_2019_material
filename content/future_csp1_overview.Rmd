@@ -1,0 +1,122 @@
+---
+title: "CSP1"
+output:
+  md_document:
+    variant: markdown_github
+---
+
+See
+1. https://gitlab.oit.duke.edu/IBIEM/IBIEM_2017_2018/blob/master/homework_csp1/week6_homework.md
+2. https://gitlab.oit.duke.edu/IBIEM/IBIEM_2017_2018/blob/master/homework_csp1/Assignment1_R.Rmd
+3. https://gitlab.oit.duke.edu/IBIEM/IBIEM_2017_2018/tree/master/challenges
+
+# Week 9
+10/26/2018
+
+1. [Challenge 7](https://github.com/IBIEM/challenge_7)
+??????
+
+# Week 8
+10/19/2018
+
+3. DADA2 Lecture?
+2. [Challenge 6](https://github.com/IBIEM/challenge_6)
+2. ONE OF THE FOLLOWING
+  A. [DADA2 Tutorial](https://benjjneb.github.io/dada2/tutorial_1_6.html)
+  B. [Bioconductor Workflow for Microbiome Data Analysis](https://f1000research.com/articles/5-1492/v2) 
+  C. https://github.com/spholmes/F1000_workflow
+  D. https://github.com/spholmes/F1000_workflow/tree/master/MicrobiomeWorkflow
+
+#> If A, need to figure out if we will follow up with B, C, D, or another phyloseq tutorial, and what the entrypoint is from A to phyloseq.  If B, C, or D, figure out how far they need to go this week
+
+
+# Week 7
+10/12/2018
+
+2. [Challenge 5](https://github.com/IBIEM/challenge_5)
+1. [The Unix Shell Bonus](http://swcarpentry.github.io/shell-extras/)
+    1. [Manual Pages](http://swcarpentry.github.io/shell-extras/01-man-pages/)
+    3. [Transferring Files](http://swcarpentry.github.io/shell-extras/03-file-transfer/)
+    4. [Permissions](http://swcarpentry.github.io/shell-extras/04-permissions/)
+    6. [Job control](http://swcarpentry.github.io/shell-extras/06-job-control/)
+    8. [Shell Variables](http://swcarpentry.github.io/shell-extras/08-environment-variables/)
+    2. *Optional* [Working Remotely](http://swcarpentry.github.io/shell-extras/02-ssh/)
+
+# Week 6
+10/5/2018
+
+2. [Challenge 3](https://github.com/IBIEM/challenge_3)
+1. [The Unix Shell](http://swcarpentry.github.io/shell-novice/)
+    5. [Loops](http://swcarpentry.github.io/shell-novice/05-loop/index.html)
+    6. [Shell Scripts](http://swcarpentry.github.io/shell-novice/06-script/index.html)
+    7. [Finding Things](http://swcarpentry.github.io/shell-novice/07-find/index.html)
+    8. [The Unix Shell: Summary of Basic Commands](http://swcarpentry.github.io/shell-novice/reference/)
+
+# Week 5
+9/28/2018
+
+1. [Challenge 2](https://github.com/IBIEM/challenge_2)
+1. [The Unix Shell](http://swcarpentry.github.io/shell-novice/)
+  You can work on the Unix Shell lessons in an R Notebook (my preference) or in the RStudio Terminal.  If you use the R Notebook, just use *Bash* chunks instead of *R* chunks.  The one thing that you cannot do with *Bash* chunks in an R Notebook that you can do at a terminal is run programs that expect you to interact with them.  Some examples of this are `nano` and `rm -i` (`rm` without `-i` works fine within a notebook).  In place of `nano`, you can use the RStudio editor instead, just open a new "Text File" within RStudio.
+    1. Download Data for Lessons: Run the two lines below in a *bash* chunk to download the data necessary for the Unix Shell lessons
+    ```{bash}
+    wget https://swcarpentry.github.io/shell-novice/data/data-shell.zip
+    unzip data-shell.zip
+    ```
+    2. [Introducing the Shell](http://swcarpentry.github.io/shell-novice/01-intro/index.html)
+    3. [Navigating Files and Directories](http://swcarpentry.github.io/shell-novice/02-filedir/index.html)
+    4. [Working With Files and Directories](http://swcarpentry.github.io/shell-novice/03-create/index.html)
+    5. [Pipes and Filters](http://swcarpentry.github.io/shell-novice/04-pipefilter/index.html)
+
+# Week 4
+9/21/2018
+
+1. [Challenge 2](https://github.com/IBIEM/challenge_2)
+4. [R Lesson Assignments](http://swcarpentry.github.io/r-novice-gapminder/)
+    9. [Dataframe Manipulation with tidyr](http://swcarpentry.github.io/r-novice-gapminder/14-tidyr/)
+    10. [Producing Reports With knitr](http://swcarpentry.github.io/r-novice-gapminder/15-knitr-markdown/)
+    11. [Writing Good Software](http://swcarpentry.github.io/r-novice-gapminder/16-wrap-up/)
+
+
+# Week 3
+9/14/2018
+
+1. [Downloading](misc/downloading.md)
+2. [Challenge 1](https://github.com/IBIEM/challenge_1) *DUE!*
+3. Finish with [Week 1 tasks](#week-1) and [Week 2 tasks](#week-2) if not done
+4. [R Lesson Assignments](http://swcarpentry.github.io/r-novice-gapminder/)
+    7. [Vectorization](http://swcarpentry.github.io/r-novice-gapminder/09-vectorization/)
+    8. [Functions Explained](http://swcarpentry.github.io/r-novice-gapminder/10-functions/)
+    9. [Writing Data](http://swcarpentry.github.io/r-novice-gapminder/11-writing-data/)
+    10. [Dataframe Manipulation with dplyr](http://swcarpentry.github.io/r-novice-gapminder/13-dplyr/)
+5. [Challenge 2](https://github.com/IBIEM/challenge_2)
+
+
+# Week 2
+9/7/2018
+
+1. [Github Notes](misc/github_notes.md)
+2. Continue with [Week 1 tasks](#week-1) if not done
+3. [R Lesson Assignments](http://swcarpentry.github.io/r-novice-gapminder/)
+    6. [Subsetting Data](http://swcarpentry.github.io/r-novice-gapminder/06-data-subsetting/)
+    7. [Control Flow](http://swcarpentry.github.io/r-novice-gapminder/07-control-flow/)
+    8. [Creating Publication-Quality Graphics](http://swcarpentry.github.io/r-novice-gapminder/08-plot-ggplot2/)
+
+# Week 1 
+8/31/2018
+
+1. This week in reproducbile research
+2. Fear of loss
+3. Flipping
+4. Finish [Git Overview](bootcamp/040_git_overview.md)
+    1. [Collaborating](bootcamp/040_git_overview.md#collaborating)
+    2. [Conflicts](bootcamp/040_git_overview.md#conflicts)
+    3. [Team Conflicts](bootcamp/040_git_overview.md#team-conflicts)
+5. [Challenge 1](https://github.com/IBIEM/challenge_1)
+6. [R Lesson Assignments](http://swcarpentry.github.io/r-novice-gapminder/)
+    1. [Introduction to R and RStudio](http://swcarpentry.github.io/r-novice-gapminder/01-rstudio-intro/)
+    2. [Project Management With RStudio](http://swcarpentry.github.io/r-novice-gapminder/02-project-intro/)
+    3. [Seeking Help](http://swcarpentry.github.io/r-novice-gapminder/03-seeking-help/)
+    4. [Data Structures](http://swcarpentry.github.io/r-novice-gapminder/04-data-structures-part1/)
+    5. [Exploring Data Frames](http://swcarpentry.github.io/r-novice-gapminder/05-data-structures-part2/)
+

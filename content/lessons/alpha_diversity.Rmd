@@ -1,0 +1,79 @@
+---
+title: "Alpha Diversity"
+output:
+  md_document:
+     variant: markdown_github
+  html_document:
+    df_print: paged
+---
+
+```{r global_options, include=FALSE}
+knitr::opts_chunk$set(echo=TRUE, include=TRUE)
+```
+
+
+## Resources
+This draws from [phyloseq plot_bar tutorial](https://joey711.github.io/phyloseq/plot_bar-examples.html).
+
+## Data
+This tutorial uses the 10% Atacama subset data (note that for the demux and dada2 tutorial we used the 1% Atacama subset)
+
+# Getting ready
+
+First we load libraries.
+```{r libraries, message=FALSE, warning=FALSE}
+library(readr)
+library(phyloseq)
+```
+
+```{r files_and_directories, include=FALSE}
+# Directories
+atacama.rds = "/data/tutorial_data/atacama_10pct.rds"
+
+```
+
+```{r}
+atacama.ps = read_rds(atacama.rds)
+print(atacama.ps)
+```
+
+# Visualize alpha-diversity
+```{r warning=FALSE}
+plot_richness(atacama.ps, x="TransectName", 
+              measures=c("Observed", "Shannon", "Chao1"), color="TransectName") + theme_bw()
+```
+
+## Alpha-Diversity Boxplots
+It is a bit hard to compare the two different transects because many points are overlapping, let's add a boxplot layer so we can compare the distribution of alpha-diversity values between the transects.
+```{r warning=FALSE}
+plot_richness(atacama.ps, x="TransectName", 
+              measures=c("Observed", "Shannon", "Chao1"), color="TransectName") + 
+              geom_boxplot() +
+              geom_point() +
+              theme_bw() 
+```
+
+## Alpha-Diversity as a function of other parameters
+It also might be interesting to explore whether other parameters have an effect on alpha-diversity
+```{r}
+sample_variables(atacama.ps)
+```
+
+### Elevation
+```{r warning=FALSE}
+plot_richness(atacama.ps, x="Elevation", 
+              measures=c("Observed", "Shannon", "Chao1"), color="TransectName") + theme_bw()
+```
+
+### Depth
+```{r warning=FALSE}
+plot_richness(atacama.ps, x="Depth", 
+              measures=c("Observed", "Shannon", "Chao1"), color="TransectName") + theme_bw()
+```
+
+# Session Info
+Always print `sessionInfo` for reproducibility!
+```{r}
+sessionInfo()
+```
+

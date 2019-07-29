@@ -1,0 +1,15 @@
+---
+title: "DADA2 Pipeline TOC"
+output:
+  md_document:
+    variant: markdown_github
+---
+
+An introduction to bioinformatic analysis with DADA2 is provided in several different notebooks:
+
+
+0. *Subset FASTQs:* Analysis of sequence data can take a lot of time.  It is often a good idea to run a pilot analysis on a small random subset of the full dataset to be sure that everything is working before starting a run that could take hours or days to complete.  There is nothing more frustraiting than waiting a week for an analysis to run, only to have it crash in the last few minutes because you made a mistake in setting it up.  [subset_reads.md](subset_reads.md) ([subset_reads.Rmd](subset_reads.Rmd)) gives an example for doing this.  You DO NOT need to do this to work through the subsequent steps of this pipeline, but it is useful to see how to apply this to other datasets.  *Note* that [subset_reads.md](subset_reads.md) contains bash *and* R chunks, but the chunk language does not show up in this format.  To see the language specified for each chunk, look at [subset_reads.Rmd](subset_reads.Rmd), the RMarkdown file from which it was generated.
+
+1. *Demultiplex FASTQs:* DADA2 expects data that has already been demultiplexed.  [demultiplex_tutorial.md](demultiplex_tutorial.md) ([demultiplex_tutorial.Rmd](demultiplex_tutorial.Rmd)) shows how to do this using scripts from the QIIME1 pipeline on a subset of reads from a full MiSeq run. *Note* that [demultiplex_tutorial.md](demultiplex_tutorial.md) contains bash *and* R chunks, but the chunk language does not show up in this format.  To see the language specified for each chunk, look at [demultiplex_tutorial.Rmd](demultiplex_tutorial.Rmd), the RMarkdown file from which it was generated.
+
+2. *FASTQs to Phyloseq:* [dada2_tutorial_1_6.md](dada2_tutorial_1_6.md) ([dada2_tutorial_1_6.Rmd](dada2_tutorial_1_6.Rmd)) is a tutorial for using DADA2 to generate a phyloseq object from demultiplexed FASTQs.  It uses the FASTQs that were demultiplexed in the above [demultiplex_tutorial.md](demultiplex_tutorial.md). 

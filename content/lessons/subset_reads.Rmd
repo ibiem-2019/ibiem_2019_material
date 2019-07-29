@@ -1,0 +1,72 @@
+---
+title: "Subset Reads"
+output:
+  md_document:
+    variant: markdown_github
+---
+
+```{r}
+library(tools)
+library(tibble)
+library(dplyr)
+library(readr)
+```
+
+
+```{r files_and_directories}
+# Directories
+data.dir = "/data/ibiem_2016_data"
+subset.dir = file.path("/data/tutorial_data/ibiem2016_subset")
+
+# make directory for output
+dir.create(subset.dir, recursive = TRUE)
+
+# Set variables for bash
+Sys.setenv(DATA_DIR = data.dir)
+Sys.setenv(SUBSET_DIR = subset.dir)
+```
+
+## Check Data Integrity
+```{bash check_md5sum}
+cd $DATA_DIR
+md5sum -c md5sum.txt
+```
+
+## Generate Data Subset for Demo Purposes
+```{bash data_subset}
+set -u
+NUM_READS=20000
+RANDSEED=1
+for FASTQ_FULL in $DATA_DIR/*.gz ; do
+  echo $FASTQ_FULL
+  FASTQ_BASE=`basename $FASTQ_FULL`
+  echo $FASTQ_BASE
+  seqtk sample -s $RANDSEED $FASTQ_FULL $NUM_READS | gzip -c > $SUBSET_DIR/$FASTQ_BASE
+  # zcat $SUBSET_DIR/$FASTQ_BASE | wc
+done
+```
+
+# Copy metadata to subset directory
+```{r}
+map.file = file.path(data.dir,"ibiem_2017_map_v3.txt")
+decoder.file = file.path(data.dir,"ibiem_2017_map_v3_decoder.csv")
+
+file.copy(map.file, subset.dir)
+file.copy(decoder.file, subset.dir)
+```
+
+# Generate md5sums for subset directory
+```{r}
+md5sum(files = list.files(subset.dir,full.names = TRUE)) %>%
+  as.data.frame %>%
+  rownames_to_column(var="path") %>%
+  mutate(path=basename(path)) %>%
+  select(".",path) %>%
+  write_delim(file.path(subset.dir,"md5sum.txt"), col_names = FALSE)
+```
+
+# Session Info
+Always print `sessionInfo` for reproducibility!
+```{r}
+sessionInfo()
+```

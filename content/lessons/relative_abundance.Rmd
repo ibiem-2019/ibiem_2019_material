@@ -1,0 +1,342 @@
+---
+title: "Relative Abundance"
+output:
+  md_document:
+     variant: markdown_github
+  html_document:
+    df_print: paged
+---
+
+```{r global_options, include=FALSE}
+knitr::opts_chunk$set(echo=TRUE, include=TRUE)
+```
+
+## Data
+This tutorial uses the 10% Atacama subset data (note that for the demux and dada2 tutorial we used the 1% Atacama subset)
+
+# Getting ready
+
+First we load libraries.
+```{r libraries, message=FALSE, warning=FALSE}
+library(readr)
+library(phyloseq)
+library(tibble)
+library(dplyr)
+```
+
+```{r files_and_directories}
+# Directories
+atacama.rds = "/data/tutorial_data/atacama_10pct.rds"
+```
+
+```{r}
+atacama.ps = read_rds(atacama.rds)
+print(atacama.ps)
+```
+
+## Relative Abundance
+### Transform OTU table
+Our OTU tables are currently raw counts
+
+```{r echo=TRUE, include=TRUE}
+otu_table(atacama.ps)[1:10,1:10] %>%
+  as.data.frame
+```
+The first step in making relative abundance plots is to transform your OTU table from raw counts to relative abundance (also known as proportional or fractional abundance).  Phyloseq provides the `transform_sample_counts` function for performing user defined transformations on the OTU table.  We want to divide the counts for each taxa in each sample by the total number of counts for that sample.  The phyloseq object returned has fractional "counts":
+
+```{r echo=TRUE, include=TRUE}
+atacama.ps.rel  = transform_sample_counts(atacama.ps, function(x) x / sum(x) )
+otu_table(atacama.ps.rel)[1:10,1:10] %>%
+  as.data.frame
+```
+
+> Why are there NaNs?
+
+#### Exploring NaNs
+
+Maybe division by zero?  Let's check
+
+```{r}
+sample_sums(atacama.ps) %>% sort
+```
+
+Yes, there are several samples that have no counts, and a few more that have very low counts
+
+```{r}
+(sample_sums(atacama.ps) < 50) %>% sum
+```
+
+```{r}
+plot_bar(atacama.ps)
+```
+
+
+Let's "prune" samples that have less counts of less than 50
+```{r}
+sample_min_count = 50
+
+atacama.ps %>%
+  prune_samples(sample_sums(.)>=sample_min_count, .) ->
+  atacama.prune_s.ps
+
+sample_sums(atacama.prune_s.ps) %>% sort
+```
+
+Now let's transform the counts in the pruned phyloseq object
+```{r}
+atacama.ps.rel  = transform_sample_counts(atacama.prune_s.ps, function(x) x / sum(x) )
+```
+
+
+As a result, the sum of all fractional abundance values for each sample is should be *1*:
+
+```{r echo=TRUE, include=TRUE}
+sample_sums(atacama.ps.rel)
+```
+
+### Relative Abundance Plots
+
+Now let's make a basic relative abundance plot.
+
+```{r basic_relabund_plot, include=TRUE}
+plot_bar(atacama.ps.rel) +
+  labs(y = "Relative Abundance")
+```
+
+How about coloring by taxa as we did for absolute abundance plots
+```{r echo=FALSE, include=TRUE}
+plot_bar(atacama.ps.rel, fill="Phylum") +
+  labs(y = "Relative Abundance") +
+  geom_bar(aes(color=Phylum, fill=Phylum), stat="identity", position="stack")
+```
+
+## Prune Taxa
+How many different taxa do we have?
+```{r}
+ntaxa(atacama.ps.rel)
+```
+
+How many different Families?
+```{r}
+length(get_taxa_unique(atacama.ps.rel,"Family"))
+```
+
+How many different taxa at each level?
+
+```{r}
+tibble(rank = rank_names(atacama.ps.rel)) %>%
+  rowwise %>%
+  mutate(num_taxa = length(get_taxa_unique(atacama.ps.rel,rank)))
+```
+
+Let's play with pruning taxa to make plots more manangeable.  Let's start by pruning all but the 20 taxa with the most counts
+
+```{r}
+top20 <- names(sort(taxa_sums(atacama.ps), decreasing=TRUE))[1:20]
+
+atacama.prune_s.ps %>%
+  transform_sample_counts(function(x) x / sum(x) ) %>%
+  prune_taxa(top20, .) ->
+  atacama.prune_s_t20.rel
+```
+
+```{r}
+print(atacama.ps)
+```
+
+```{r}
+print(atacama.prune_s.ps)
+```
+
+```{r}
+print(atacama.prune_s_t20.rel)
+```
+
+```{r include=TRUE}
+plot_bar(atacama.prune_s_t20.rel, fill="Phylum") +
+  labs(y = "Relative Abundance") +
+  geom_bar(aes(color=Phylum, fill=Phylum), stat="identity", position="stack")
+```
+
+### Where have all the taxa gone?
+We trimmed to the top 20 taxa, but in this plot we only see 4.  Why?
+Try looking at `tax_table` to figure out what is going on.  It may also help to do one of the "default" plots that includes the annoying sub-bar outlines.
+
+```{r include=TRUE}
+plot_bar(atacama.prune_s_t20.rel, fill="Phylum") +
+  labs(y = "Relative Abundance")
+```
+
+### Why transform first?
+What happens if we prune taxa, then transform? 
+```{r}
+atacama.prune_s.ps %>%
+  prune_taxa(top20, .) %>%
+  transform_sample_counts(function(x) x / sum(x) ) %>%
+  plot_bar(fill="Phylum") +
+    labs(y = "Relative Abundance") +
+    geom_bar(aes(color=Phylum, fill=Phylum), stat="identity", position="stack")
+```
+
+### Other Ways to Prune Taxa
+We can use the `filter_taxa` function to prune taxa by average fractional abundance, for example, we can choose to only show taxa that, on average across all samples, have a relative abundance of at least 1%.  
+
+#### Average Relative Abundance
+
+```{r}
+mean_cutoff = 0.01
+mean_test = function(x) {
+  mean(x) >= mean_cutoff
+}
+
+atacama.prune_s.ps %>%
+  transform_sample_counts(function(x) x / sum(x) ) %>%
+  filter_taxa(mean_test, prune = TRUE) ->
+  atacama.prune_s_1pct.rel
+
+print(atacama.prune_s_1pct.rel)
+```
+
+That `filter_taxa` command can be a little hard to understand, so let's look at what its actually doing
+
+```{r echo=TRUE, include=TRUE}
+filter_taxa
+```
+
+Let's break it down:
+
+1. It gets the otu table from the phyloseq object (`physeq`) that is passed to it (basically the same as `otu_table(physeq)`)
+2. It uses `apply` to run `mean_test` on each row of the otu table.  `mean_test` calculates the mean of the abundance values in the row, then tests if the mean is greater-than-or-equal-to `mean_cutoff`. So by running it with `apply`, we get a logical vector with "TRUE" or "FALSE" for each taxon indicating whether the mean of abundance values for that taxon are greater-than-or-equal-to `mean_cutoff`.
+3. Since we are calling it with `prune = TRUE`, it runs `prune_taxa` on `physeq` using the results from `mean_test`.  If `prune=FALSE`, it just returns the results from #2.
+
+Let's try this by hand.  First generate a random matrix
+```{r echo=TRUE, include=TRUE}
+set.seed(1)
+vals = matrix(runif(30, max = 0.02), nrow=10)
+print(vals)
+```
+Now try running `mean_test` on the first row
+```{r echo=TRUE, include=TRUE}
+mean_test(vals[1,])
+```
+Now let's use apply to run `mean_test` row-by-row
+```{r echo=TRUE, include=TRUE}
+apply(vals, 1, mean_test)
+```
+Now let's plot relative abundance for the taxa that pass `mean_cutoff`
+
+```{r}
+atacama.prune_s_1pct.rel %>%
+  plot_bar(fill="Phylum") +
+    labs(y = "Relative Abundance") +
+    geom_bar(aes(color=Phylum, fill=Phylum), stat="identity", position="stack")
+```
+
+Compare this with the pruning top20 plot above.  Notice any important differences?
+
+#### Complex Pruning
+We can use more complex rules for pruning taxa.
+Instead of requiring a minimum average across all samples, we can require that each taxon contstitutes at least `min_fraction` of the counts in at least `min_samples` of the samples.
+```{r echo=TRUE, include=TRUE}
+min_fraction = 0.05
+min_samples = 3
+atacama.ps.rel.minfrac = filter_taxa(atacama.ps.rel, 
+                       function(x) sum(x >= min_fraction) >= min_samples,
+                       prune=TRUE)
+
+ntaxa(atacama.ps.rel.minfrac)
+```
+
+
+Let's look again at the `filter_taxa` call.  Last time we made a function named `mean_test`, and called `filter_taxa` with `mean_test` as an argument.  Here we are using an anonymous function, in other words instead of defining a function, giving it a name, and passing that function name as an argument, we are defining the function on the fly, which can be more convenient if we are only ever using the function here, but also more confusing.
+
+Let's break down that function.  First we will make our matrix
+```{r echo=TRUE, include=TRUE}
+set.seed(1)
+vals = matrix(runif(30, max = 0.1), nrow=10)
+print(vals)
+```
+
+Now lets just run the `x >= min_fraction` part on the first row
+```{r echo=TRUE, include=TRUE}
+vals[1,] >= min_fraction
+```
+
+Here we are testing *each value in the row* to see if it is greater-than-or-equal-to min_fraction, so for the row, we get a logical vector back that is the same length.  Now let's build on that
+```{r echo=TRUE, include=TRUE}
+sum(vals[1,] >= min_fraction)
+```
+
+`sum` calculates the sum of the vector.  How do you calculate the sum of a logical vector? Convert it to zeroes and ones (sum does this on the fly):
+```{r echo=TRUE, include=TRUE}
+as.numeric(vals[1,] >= min_fraction)
+```
+So the result of `sum(x >= min_fraction)` is just a tally of how many samples in the row have values greater-than-or-equal-to `min_fraction`
+
+Now its pretty straightforward, just test whether the number of samples in the row that pass the test is at least `min_samples`
+```{r echo=TRUE, include=TRUE}
+sum(vals[1,] >= min_fraction) >= min_samples
+```
+
+Now let's use apply to run `sum(x >= min_fraction) >= min_samples` row-by-row
+```{r echo=TRUE, include=TRUE}
+apply(vals, 1, function(x) sum(x >= min_fraction) >= min_samples)
+```
+Now let's plot relative abundance for the taxa that pass the test
+
+```{r min_fraction_relabund_plot, echo=TRUE, include=TRUE}
+plot_bar(atacama.ps.rel.minfrac, fill="Genus") + 
+  geom_bar(aes(color=Genus, fill=Genus), stat="identity", position="stack")
+```
+
+#### Agglomerating Taxa
+Another approach we can consider is agglomerating taxa.  So far we have individually considered taxa for pruning.  However we might want to recognize the fact that closely related taxa can be functionally redundant.  Here we use the `tax_glom` function to agglomerate taxa at the Genus level.
+
+First lets filter by mean relative abundance (this is the same as our `mean_test` filtering above, we are just using a anonymous function) and see how many genera pass the filter.
+
+```{r}
+atacama.ps.rel %>% 
+  filter_taxa(function(x) mean(x) > 0.01, prune=TRUE) %>%
+  get_taxa_unique("Genus") %>%
+  length
+```
+
+Now lets do the same with taxa agglomerated at the genus level
+
+```{r}
+atacama.ps.rel %>% 
+  tax_glom(taxrank="Genus",NArm=FALSE) %>%
+  filter_taxa(function(x) mean(x) > 0.01, prune=TRUE) %>%
+  get_taxa_unique("Genus") %>%
+  length
+```
+
+#### Count Based Pruning
+Sometimes it makes more sense to prune based directly on counts, instead of relative abundance.  For example, we might not want to pay attention to a taxon that doesn't show up in most samples, and the few samples that do have it only have 1 or 2 counts.
+
+It is slight more complicated to use counts to prune the relative abundance data, but phyloseq still makes this pretty easy.  So far we have been using `filter_taxa` with `prune=TRUE`.  This returns a new phyloseq object that has been pruned according to the filtering function we provide.  When `filter_taxa` is called with `prune=FALSE` (the default), it returns a logical vector describing which taxa pass the filter function.  This boolean vector can then be passed to `prune_taxa` to generate a pruned phyloseq object.  So, we can call `filter_taxa` on the original *raw count phyloseq object* to generate the logical vector, then call `prune_taxa` with the boolean vector and the *relative abundance phyloseq object* to prune it based on the raw counts.
+
+Here we are identifying the taxa that have at least `min_count` reads in at least `min_sample_frac` of the samples, then using the logical vector that is returned to prune.
+
+```{r echo=TRUE, include=TRUE}
+min_count = 2
+min_sample_frac = 0.2
+filt_vec = filter_taxa(atacama.prune_s.ps, 
+                       function(x) sum(x >= min_count) >= (min_sample_frac*length(x)))
+atacama.ps.rel.countprune = prune_taxa(filt_vec, atacama.ps.rel)
+ntaxa(atacama.ps.rel.countprune)
+```
+
+```{r genus_fill_relabund, echo=FALSE, include=TRUE}
+plot_bar(atacama.ps.rel.countprune, fill="Family") + 
+  geom_bar(aes(color=Family, fill=Family), stat="identity", position="stack")  +
+  labs(y = "Relative Abundance", title="Family Level")
+```
+
+# Session Info
+Always print `sessionInfo` for reproducibility!
+```{r}
+sessionInfo()
+```
+
+

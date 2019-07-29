@@ -1,0 +1,434 @@
+---
+title: "R Notebook"
+output:
+  md_document:
+    variant: markdown_github
+  html_document:
+    df_print: paged
+---
+
+
+```{r load_libraries}
+library(here)
+library(dplyr)
+library(fs)
+library(rmarkdown)
+library(magrittr)
+
+# Load the following for sessioninfo
+library(tidyverse)
+```
+
+```{r set_paths}
+regression_output_dir = here("regression_scratch")
+if (dir_exists(regression_output_dir)) {dir_delete(regression_output_dir)}
+dir.create(regression_output_dir, recursive = TRUE)
+# tmp_scratch = "/tmp/scratch/atacama_1pct"
+# list.files(tmp_scratch)
+# dir_delete(tmp_scratch)
+Sys.setenv(REGRESSION_OUT = regression_output_dir)
+
+```
+
+```{r find_rmds, eval=FALSE, include=FALSE}
+list.files(here("content/lessons"), pattern = ".Rmd", full.names = TRUE) %>%
+  paste(collapse = '", "') %>%
+  print
+```
+
+```{r choose_regerssion_rmds}
+regression_rmds = c(
+                    "/home/guest/IBIEM_2018_2019/content/lessons/dada2_tutorial_1_6.Rmd")
+```
+
+```{r run_render, eval=FALSE, include=FALSE}
+#R -e "rmarkdown::render('run_full_lemur_data.Rmd',output_file='run_full_lemur_data.html')"
+for (cur_rmd in regression_rmds){
+  print(cur_rmd)
+  path_file(cur_rmd) %>%
+    path_ext_set("html") %>%
+    file.path(regression_output_dir, .) ->
+    cur_out
+  render(cur_rmd, output_file=cur_out, output_format="html_document")
+}
+```
+
+# Apt-get Packages
+## sra-toolkit
+```{bash test_fastq_dump}
+fastq-dump -X 5 -Z SRR390728
+```
+
+# Pip Packages
+
+## QIIME 1
+---
+title: "Demultiplex"
+output:
+  md_document:
+    variant: markdown_github
+  html_document:
+    df_print: paged
+---
+
+### Paths, Directories, and Shell Variables
+To keep the code readable and portable, it is nice to assign paths to variables.  We also need to use the R `Sys.setenv` command to make shell variables that can be used in the bash chunks below.
+
+```{r files_and_directories}
+# Directories
+data.dir = "/data/tutorial_data/atacama_1pct"
+output.dir = regression_output_dir
+demux.dir = file.path(output.dir, "demux")
+
+# make directory for output
+if (dir_exists(demux.dir)) {dir_delete(demux.dir)}
+dir_create(demux.dir)
+
+# Files
+map.file = file.path(data.dir,"sample_metadata.tsv")
+barcode.fastq = file.path(data.dir,"barcodes.fastq.gz")
+r1.fastq = file.path(data.dir,"forward.fastq.gz")
+r2.fastq = file.path(data.dir,"reverse.fastq.gz")
+
+# Set variables for bash
+Sys.setenv(MAP_FILE = map.file)
+Sys.setenv(OUT_DIR = output.dir)
+Sys.setenv(DEMUX_DIR = demux.dir)
+Sys.setenv(RAW_FASTQ_DIR = data.dir)
+Sys.setenv(BARCODE_FASTQ = barcode.fastq)
+```
+
+### Demux R1 and R2
+```{bash}
+set -u
+for CURREAD in "forward" "reverse"
+do
+   CURREAD_DIR=$DEMUX_DIR/${CURREAD}
+   TAGDIR=$CURREAD_DIR/tagged
+ 	split_libraries_fastq.py -r 999 -n 999 -q 0 -p 0.0001 \
+		--sequence_read_fps $RAW_FASTQ_DIR/${CURREAD}.fastq.gz \
+		--output_dir $TAGDIR \
+		--barcode_read_fps $BARCODE_FASTQ \
+		--mapping_fps $MAP_FILE \
+		--phred_offset 33 \
+		--barcode_type golay_12 \
+		--rev_comp_mapping_barcodes \
+		--store_demultiplexed_fastq 
+		
+	split_sequence_file_on_sample_ids.py --input_seqs_fp $TAGDIR/seqs.fastq \
+					 --file_type fastq \
+					 --output_dir $CURREAD_DIR
+					 
+	rm -rf $TAGDIR
+done
+```
+
+### Rename and move split FASTQs
+```{r}
+for (curread in c("forward","reverse")) {
+  curpath = file.path(demux.dir,curread)
+  for (fastq_path in list.files(curpath, full.names = TRUE,pattern = ".fastq")){
+    new_path = path_ext_remove(fastq_path)
+    new_path = path_file(new_path)
+    new_path = path(demux.dir, new_path, ext=paste0(curread,".fastq"))
+    file_move(fastq_path, new_path)
+  }
+}
+```
+
+# Bioconductor Packages
+## DADA2
+#----------------------------------
+#----------------------------------
+#----------------------------------
+---
+```{r libraries, message=FALSE, warning=FALSE}
+library(dada2)
+# library(readr)
+# library(stringr)
+# library(dplyr)
+# library(tibble)
+# library(magrittr)
+# library(ggplot2)
+# library(fs)
+```
+
+```{r data_path}
+# output.dir = regression_output_dir
+demux.dir = file.path(output.dir, "demux")
+scratch.dir = file.path(output.dir, "dada2")
+
+data.dir = "/data/tutorial_data/atacama_1pct"
+map.file = file.path(data.dir,"sample_metadata.tsv")
+
+if (dir_exists(scratch.dir)) {
+  dir_delete(scratch.dir)
+}
+dir_create(scratch.dir)
+
+ps.rds = file.path(scratch.dir, "atacama_1pct.rds")
+
+silva.ref = "/data/references/dada/silva_nr_v128_train_set.fa.gz"
+silva.species.ref = "/data/references/dada/silva_species_assignment_v128.fa.gz"
+```
+
+
+### Filter and Trim
+
+First we read in the names of the fastq files, and perform some string manipulation to get lists of the forward and reverse fastq files in matched order:
+```{r filenames}
+# Forward and reverse fastq filenames have format: SAMPLENAME_R1_001.fastq and SAMPLENAME_R2_001.fastq
+fnFs <- sort(list.files(demux.dir, pattern="forward.fastq", full.names = TRUE))
+fnRs <- sort(list.files(demux.dir, pattern="reverse.fastq", full.names = TRUE))
+
+sample.names = fnFs %>% 
+  basename %>%
+  str_replace(".forward.fastq","") 
+```
+
+
+### Perform filtering and trimming
+
+```{r filt-names}
+filt_path <- file.path(scratch.dir, "filtered") # Place filtered files in filtered/ subdirectory
+filtFs <- file.path(filt_path, paste0(sample.names, "_F_filt.fastq.gz"))
+filtRs <- file.path(filt_path, paste0(sample.names, "_R_filt.fastq.gz"))
+```
+
+```{r filter, message=FALSE, warning=FALSE}
+filt.out <- filterAndTrim(fnFs, filtFs, fnRs, filtRs, trimLeft=10, truncLen=c(145,140),
+              maxN=0, maxEE=c(2,2), truncQ=2, rm.phix=TRUE,
+              compress=TRUE, multithread=FALSE) # On Windows set multithread=FALSE
+head(filt.out)
+```
+
+### Learn the Error Rates
+
+```{r}
+filtFs = filtFs[file_exists(filtFs)]
+filtRs = filtRs[file_exists(filtRs)]
+```
+
+```{r}
+errF <- learnErrors(filtFs, multithread=TRUE)
+errR <- learnErrors(filtRs, multithread=TRUE)
+```
+
+
+It is always worthwhile, as a sanity check if nothing else, to visualize the estimated error rates:
+```{r plot-errors, warning=FALSE}
+plotErrors(errF, nominalQ=TRUE)
+```
+
+### Dereplication
+
+```{r}
+filtFs %>% 
+  basename %>%
+  str_replace("_F_filt.fastq.gz","") ->
+  sample.names
+```
+
+```{r dereplicate_tryagain, message=FALSE}
+derepFs <- derepFastq(filtFs, verbose=TRUE)
+derepRs <- derepFastq(filtRs, verbose=TRUE)
+# Name the derep-class objects by the sample names
+names(derepFs) <- sample.names
+names(derepRs) <- sample.names
+```
+
+### Sample Inference
+```{r dada}
+dadaFs <- dada(derepFs, err=errF, multithread=TRUE)
+dadaRs <- dada(derepRs, err=errR, multithread=TRUE)
+```
+
+Inspecting the dada-class object returned by dada:
+```{r see-dada}
+dadaFs[[1]]
+```
+
+### Merge paired reads
+```{r merge, message=FALSE}
+mergers <- mergePairs(dadaFs, derepFs, dadaRs, derepRs, verbose=TRUE)
+# Inspect the merger data.frame from the first sample
+head(mergers[[2]])
+```
+
+
+### Construct sequence table
+
+```{r seqtab}
+seqtab <- makeSequenceTable(mergers)
+dim(seqtab)
+# Inspect distribution of sequence lengths
+table(nchar(getSequences(seqtab)))
+```
+
+### Remove chimeras
+
+```{r chimeras, message=FALSE}
+seqtab.nochim <- removeBimeraDenovo(seqtab, method="consensus", multithread=TRUE, verbose=TRUE)
+dim(seqtab.nochim)
+sum(seqtab.nochim)/sum(seqtab)
+```
+
+### Track reads through the pipeline
+
+As a final check of our progress, we'll look at the number of reads that made it through each step in the pipeline:
+```{r track}
+getN <- function(x) sum(getUniques(x))
+track = filt.out %>%
+  as.data.frame %>%
+  rownames_to_column %>%
+  mutate(rowname=str_replace(rowname, ".forward.fastq","")) %>%
+  rename(sample=rowname, input=reads.in, filtered=reads.out)
+
+sapply(dadaFs, getN) %>%
+  as.tibble %>%
+  rownames_to_column() %>%
+  rename(sample=rowname, denoised=value) ->
+  denoised
+  
+track %<>% full_join(denoised, by=c("sample"))
+
+sapply(mergers, getN) %>%
+  as.tibble %>%
+  rownames_to_column() %>%
+  rename(sample=rowname, merged=value) ->
+  merged
+
+track %<>% full_join(merged, by=c("sample"))
+
+
+rowSums(seqtab) %>%
+  as.tibble %>%
+  rownames_to_column() %>%
+  rename(sample=rowname, tabled=value) -> 
+  tabled
+#   denoised
+
+track %<>% full_join(tabled, by=c("sample"))
+
+rowSums(seqtab.nochim) %>%
+  as.tibble %>%
+  rownames_to_column() %>%
+  rename(sample=rowname, nonchim=value) -> 
+  nonchim
+
+track %<>% full_join(nonchim, by=c("sample"))
+
+track
+```
+
+### Assign taxonomy
+
+```{r taxify}
+taxa <- assignTaxonomy(seqtab.nochim, silva.ref, multithread=TRUE)
+```
+
+
+---------------------------------------------------------
+
+## Phyloseq
+
+
+### Make Phyloseq Object
+```{r load_map}
+library(phyloseq)
+meta.df = read_tsv(map.file, comment= "#q2") %>%
+  rename(Sample = "#SampleID") %>%
+  column_to_rownames("Sample") %>%
+  as.data.frame
+meta.df
+```
+
+```{r make-phyloseq}
+otus = otu_table(seqtab.nochim, taxa_are_rows=FALSE)
+
+sd = sample_data(meta.df)
+ps <- phyloseq(otus,
+               sd,
+               tax_table(taxa))
+ps
+```
+
+
+### Visualize alpha-diversity
+```{r richness, warning=FALSE}
+plot_richness(ps, x="Elevation", measures=c("Shannon", "Simpson"), color="TransectName") + theme_bw()
+```
+
+# CRAN Packages
+## multcomp
+```{r multcomp_test}
+### R code from vignette source 'multcomp-examples.Rnw'
+library("multcomp")
+library("mvtnorm")
+
+dig <- 4
+options(width = 65, digits = dig)
+set.seed(290875)
+
+lm.cars <- lm(dist ~ speed, data = cars)
+summary(lm.cars)
+
+betahat <- coef(lm.cars)
+Vbetahat <- vcov(lm.cars)
+
+K <- diag(2)
+Sigma <- diag(1 / sqrt(diag(K %*% Vbetahat %*% t(K)))) 
+z <- Sigma %*% K %*% betahat
+Cor <- Sigma %*% (K %*% Vbetahat %*% t(K)) %*% t(Sigma)                  
+
+df.cars <- nrow(cars) - length(betahat)
+sapply(abs(z), function(x) 1 - pmvt(-rep(x, 2), rep(x, 2), corr = Cor, df = df.cars))
+
+rownames(K) <- names(betahat)
+
+cars.ht <- glht(lm.cars, linfct = K)
+summary(cars.ht)
+```
+
+## agricolae
+```{r agricolae_test}
+### R code from vignette source 'tutorial.Rnw'
+library(agricolae)
+
+A<-as.data.frame(data(package="agricolae")$results[,3:4])
+A[,2]<-paste(substr(A[,2],1,35),"..",sep=".")
+
+weight<-c( 68, 53, 69.5, 55, 71, 63, 76.5, 65.5, 69, 75, 76, 57, 70.5, 71.5, 56, 81.5,
+           69, 59, 67.5, 61, 68, 59.5, 56.5, 73, 61, 72.5, 71.5, 59.5, 74.5, 63)
+
+par(mfrow=c(1,2),mar=c(4,4,0,1),cex=0.6)
+h1<- graph.freq(weight,col=colors()[84],frequency=1,las=2,density=20,ylim=c(0,12),ylab="Frequency") 
+x<-h1$breaks
+h2<- plot(h1, frequency =2, axes= FALSE,ylim=c(0,0.4),xlab="weight",ylab="Relative (%)")
+polygon.freq(h2, col=colors()[84], lwd=2, frequency =2)
+axis(1,x,cex=0.6,las=2)
+y<-seq(0,0.4,0.1)
+axis(2, y,y*100,cex=0.6,las=1) 
+```
+
+
+# Other
+## Transabyss
+The following chunk tests the transabyss installation to be sure that it runs correctly
+```{bash}
+cd $REGRESSION_OUT
+cp -r /opt/share/transabyss_sample_dataset .
+chmod -R u+w transabyss_sample_dataset/
+bash transabyss_sample_dataset/assemble.sh
+```
+
+
+```{r cleanup}
+dir_delete(regression_output_dir)
+```
+
+# Session Info
+```{r sessioninfo}
+sessionInfo()
+```
+

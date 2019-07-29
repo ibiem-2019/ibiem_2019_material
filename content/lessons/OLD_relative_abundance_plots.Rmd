@@ -1,0 +1,168 @@
+---
+output:
+  html_document:
+    df_print: paged
+---
+```{r global_options, include=FALSE}
+# knitr::opts_chunk$set(eval=FALSE, echo=TRUE)
+# knitr::opts_chunk$set(cache.path = cache.prefix)
+```
+
+
+# Getting ready
+
+First we load libraries.
+```{r libraries, message=FALSE, warning=FALSE}
+library(readr)
+library(phyloseq)
+```
+
+# Relative Abundance Plots
+# Get Data
+This tutorial uses the 10% Atacama subset data (note that for the demux and dada2 tutorial we used the 1% Atacama subset)
+
+```{r files_and_directories, include=FALSE}
+# Directories
+atacama.rds = "/data/tutorial_data/atacama_1pct"
+
+```
+
+```{r}
+atacama.ps = read_rds(atacama.rds)
+```
+
+## Check Phyloseq Object
+Finally you should check that everything loaded properly with something like the following
+```{r}
+print(atacama.ps)
+```
+Which should return something like this (but with different numbers):
+
+```
+phyloseq-class experiment-level object
+otu_table()   OTU Table:         [ 3388 taxa and 68 samples ]
+sample_data() Sample Data:       [ 68 samples by 22 sample variables ]
+tax_table()   Taxonomy Table:    [ 3388 taxa by 7 taxonomic ranks ]
+```
+
+```{r}
+plot_bar(atacama.ps)
+
+```
+```{r}
+plot_bar(atacama.ps, fill="Kingdom")
+```
+
+```{r}
+plot_bar(atacama.ps, fill="Phylum")
+```
+
+```{r}
+p = plot_bar(atacama.ps, fill="Phylum")
+p + geom_bar(aes(color=Phylum, fill=Phylum), stat="identity", position="stack")
+
+```
+
+```{r eval=FALSE, include=FALSE}
+# atacama.ps
+sample_data(atacama.ps)
+```
+
+```{r}
+plot_bar(atacama.ps, facet_grid=~SpeciesName, fill="Kingdom")
+```
+
+```{r}
+plot_bar(atacama.ps, facet_grid=~TransectName, fill="Kingdom")
+```
+
+```{r}
+plot_bar(atacama.ps, x="SpeciesName", fill="Kingdom")
+```
+
+```{r}
+plot_bar(atacama.ps, x="TransectName", fill="Kingdom")
+```
+```{r}
+plot_bar(atacama.ps, facet_grid=~TransectName, fill="Kingdom")
+```
+
+```{r}
+p = plot_bar(atacama.ps, facet_grid=~TransectName, fill="Kingdom")
+p + geom_bar(aes(color=Kingdom, fill=Kingdom), stat="identity", position="stack")
+```
+
+
+
+```{r}
+plot_bar(atacama.ps, facet_grid=~TransectName, fill="Kingdom")
+```
+
+
+# Fixing some annoyances
+```{r}
+colnames(tax_table(atacama.ps))
+tax_table(atacama.ps)[1,]
+
+colnames(tax_table(atacama.ps)) = c("Kingdom","Phyllum", "Class","Order","Family","Genus","Species")
+colnames(tax_table(atacama.ps))
+```
+```{r}
+plot_bar(atacama.ps, fill="Kingdom")
+
+```
+
+
+
+
+```{r}
+plot_bar
+```
+
+```{r}
+atacama.ps.melt = psmelt(atacama.ps)
+p = ggplot(atacama.ps.melt, aes_string(x = "Sample", y = "Abundance"))
+p = p + geom_bar(stat = "identity", position = "stack")
+p = p + theme(axis.text.x = element_text(angle = -90, hjust = 0))
+p = p + theme(panel.background = element_blank())
+print(p)
+```
+
+```{r}
+atacama.ps.melt = psmelt(atacama.ps)
+p = ggplot(atacama.ps.melt, aes_string(x = "Sample", y = "Abundance", fill="Kingdom"))
+p = p + geom_bar(stat = "identity", position = "stack")
+p = p + theme(axis.text.x = element_text(angle = -90, hjust = 0))
+p = p + theme(panel.background = element_blank())
+print(p)
+```
+```{r}
+atacama.ps.melt = psmelt(atacama.ps)
+p = ggplot(atacama.ps.melt, aes_string(x = "Sample", y = "Abundance", fill="Kingdom"))
+p = p + geom_bar(stat = "identity", position = "stack")
+p = p + theme(axis.text.x = element_text(angle = -90, hjust = 0))
+p = p + facet_grid(~SpeciesName, scale="free_x", space = "free_x")
+print(p)
+```
+```{r}
+p = plot_bar(atacama.ps, fill="Kingdom")
+p + geom_bar(aes(color=Kingdom, fill=Kingdom), stat="identity", position="stack")
+```
+
+```{r}
+p = plot_bar(atacama.ps, fill="Kingdom")
+p + 
+  geom_bar(aes(color=Kingdom, fill=Kingdom), stat="identity", position="stack") +
+  facet_grid(~SpeciesName)
+```
+
+```{r}
+p = plot_bar(atacama.ps, fill="Kingdom")
+p + 
+  geom_bar(aes(color=Kingdom, fill=Kingdom), stat="identity", position="stack") +
+  facet_grid(~SpeciesName, scale="free_x", space = "free_x")
+```
+
+
+
+

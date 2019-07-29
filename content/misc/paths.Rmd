@@ -1,0 +1,175 @@
+---
+title: "Paths in R, RStudio, and Unix"
+output:
+  md_document:
+    variant: markdown_github
+---
+
+# Unix
+## List Files and Directories
+```{bash}
+ls
+```
+
+```{bash}
+ls -a
+```
+
+```{bash}
+ls -F
+```
+
+
+## Working Directory
+```{bash}
+pwd
+```
+
+```{bash}
+cd ..
+pwd
+```
+
+```{bash}
+pwd
+```
+
+## Absolute vs Relative Paths
+```{bash}
+head paths.Rmd
+```
+
+```{bash}
+head /home/guest/IBIEM_2018_2019/content/misc/paths.Rmd
+```
+
+## Environment Variables
+```{bash}
+echo "Hello world"
+```
+
+```{bash}
+echo $HOME
+```
+
+```{bash}
+echo $PWD
+```
+
+```{bash}
+ls $HOME/IBIEM_2018_2019
+```
+
+## Tilde Expansion
+
+```{bash}
+echo ~
+```
+
+```{bash}
+ls ~
+```
+
+```{bash}
+cd ~
+pwd
+```
+
+## Make a New Directory
+```{bash}
+mkdir bash_test_dir
+ls -F
+```
+
+
+
+# R
+
+## List Files and Directories
+```{r}
+list.files()
+```
+
+```{r}
+list.dirs()
+```
+
+## Working Directory
+```{r}
+getwd()
+```
+
+## Environment Variables
+```{r}
+Sys.getenv()
+```
+
+```{r}
+Sys.getenv("HOME")
+```
+
+```{r}
+Sys.getenv("PWD")
+```
+
+## Path Expansion and Normalization
+```{r}
+path.expand("~////")
+```
+
+```{r}
+normalizePath("~////")
+```
+
+```{r}
+normalizePath("~/not_a_directory")
+```
+
+```{r}
+path.expand("~/not_a_directory")
+```
+
+```{r}
+path.expand("./paths.Rmd")
+```
+
+```{r}
+normalizePath("./paths.Rmd")
+```
+
+## Path Maniputation
+
+```{r}
+file.path("some_dir", "some_subdir")
+```
+
+```{r}
+file.path(Sys.getenv("HOME"), "IBIEM_2018_2019")
+```
+
+```{r}
+this.file = "/home/guest/IBIEM_2018_2019/content/misc/paths.Rmd"
+basename(this.file)
+```
+```{r}
+dirname(this.file)
+```
+
+## Make a New Directory
+```{r}
+dir.create("r_test_dir")
+list.dirs()
+```
+
+# RStudio
+- Home
+- Project Directory (R cube)
+- ".."
+- "..."
+- Git Pane
+
+
+
+# References
+- [Navigating Files and Directories](http://swcarpentry.github.io/shell-novice/02-filedir/index.html)
+- [Working With Files and Directories](http://swcarpentry.github.io/shell-novice/03-create/index.html)

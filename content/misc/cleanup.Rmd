@@ -1,0 +1,70 @@
+---
+title: "Clean Up"
+output:
+  md_document:
+    variant: markdown_github
+  html_document:
+    toc: false
+---
+
+# Clean up /tmp
+How full is `/tmp`? You can check with the following command.  If you see 100% (or something close to it, like 99%) under `Use%`, then `/tmp` is full.  
+
+```{bash include=FALSE}
+fallocate -l 100M /tmp/big_file.txt
+```
+
+
+```{bash}
+df -h /tmp
+```
+
+If it is full, please go through the following steps to clean up any large files that you no longer need.  Note that /tmp is in a space that is shared by everyone, so it might not be your fault.  If you clean up your `/tmp` and it doesn't significantly decrease `Use%`, then let the TAs and/or instructors know so that we can initiate a class-wide cleanup.
+
+The following command shows you all the subdirectories in your `/tmp`, sorted by size from largest to smallest. The only subdirectories here are from R (starting with `Rtmp`), Rstudio (`rstudio-rsession`), and tmux (`tmux-1000`).  We don't want to mess with any of these directories, and anyway, they aren't that big - the sizes are listed in kb.  The  only large directory is `/tmp` itself (102432KB is about 100MB), which means that there is one or more large files directly in `/tmp`.
+```{bash}
+du --all --max-depth 1 /tmp | sort -nr
+```
+
+The command we ran above is useful for finding out which directories are using the most storage, but since sizes are listed in kb, its harder to think about with larger files.  We can run `du` with the `--human-readable` option to  convert file sizes to MB and GB, where appropriate (the downside is that we can't sort to easily find the largest).  This tells us that `/tmp/big_file.txt` is 100MB, so we probably want to get rid of it.
+
+```{bash}
+du --all --max-depth 1 --human-readable /tmp
+```
+
+Another tool is `ls`.  It has the advantage that it can give us human readable file sizes, sorted by size.  The disadvantage is that it doesn't give us acurate directory size information.  The following command shows you all the files in your `/tmp`, sorted by size from largest to smallest.  We want to get rid of any file we don't need, but particularly that one at the top that is 100M. 
+> If you are uncertain what can safely be deleted, feel free to check with a TAs and/or instructor.
+
+
+```{bash}
+ls -lShap /tmp
+```
+
+The following will delete `/tmp/big_file.txt`.  We can also do it from the Rstudio file pane by checking the box and clicking "Delete" in the "Files" pane
+```{bash}
+rm -f /tmp/big_file.txt
+```
+
+# Clean up /home/guest
+We also want to check our home directory.  If you run the following chunk and see 100% (or something close to it, like 99%) under `Use%`, then our space is full.  Please clean up any large files that you no longer need.
+
+```{bash}
+df -h /home/guest
+```
+
+As with `/tmp`, we can use `du` and `ls` to find large files.
+
+```{bash}
+ls -lShap ~/ | grep -v / 
+```
+It doesn't look like I have any particularly large files in my home directory.
+
+```{bash}
+du --all --max-depth 1 ~/ | sort -nr
+```
+
+It looks like I should do some clean up of subdirectories!  Generally it is a good idea to start with the biggest subdirectory, using `du` and `ls` to find out what is taking the most space and cleaning that up first, for example, we should first look at `~/IBIEM_2018_2019_https ` :
+
+```{bash}
+du --all --max-depth 1 ~/IBIEM_2018_2019_https | sort -nr
+```

@@ -1,0 +1,51 @@
+before_script:
+  - date
+  - whoami
+  - sudo docker --version
+
+stages:
+  - deploy_staging
+  - deploy
+
+.deploy_staging_template: &deploy_staging_definition  # Hidden key that defines an anchor named 'deploy_staging_definition'
+  stage: deploy
+  script:
+    - echo "Deploying the content in staging"
+    - pwd; ls -la
+    - /srv/persistent-data/docker-scripts/update-staging-content
+  environment:
+    name: staging
+  only:
+  - staging
+
+deploy_staging_09:
+  tags: 
+    - ipyn-az-09
+    - IBIEM2018-content
+  <<: *deploy_staging_definition           # Merge the contents of the 'deploy_staging_definition' alias
+
+
+
+#
+############# deploy_production ##############
+#
+.deploy_production_template: &deploy_production_definition  # Hidden key that defines an anchor named 'deploy_production_definition'
+  stage: deploy
+  script:
+    - echo "updating the production notebooks"
+    - pwd; ls -la
+    - /srv/persistent-data/docker-scripts/update-production-content
+  environment:
+    name: production
+  when: manual
+  only:
+  - master
+
+
+deploy_production_09:
+  tags: 
+    - ipyn-az-09
+    - IBIEM2018-content
+  <<: *deploy_production_definition           # Merge the contents of the 'deploy_production_definition' alias
+
+

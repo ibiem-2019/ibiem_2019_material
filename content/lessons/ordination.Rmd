@@ -1,0 +1,277 @@
+---
+title: "Ordination"
+output:
+  md_document:
+     variant: markdown_github
+  html_document:
+    df_print: paged
+---
+
+```{r global_options, include=FALSE}
+knitr::opts_chunk$set(echo=TRUE, include=TRUE)
+```
+
+
+## Data
+This tutorial uses the 10% Atacama subset data (note that for the demux and dada2 tutorial we used the 1% Atacama subset)
+
+# Getting ready
+
+First we load libraries.
+```{r libraries, message=FALSE, warning=FALSE}
+library(tidyverse)
+library(vegan)
+library(phyloseq)
+```
+
+```{r files_and_directories}
+# Directories
+atacama.rds = "/data/tutorial_data/atacama_10pct.rds"
+```
+
+```{r}
+atacama.ps = read_rds(atacama.rds)
+print(atacama.ps)
+```
+
+
+## Data Preprocessing
+As with relative abundance plots, before performing ordination we will want to prune rare taxa and transform the data.  We prune because we don't want small differences in rare taxa to swamp out major trends.  The transformation is important because some methods depend on absolute numerical differences in abundance between samples.  Since absolute counts are not meaningful in amplicon sequence data, we want to prevent such differences from affecting the ordination results.
+
+### Prune 
+As with relative abundance plots, the decision about how to prune is important, we need to think about what we are throwing away, and how it might affect the analysis.  For starters, we will use the same parameters as last time - only include taxa that have at least 3 reads in at least 10% of samples
+```{r}
+sample_min_count = 50
+
+atacama.ps %>%
+  prune_samples(sample_sums(.)>=sample_min_count, .) ->
+  atacama.sample_prune
+
+sample_sums(atacama.sample_prune) %>% sort
+```
+```{r}
+min_count = 3
+min_sample_frac = 0.10
+
+prune.vec = filter_taxa(atacama.sample_prune, 
+                       function(x) sum(x >= min_count) >= (min_sample_frac*length(x)))
+atacama.st_prune = prune_taxa(prune.vec, atacama.sample_prune)
+ntaxa(atacama.st_prune)
+```
+
+### Transform to even sampling depth.
+Here we are performing the same fractional abundance transformation we did before, then multiplying by 1 x 10^6 to convert those proprotions back into whole numbers.
+
+Pay attention to the y-axes in these plots of the raw counts, the pruned counts, and the transformed counts.
+```{r}
+atacama.st_prune.even = transform_sample_counts(atacama.st_prune, function(x) 1E6 * x/sum(x))
+plot_bar(atacama.ps)
+plot_bar(atacama.sample_prune)
+plot_bar(atacama.st_prune)
+plot_bar(atacama.st_prune.even)
+```
+
+## Ordination
+For ordination plots we have at least two major decisions:
+
+1. What disimilarity or distance measure will we use?
+2. What ordination method will we use?
+
+For starters, we will use Bray-Curtis to calculate disimilarity between samples combined with NMDS for ordination.
+
+### Bray-Curtis Dissimilarity and NMDS
+
+```{r}
+atacama.st_prune.even.nmds_bc <- ordinate(atacama.st_prune.even, "NMDS", "bray")
+```
+
+#### Converging
+Often the above chunk does not converge.  I say often, because NMDS is a random process, if you run it more than once you will get slightly different results.  It is a good idea to set the random seed so that we get the same result each time.
+```{r}
+# getting convergence
+set.seed(1)
+atacama.st_prune.even.nmds_bc <- ordinate(atacama.st_prune.even, "NMDS", "bray")
+```
+
+The NMDS did not converge so we can try some of the suggestions in the *Convergence Problems* section of the help for the NMDS: `help("metaMDS", "vegan")`.  If none of those work, we need to take the NMDS results with a grain of salt or try a different ordination methods.
+
+Let's inrease the values for `try` and `trymax` (according to help(metaMDS): "Minimum and maximum numbers of random starts in search of stable solution. After try has been reached, the iteration will stop when two convergent solutions were found or trymax was reached.")
+```{r}
+set.seed(1)
+atacama.st_prune.even.nmds_bc <- ordinate(atacama.st_prune.even, "NMDS", "bray",trymax=100,try=30)
+```
+
+That didn't work, but if we try a different random seed . . . 
+
+```{r}
+set.seed(6)
+atacama.st_prune.even.nmds_bc <- ordinate(atacama.st_prune.even, "NMDS", "bray",trymax=100,try=30)
+```
+
+Two important things to check are:
+
+1. Did the NMDS converge?
+2. What is the stress?
+```{r}
+cat("Converged?", atacama.st_prune.even.nmds_bc$converged, fill=TRUE)
+```
+
+```{r}
+cat("Stress:", atacama.st_prune.even.nmds_bc$stress, fill=TRUE)
+```
+Stress is a measure of how well the NMDS procedure was able to represent the high dimensional data in the lower dimentionsional space.  The stress is important in understanding how informative the NMDS results are, so should be presented with the NMDS plot.
+
+> | Stress Range | Interpretation                       |
+> |--------------+--------------------------------------|
+> | <0.1         | Great                                |
+> | 0.1 - 0.2    | Good                                 |
+> | 0.2 - 0.3    | Acceptable (treat with some caution) |
+> | > 0.3        | Unreliable                           |
+
+
+#### Scree Plot
+```{r}
+## NMDS Scree Plot
+mds_stress_dplyr = function(df,rep_num, dimensions) {
+  mds_result = metaMDS(df, autotransform=TRUE, k=dimensions)
+  return(mds_result$stress)
+}
+set.seed(1)
+scree.df = expand.grid(repnum=seq(1), dimensions=seq(6)) %>% 
+  rowwise() %>% 
+  mutate(stress = mds_stress_dplyr(otu_table(atacama.st_prune.even), repnum, dimensions))
+
+ggplot(data = scree.df, aes(x = dimensions, y = stress)) +
+  geom_jitter(width = 0.05, alpha=1/3) +
+  stat_summary(fun.y=mean, geom="line") +
+theme_bw()
+```
+
+
+### NMDS Plots
+Let's use the results of ordination to generate an NMDS plot where each datapoint represents a *sample*. 
+
+```{r}
+plot_ordination(atacama.st_prune.even, atacama.st_prune.even.nmds_bc, type="samples", color="TransectName") 
+```
+It is good practice to label the figure with the stress, or include it in the figure caption.  If this Rmd is knitted, then this inline code will tell us the stress by plugging the in value for the R code . . .
+
+Stress: `r atacama.st_prune.even.nmds_bc$stress`
+
+#### Adding Stress
+This figure adds the stress directly to the plot
+```{r}
+plot_ordination(atacama.st_prune.even, 
+                atacama.st_prune.even.nmds_bc, 
+                type="samples", color="TransectName") +
+  annotate("text",x=-Inf,y=-Inf,hjust=0,vjust=0,
+           label= paste("Stress:", atacama.st_prune.even.nmds_bc$stress, 
+                        "\nConverged:", atacama.st_prune.even.nmds_bc$converged))
+```
+
+#### Other Parameters
+There seems to be some separation between transects, but not much.  Let's look at other paramters
+
+##### Sites
+```{r}
+plot_ordination(atacama.st_prune.even, 
+                atacama.st_prune.even.nmds_bc, 
+                type="samples", color="SiteName") +
+  annotate("text",x=-Inf,y=-Inf,hjust=0,vjust=0,
+           label= paste("Stress:", atacama.st_prune.even.nmds_bc$stress, 
+                        "\nConverged:", atacama.st_prune.even.nmds_bc$converged))
+```
+
+##### Vegetation
+
+```{r}
+plot_ordination(atacama.st_prune.even, 
+                atacama.st_prune.even.nmds_bc, 
+                type="samples", color="Vegetation") +
+  annotate("text",x=-Inf,y=-Inf,hjust=0,vjust=0,
+           label= paste("Stress:", atacama.st_prune.even.nmds_bc$stress, 
+                        "\nConverged:", atacama.st_prune.even.nmds_bc$converged))
+```
+
+Note that changing "color" only changes which metadata is used to determine color of sample data points, the locations of the 
+points remains the same
+
+
+### Helping Visualization
+The large number of samples that are often found in amplicon sequence projects can make it difficult to visually process ordination plots, especially if the data is noisy (usually the case).  There are a number of ways to improve the interpretability of ordination plots.  These modifications can be useful, but should be used with care, because sometimes they make things worse or suggest paterns where none exist.
+
+#### Confidence ellipses on NMDS Plots
+
+You can add 95% confidence elipses to ordination plots by appending `+ stat_ellipse(type = "norm")` after the plotting function.  
+```{r}
+plot_ordination(atacama.st_prune.even, atacama.st_prune.even.nmds_bc, type="samples", color="Vegetation") + 
+  stat_ellipse(type = "norm") +
+  theme_bw()
+```
+
+#### Spider Plots ellipses on NMDS Plots
+
+```{r}
+ordiplot (atacama.st_prune.even.nmds_bc, display = 'si', type = 'n')
+
+ordispider (atacama.st_prune.even.nmds_bc, 
+            groups = get_variable(atacama.st_prune.even, "Vegetation"), 
+            col = 1:2)
+```
+
+
+#### Faceted NMDS Plots
+Another option for improving ordination plots is to facet results.  Let's make an NMDS plot faceted by Vegetation
+
+```{r}
+plot_ordination(atacama.st_prune.even, atacama.st_prune.even.nmds_bc, type="samples", color="Vegetation") + 
+  facet_wrap(~TransectName) 
+```
+
+Sometimes it is helpful to show all the points, but gray out the ones that are not the the focus
+
+```{r}
+atacama.st_prune.even.nmds_bc.plot = plot_ordination(atacama.st_prune.even, 
+                                                     atacama.st_prune.even.nmds_bc, 
+                                                     type="samples", color="Vegetation")
+
+ggplot(atacama.st_prune.even.nmds_bc.plot$data, aes(NMDS1, NMDS2)) +
+  theme_bw() +
+  geom_point(data = transform(atacama.st_prune.even.nmds_bc.plot$data, Vegetation = NULL, TransectName = NULL), 
+             color = "grey90") +
+  geom_point(aes(color = Vegetation)) + 
+facet_grid(~Vegetation, labeller = "label_both")
+```
+
+
+```{r}
+atacama.st_prune.even.nmds_bc.plot = plot_ordination(atacama.st_prune.even, 
+                                                     atacama.st_prune.even.nmds_bc, 
+                                                     type="samples", color="Vegetation")
+
+ggplot(atacama.st_prune.even.nmds_bc.plot$data, aes(NMDS1, NMDS2)) +
+  theme_bw() +
+  geom_point(data = transform(atacama.st_prune.even.nmds_bc.plot$data, Vegetation = NULL, TransectName = NULL), 
+             color = "grey90") +
+  geom_point(aes(color = Vegetation)) + 
+facet_grid(Vegetation~TransectName, labeller = "label_both") +
+      theme(plot.background = element_blank(),
+        panel.grid.major = element_blank(),
+        panel.grid.minor = element_blank())
+```
+
+### PCoA Plots
+There are many other ordination methods supported by phyloseq.  Let's make a PCoA plot using Bray-Curtis dissimilarity, coloring the data points by "Vegetation".
+
+```{r}
+atacama.st_prune.even.pcoa_bc <- ordinate(atacama.st_prune.even, "PCoA", "bray")
+plot_ordination(atacama.st_prune.even, atacama.st_prune.even.pcoa_bc, type="samples", color="Vegetation") 
+```
+
+# sessionInfo
+It is always a good idea to capture the sessionInfo information so you know what versions of R and libraries you used!
+```{r echo=TRUE, include=TRUE}
+sessionInfo()
+```
+
+

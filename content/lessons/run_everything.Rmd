@@ -1,0 +1,70 @@
+---
+title: "Run Everything"
+output:
+  md_document:
+    variant: markdown_github
+  html_document:
+    df_print: paged
+---
+
+
+
+```{r load_libraries}
+library(here)
+library(dplyr)
+library(fs)
+library(rmarkdown)
+library(magrittr)
+```
+
+```{r set_paths, eval=FALSE, include=FALSE}
+source("run_config.R")
+```
+
+```{r prepare_output_dir, eval=FALSE, include=FALSE}
+if (dir_exists(out.dir)) {dir_delete(out.dir)}
+
+regression_output_dir = file.path(out.dir, "full_run_html")
+dir.create(regression_output_dir, recursive = TRUE)
+```
+
+```{r find_rmds2, eval=FALSE, include=TRUE}
+list.files("../misc/downloading", pattern = ".Rmd", full.names = TRUE) %>%
+  paste(collapse = '", "') %>%
+  print
+```
+
+```{r find_rmds, eval=FALSE, include=TRUE}
+list.files(".", pattern = ".Rmd", full.names = TRUE) %>%
+  paste(collapse = '", "') %>%
+  print
+```
+
+```{r choose_regerssion_rmds}
+regression_rmds = c("../misc/downloading/atacama_download.Rmd",
+                    "../misc/downloading/download_dada_references.Rmd",
+                    "./demultiplex_tutorial.Rmd",
+                    "./dada2_tutorial_1_6.Rmd",
+                    "./alpha_diversity.Rmd",
+                    "./absolute_abundance_plots.Rmd",
+                    "./relative_abundance.Rmd",
+                    "./ordination.Rmd"
+                    )
+```
+
+```{r run_render}
+#R -e "rmarkdown::render('run_full_lemur_data.Rmd',output_file='run_full_lemur_data.html')"
+
+for (cur_rmd in regression_rmds){
+  print(cur_rmd)
+  render(cur_rmd, output_format="html_document")
+}
+```
+
+
+# SessionInfo
+```{r session_info}
+sessionInfo()
+```
+
+

@@ -1,0 +1,77 @@
+---
+title: "Download From Argonne National Labs"
+output:
+  md_document:
+    variant: markdown_github
+  html_document:
+    toc: false
+---
+
+># NOTE: This notebook is for example purposes only.  It will not work because the data was downloaded with "one-time" URLs.
+
+```{r global_options, include=FALSE}
+library(knitr)
+# rm(list=ls()) ### To clear namespace
+opts_chunk$set(echo=TRUE, warning=FALSE, message=FALSE, eval=FALSE)
+```
+
+# Set up directory to receive data
+```{r}
+raw.data="/data/argonne_download"
+Sys.setenv(RAW_DATA=raw.data)
+dir.create(raw.data, recursive = TRUE, showWarnings = FALSE)
+```
+
+# Download data
+Notes:
+
+1. Set up an account to get one-time links for each file
+2. The one-time URL is not actually a direct download link, there is some backend stuff that happens, and curl seemed to deal with it better than wget.
+3. Curl downloads to current directory, so cd to download directory before running
+```{bash}
+set -u
+# curl downloads to current directory, so cd to download directory before running
+cd $RAW_DATA 
+for CUR_URL in "http://shock.metagenomics.anl.gov/preauth/X0dcrFHPNHnqpgrloy6J" \
+              "http://shock.metagenomics.anl.gov/preauth/QKC0YF5cs7afGeJzsUJZ" \
+              "http://shock.metagenomics.anl.gov/preauth/ehZ2qsHZkJNbTxV5KTph" 
+do
+  curl --silent --show-error -O -J -L $CUR_URL
+done
+```
+
+# Sanity Checks
+Notes:
+
+1. Annoyingly, the md5sum hashes are provided in the ANL web interface, not as a downloadable file, so I had to manually construct the md5sum file by copying the md5 hash for each FASTQ from the web interface.
+2. Annoyingly, the FASTQs are supplied unzipped, so we need to:
+    1. Run `md5sum -c` on the downloaded FASTQs using the manually constructed `unzipped_md5sum.txt`
+    2. gzip the FASTQs
+    3. Generate a new md5sum file for the gzipped FASTQs
+    4. It seems like a good idea to chain these together with `&&` so that the whole thing fails if one step fails, instead of giving the false impression that it worked if an intermediate step fails.
+
+```{bash}
+cd $RAW_DATA && \
+  md5sum -c unzipped_md5sum.txt && \
+  gzip *.fastq && \
+  md5sum *.fastq.gz > zipped_md5sum.txt
+```
+
+## Double check that zipping worked
+```{bash}
+cd $RAW_DATA && \
+  md5sum -c zipped_md5sum.txt && \
+  gunzip --keep *.fastq.gz && \
+  md5sum -c unzipped_md5sum.txt && \
+  rm *.fastq
+```
+
+```{bash}
+cd $RAW_DATA && \
+  md5sum 190116_Mapping_File_McCumber_16SF_20190111.txt > map_md5sum.txt
+```
+
+# Make the data directory read-only
+```{bash}
+chmod -R a-w $RAW_DATA
+```

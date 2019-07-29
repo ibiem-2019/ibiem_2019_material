@@ -1,0 +1,121 @@
+---
+title: "Demultiplex"
+output:
+  md_document:
+    variant: markdown_github
+  html_document:
+    df_print: paged
+---
+
+# Atacama Data
+Atacama data is from https://docs.qiime2.org/2018.11/tutorials/atacama-soils/#subsample-data
+
+# Setup
+
+First we load libraries.
+```{r libraries, message=FALSE, warning=FALSE}
+library(readr)
+library(fs)
+```
+
+## Paths, Directories, and Shell Variables
+To keep the code readable and portable, it is nice to assign paths to variables.  We also need to use the R `Sys.setenv` command to make shell variables that can be used in the bash chunks below.
+
+```{r files_and_directories}
+# Directories
+data.dir = "/data/tutorial_data/atacama_10pct"
+output.dir = path.expand("/tmp/scratch/atacama_10pct")
+demux.dir = file.path(output.dir, "demux")
+
+# make directory for output
+if (dir_exists(demux.dir)) {dir_delete(demux.dir)}
+dir_create(demux.dir)
+
+# Files
+map.file = file.path(data.dir,"sample_metadata.tsv")
+barcode.fastq = file.path(data.dir,"barcodes.fastq.gz")
+r1.fastq = file.path(data.dir,"forward.fastq.gz")
+r2.fastq = file.path(data.dir,"reverse.fastq.gz")
+
+# Set variables for bash
+Sys.setenv(MAP_FILE = map.file)
+Sys.setenv(OUT_DIR = output.dir)
+Sys.setenv(DEMUX_DIR = demux.dir)
+Sys.setenv(RAW_FASTQ_DIR = data.dir)
+Sys.setenv(BARCODE_FASTQ = barcode.fastq)
+```
+
+## Check Data Integrity
+```{bash check_md5sum}
+cd $RAW_FASTQ_DIR
+md5sum -c md5sum.txt
+```
+
+
+# Demultiplexing
+
+
+### Putting it together for R1 and R2
+This will run `split_libraries_fastq.py` and `split_sequence_file_on_sample_ids.py` on both R1 and R2, and do a little cleanup (get rid of the results of `split_libraries_fastq.py` once we have demuxed it.  We can drop "--retain_unassigned_reads" since we have already reviewed the results.
+```{bash}
+set -u
+for CURREAD in "forward" "reverse"
+do
+   CURREAD_DIR=$DEMUX_DIR/${CURREAD}
+   TAGDIR=$CURREAD_DIR/tagged
+ 	split_libraries_fastq.py -r 999 -n 999 -q 0 -p 0.0001 \
+		--sequence_read_fps $RAW_FASTQ_DIR/${CURREAD}.fastq.gz \
+		--output_dir $TAGDIR \
+		--barcode_read_fps $BARCODE_FASTQ \
+		--mapping_fps $MAP_FILE \
+		--phred_offset 33 \
+		--barcode_type golay_12 \
+		--rev_comp_mapping_barcodes \
+		--store_demultiplexed_fastq 
+		
+	split_sequence_file_on_sample_ids.py --input_seqs_fp $TAGDIR/seqs.fastq \
+					 --file_type fastq \
+					 --output_dir $CURREAD_DIR
+					 
+	rm -rf $TAGDIR
+done
+```
+
+```{bash}
+ls $DEMUX_DIR/
+```
+
+```{bash}
+ls $DEMUX_DIR/forward $DEMUX_DIR/reverse
+
+```
+
+So the demuxed forward reads are in the `forward` directory and the demuxed reverse reads are in the `reverse` directory.  We are ready for DADA2!
+
+
+## Bonus: Rename and move split FASTQs
+```{r}
+for (curread in c("forward","reverse")) {
+  curpath = file.path(demux.dir,curread)
+  print(curpath)
+  # cur_fastqs = list.files(curpath, full.names = TRUE,pattern = ".fastq")
+  # print(cur_fastqs)
+  for (fastq_path in list.files(curpath, full.names = TRUE,pattern = ".fastq")){
+    print(fastq_path)
+    new_path = path_ext_remove(fastq_path)
+    print(new_path)
+    new_path = path_file(new_path)
+    print(new_path)
+    new_path = path(demux.dir, new_path, ext=paste0(curread,".fastq"))
+    print(new_path)
+    file_move(fastq_path, new_path)
+  }
+}
+```
+
+# Session Info
+Always print `sessionInfo` for reproducibility!
+```{r}
+sessionInfo()
+```
+
