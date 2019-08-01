@@ -17,7 +17,7 @@ This website can be reached at: *NEED BITLY LINK*
 
 0. Technical Test
 1. Microbiome Analysis Overview Lecture (compare notes with David)
-2. RStudio Intro: Data Viz
+2. RStudio Intro: [Data Visualization Demo](lessons/bootcamp/020_unvotes.Rmd)
 3. Reproducible Analysis Lecture
 4. Intro to Git
 5. Introduction to R

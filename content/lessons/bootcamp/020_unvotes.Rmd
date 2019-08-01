@@ -2,10 +2,13 @@
 title: "UN Votes"
 author: "Josh Granek"
 date: "`r Sys.Date()`"
-output: 
+output:
+  pdf_document:
+    toc: yes
   html_document:
-    toc: true
-    toc_float: true
+    toc: yes
+    toc_float: yes
+always_allow_html: yes
 ---
 
 Let's take a look at the voting history of countries in the United Nations 
@@ -15,7 +18,7 @@ for the analysis, and the __DT__ package for interactive display of tabular
 output.
 
 ```{r load-packages, warning=FALSE, message=FALSE}
-library(dplyr)
+library(tidyverse)
 library(unvotes)
 library(lubridate)
 library(DT)
@@ -85,10 +88,9 @@ un_votes %>%
     )
 ```
 
-Next, let's create a visualization that we create a visualization that displays 
-how the voting record of the United States changed over time on a variety of 
-issues, and compares it to another country. The other country we'll display is 
-Turkey.
+Next, let's create a visualization that displays how the voting record of the 
+United States changed over time on a variety of issues, and compares it to 
+another country. The other country we'll display is Turkey.
 
 ```{r plot-yearly-yes-issue, fig.width=10, fig.height=6, warning=FALSE}
 un_votes %>%
@@ -114,10 +116,19 @@ un_votes %>%
     )
 ```
 
-We can easily change which countries are being plotted by changing which 
-countries the code above `filter`s for. Note that the country name should be 
-spelled and capitalized exactly the same way as it appears in the data. See 
-the [Appendix](#appendix) for a list of the countries in the data.
+## Knitting
+  1. Knit to HTML
+  2. Knit to PDF
+  3. Knit to Word
+  
+## Challenge: Your Turn
+You can easily change which countries are being plotted by changing which 
+countries the code above `filter`s for. 
+
+Your job is to change one or more of the countries plotted in each of the plots above.
+Note that the country name should be spelled and capitalized exactly the same way as it 
+appears in the data. See the [Appendix](#appendix) for a list of the countries in the data.
+
 
 ## References
 
