@@ -1,0 +1,71 @@
+---
+title: "Random Groups"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+
+
+```{r}
+library(readr)
+library(dplyr)
+library(magrittr)
+library(lubridate)
+library(tibble)
+library(chron)
+set.seed(2)
+
+group_size=2
+```
+
+Generate random groups of approximately `r group_size` from a CSV containing one name per row
+
+```{r eval=FALSE, include=FALSE}
+read_csv("ibiem2019_students.csv") %>%
+  filter(Role=="student") %>%
+  select(FirstName, LastName) %>%
+  write_csv("ibiem2019_students_clean.csv")
+```
+
+```{r}
+students = read_csv("ibiem2019_students.csv")
+num_students = nrow(students)
+num_groups = num_students%/%group_size
+
+# need to generate group numbers so that there are at least 2 people in each group
+# but need to generate one 3 person group if there is an odd number of students
+seq(num_groups) %>%
+  rep(3) %>%
+  extract(1:num_students) ->
+  group_numbers
+```
+
+
+```{r}
+
+bootcamp_dates = seq(ymd('2019-08-07'),ymd('2019-08-16'),by='days')
+tibble(bootcamp_dates) %>%
+  mutate(weekday=!is.weekend(bootcamp_dates)) %>%
+  filter(weekday) %>%
+  pull(bootcamp_dates) %>%
+  format("%d-%b") ->
+  bootcamp_dates
+
+```
+
+```{r}
+shuffled_group_numbers = data.frame(group_numbers)
+for (cur_date in bootcamp_dates){
+  print(cur_date)
+  shuffled_group_numbers = cbind(shuffled_group_numbers, sample(group_numbers))
+}
+
+colnames(shuffled_group_numbers) = c("dropme", bootcamp_dates)
+cbind(students, shuffled_group_numbers) %>%
+  select(-dropme) %>%
+  write_tsv("group_assignments.tsv")
+```
+
