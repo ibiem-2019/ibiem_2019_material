@@ -16,7 +16,7 @@ library(magrittr)
 library(lubridate)
 library(tibble)
 library(chron)
-set.seed(2)
+set.seed(100)
 
 group_size=2
 ```
