@@ -3,8 +3,8 @@ title: "UN Votes"
 author: "Josh Granek"
 date: "`r Sys.Date()`"
 output:
-  pdf_document:
-    toc: yes
+  md_document:
+    variant: markdown_github
   html_document:
     toc: yes
     toc_float: yes
@@ -145,7 +145,7 @@ Routledge Handbook of International Organization, edited by Bob Reinalda
 
 Below is a list of countries in the dataset:
 
-```{r list-countries, echo=FALSE}
+```{r list-countries}
 un_votes %>% 
   select(country) %>%
   arrange(country) %>% 
