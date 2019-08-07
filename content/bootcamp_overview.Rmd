@@ -15,8 +15,10 @@ opts_chunk$set(echo=TRUE, include=FALSE, warning=FALSE, message=FALSE, eval=FALS
 library(readr)
 ```
 
+# Bootcamp Daily Group Assignments
 [Group Assignments](misc/random_groups.md)
 
+# Bootcamp Syllabus
 ```{r eval=TRUE, echo=FALSE, include=TRUE, results="asis"}
 library(readr)
 library(dplyr)

@@ -9,5 +9,5 @@ This website can be reached at: https://bit.ly/2KbTnIa
 
 # Quick Links
 - [Bootcamp Overview](content/bootcamp_overview.md)
-- [IBIEM Computing.md](content/misc/ibiem_computing.md)
+- [IBIEM Computing](content/misc/ibiem_computing.md)
 

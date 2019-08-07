@@ -1,4 +1,10 @@
+Bootcamp Daily Group Assignments
+================================
+
 [Group Assignments](misc/random_groups.md)
+
+Bootcamp Syllabus
+=================
 
 <table>
 <colgroup>
