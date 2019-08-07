@@ -3,13 +3,18 @@ title: "UN Votes"
 author: "Josh Granek"
 date: "`r Sys.Date()`"
 output:
-  md_document:
-    variant: markdown_github
   html_document:
     toc: yes
     toc_float: yes
+  md_document:
+    variant: markdown_github
 always_allow_html: yes
 ---
+
+```{r global_options, include=FALSE}
+library(knitr)
+# opts_chunk$set(echo=TRUE, results='hide')
+```
 
 Let's take a look at the voting history of countries in the United Nations 
 General Assembly. We will be using data from the __unvotes__ package. 
