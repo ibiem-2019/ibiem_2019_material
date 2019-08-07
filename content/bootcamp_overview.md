@@ -1,65 +1,224 @@
-This website can be reached at: <https://bit.ly/2MyCyqM>
+<table>
+<colgroup>
+<col style="width: 7%" />
+<col style="width: 12%" />
+<col style="width: 9%" />
+<col style="width: 70%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th>Date </th>
+<th>Time   </th>
+<th>Person</th>
+<th>Topic</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>7-Aug</td>
+<td>9:30-10:30</td>
+<td>Gunsch/Granek</td>
+<td>Introduction IBIEM and Microbiome Overview</td>
+</tr>
+<tr class="even">
+<td></td>
+<td>10:45-12:00</td>
+<td>Granek</td>
+<td>Microbiome Overview (continued)</td>
+</tr>
+<tr class="odd">
+<td></td>
+<td>1:00-2:15</td>
+<td>Granek</td>
+<td>Fun With R: Data Visualization</td>
+</tr>
+<tr class="even">
+<td></td>
+<td>2:30-3:45</td>
+<td>Granek</td>
+<td>Reproducible Analysis</td>
+</tr>
+<tr class="odd">
+<td>8-Aug</td>
+<td>9:30-10:30</td>
+<td>Granek</td>
+<td>Tour of Rstudio and knitr</td>
+</tr>
+<tr class="even">
+<td></td>
+<td>10:45-12:00</td>
+<td>Granek</td>
+<td>Intro to Git</td>
+</tr>
+<tr class="odd">
+<td></td>
+<td>1:00-2:15</td>
+<td>Murray</td>
+<td>Strength Finder Overview</td>
+</tr>
+<tr class="even">
+<td></td>
+<td>2:30-3:45</td>
+<td>Murray</td>
+<td>Strengths Finder Activity</td>
+</tr>
+<tr class="odd">
+<td>9-Aug</td>
+<td>9:30-10:30</td>
+<td>Singleton</td>
+<td>Behind the Microbiome: Biology &amp; Experimental Design</td>
+</tr>
+<tr class="even">
+<td></td>
+<td>10:45-12:00</td>
+<td>Singleton</td>
+<td>Behind the Microbiome: Biology &amp; Experimental Design</td>
+</tr>
+<tr class="odd">
+<td></td>
+<td>1:00-2:15</td>
+<td>Granek</td>
+<td>Intro to Git (continued)</td>
+</tr>
+<tr class="even">
+<td></td>
+<td>2:30-3:45</td>
+<td>Granek</td>
+<td>Challenge #1 Workshop</td>
+</tr>
+<tr class="odd">
+<td>12-Aug</td>
+<td>9:30-10:30</td>
+<td>Granek</td>
+<td>R: Introduction</td>
+</tr>
+<tr class="even">
+<td></td>
+<td>10:45-12:00</td>
+<td>Granek</td>
+<td>R: Project Management &amp; Seeking Help</td>
+</tr>
+<tr class="odd">
+<td></td>
+<td>1:00-2:15</td>
+<td>Weintraub</td>
+<td>Science Communication Overview</td>
+</tr>
+<tr class="even">
+<td></td>
+<td>2:30-3:45</td>
+<td>Weintraub</td>
+<td>Science Communication Overview</td>
+</tr>
+<tr class="odd">
+<td>13-Aug</td>
+<td>9:30-10:30</td>
+<td>Granek</td>
+<td>R: Data Structures</td>
+</tr>
+<tr class="even">
+<td></td>
+<td>10:45-12:00</td>
+<td>Granek</td>
+<td>R: Exploring Data Frames &amp; Subsetting Data</td>
+</tr>
+<tr class="odd">
+<td></td>
+<td>1:00-2:15</td>
+<td>Granek</td>
+<td>R:Control Flow</td>
+</tr>
+<tr class="even">
+<td></td>
+<td>2:30-3:45</td>
+<td>Granek</td>
+<td>Challenge #2 Workshop</td>
+</tr>
+<tr class="odd">
+<td>14-Aug</td>
+<td>9:30-10:30</td>
+<td>Granek</td>
+<td>R: Data Visualization</td>
+</tr>
+<tr class="even">
+<td></td>
+<td>10:45-12:00</td>
+<td>Granek</td>
+<td>R: Vectorization &amp; Functions</td>
+</tr>
+<tr class="odd">
+<td></td>
+<td>1:00-2:15</td>
+<td>Gunsch/Kelly</td>
+<td>Building Dynamic Research Teams</td>
+</tr>
+<tr class="even">
+<td></td>
+<td>2:30-3:45</td>
+<td>Gunsch</td>
+<td>Developing Your Goals</td>
+</tr>
+<tr class="odd">
+<td>15-Aug</td>
+<td>9:30-10:30</td>
+<td>Granek</td>
+<td>R: Writing Data &amp; dplyr</td>
+</tr>
+<tr class="even">
+<td></td>
+<td>10:45-12:00</td>
+<td>Granek</td>
+<td>R: tidyr &amp; writing good code</td>
+</tr>
+<tr class="odd">
+<td></td>
+<td>1:00-2:15</td>
+<td>Weintraub</td>
+<td>Micro-TED Talks</td>
+</tr>
+<tr class="even">
+<td></td>
+<td>2:30-3:45</td>
+<td>Weintraub</td>
+<td>Micro-TED Talks</td>
+</tr>
+<tr class="odd">
+<td>16-Aug</td>
+<td>9:30-10:30</td>
+<td>Granek</td>
+<td><a href="http://swcarpentry.github.io/shell-novice/01-intro/index.html">Bash: Intro</a></td>
+</tr>
+<tr class="even">
+<td></td>
+<td></td>
+<td></td>
+<td><a href="http://swcarpentry.github.io/shell-novice/02-filedir/index.html">Bash: Navigating Files and Directories</a></td>
+</tr>
+<tr class="odd">
+<td></td>
+<td></td>
+<td></td>
+<td><a href="http://swcarpentry.github.io/shell-novice/03-create/index.html">Bash: Working With Files and Directories</a></td>
+</tr>
+<tr class="even">
+<td></td>
+<td>10:45-12:00</td>
+<td>Granek</td>
+<td><a href="http://swcarpentry.github.io/shell-novice/04-pipefilter/index.html">Bash: Pipe &amp; Filters</a></td>
+</tr>
+<tr class="odd">
+<td></td>
+<td></td>
+<td></td>
+<td><a href="http://swcarpentry.github.io/shell-novice/05-loop/index.html">Bash: Loops</a></td>
+</tr>
+<tr class="even">
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+</tbody>
+</table>
 
-Bootcamp Morning Syllabus
--------------------------
-
-| Date | Day |
-|------|-----|
-| 8/9  | 1   |
-| 8/10 | 2   |
-| 8/11 | 3   |
-| 8/13 | 4   |
-| 8/14 | 5   |
-
-| Topic                                                         | Day   |
-|---------------------------------------------------------------|-------|
-| [Microbiome Analysis Overview](#microbiome-analysis-overview) | 1 & 2 |
-| [RStudio](#rstudio) Computing Environment                     | 2 & 3 |
-| [Reproducible Analysis](#reproducible-analysis)               | 3     |
-| [Git](#git)                                                   | 3     |
-| [Introduction to R](#introduction-to-r)                       | 3 & 5 |
-| Marbles                                                       | 4     |
-
-Microbiome Analysis Overview
-----------------------------
-
-Microbiome Analysis Overview [lecture slides](bootcamp/010_microbiome_analysis_overview.pdf)
-
-RStudio
--------
-
-1.  [UN Votes Visualization](bootcamp/020_unvotes.Rmd)
-2.  Making a Notebook
-3.  [Introduction to R and RStudio](http://swcarpentry.github.io//swc-releases/2016.06/r-novice-gapminder/01-rstudio-intro/)
-4.  [Project Management With RStudio](http://swcarpentry.github.io//swc-releases/2016.06/r-novice-gapminder/02-project-intro/)
-
-### Additional RStudio Resources
-
--   [Writing code in RStudio](https://www.rstudio.com/resources/webinars/rstudio-essentials-webinar-series-part-1/): A detailed introduction to RStudio
-
-Reproducible Analysis
----------------------
-
--   [Reproducible Analysis Lecture Notes](bootcamp/030_reproducible_research.md)
-
-Git
----
-
--   [Git Overview](bootcamp/040_git_overview.md)
-
-Introduction to R
------------------
-
-1.  [Seeking Help](http://swcarpentry.github.io//swc-releases/2016.06/r-novice-gapminder/03-seeking-help/)
-2.  [Data Structures](http://swcarpentry.github.io//swc-releases/2016.06/r-novice-gapminder/04-data-structures-part1/)
-3.  [Exploring Data Frames](http://swcarpentry.github.io//swc-releases/2016.06/r-novice-gapminder/05-data-structures-part2/)
-4.  [Subsetting Data](http://swcarpentry.github.io//swc-releases/2016.06/r-novice-gapminder/06-data-subsetting/)
-5.  [Control Flow](http://swcarpentry.github.io//swc-releases/2016.06/r-novice-gapminder/07-control-flow/)
-6.  [Creating Publication-Quality Graphics](http://swcarpentry.github.io//swc-releases/2016.06/r-novice-gapminder/08-plot-ggplot2/)
-7.  [Vectorization](http://swcarpentry.github.io//swc-releases/2016.06/r-novice-gapminder/09-vectorization/)
-8.  [Dataframe Manipulation with dplyr](http://swcarpentry.github.io//swc-releases/2016.06/r-novice-gapminder/13-dplyr/)
-9.  [Dataframe Manipulation with tidyr](http://swcarpentry.github.io//swc-releases/2016.06/r-novice-gapminder/14-tidyr/)
-10. [Producing Reports With knitr](http://swcarpentry.github.io//swc-releases/2016.06/r-novice-gapminder/15-knitr-markdown/)
-11. [Writing Good Software](http://swcarpentry.github.io//swc-releases/2016.06/r-novice-gapminder/16-wrap-up/)
-
--   [R Lesson Reference](http://swcarpentry.github.io/r-novice-gapminder/reference)
+<a href="http://swcarpentry.github.io/r-novice-gapminder/" class="uri">http://swcarpentry.github.io/r-novice-gapminder/</a>

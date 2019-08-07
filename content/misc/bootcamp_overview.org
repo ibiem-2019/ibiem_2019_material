@@ -1,0 +1,39 @@
+| Date&nbsp; | Time &nbsp;&nbsp; | Person        | Topic                                                                                                      |
+|------------+-------------------+---------------+------------------------------------------------------------------------------------------------------------|
+| 7-Aug      |        9:30-10:30 | Gunsch/Granek | Introduction IBIEM and Microbiome Overview                                                                 |
+|            |       10:45-12:00 | Granek        | Microbiome Overview (continued)                                                                            |
+|            |         1:00-2:15 | Granek        | Fun With R: Data Visualization                                                                             |
+|            |         2:30-3:45 | Granek        | Reproducible Analysis                                                                                      |
+| 8-Aug      |        9:30-10:30 | Granek        | Tour of Rstudio and knitr                                                                                  |
+|            |       10:45-12:00 | Granek        | Intro to Git                                                                                               |
+|            |         1:00-2:15 | Murray        | Strength Finder Overview                                                                                   |
+|            |         2:30-3:45 | Murray        | Strengths Finder Activity                                                                                  |
+| 9-Aug      |        9:30-10:30 | Singleton     | Behind the Microbiome: Biology & Experimental Design                                                       |
+|            |       10:45-12:00 | Singleton     | Behind the Microbiome: Biology & Experimental Design                                                       |
+|            |         1:00-2:15 | Granek        | Intro to Git (continued)                                                                                   |
+|            |         2:30-3:45 | Granek        | Challenge #1 Workshop                                                                                      |
+| 12-Aug     |        9:30-10:30 | Granek        | R: Introduction                                                                                            |
+|            |       10:45-12:00 | Granek        | R: Project Management & Seeking Help                                                                       |
+|            |         1:00-2:15 | Weintraub     | Science Communication Overview                                                                             |
+|            |         2:30-3:45 | Weintraub     | Science Communication Overview                                                                             |
+| 13-Aug     |        9:30-10:30 | Granek        | R: Data Structures                                                                                         |
+|            |       10:45-12:00 | Granek        | R: Exploring Data Frames & Subsetting Data                                                                 |
+|            |         1:00-2:15 | Granek        | R:Control Flow                                                                                             |
+|            |         2:30-3:45 | Granek        | Challenge #2 Workshop                                                                                      |
+| 14-Aug     |        9:30-10:30 | Granek        | R: Data Visualization                                                                                      |
+|            |       10:45-12:00 | Granek        | R: Vectorization & Functions                                                                               |
+|            |         1:00-2:15 | Gunsch/Kelly  | Building Dynamic Research Teams                                                                            |
+|            |         2:30-3:45 | Gunsch        | Developing Your Goals                                                                                      |
+| 15-Aug     |        9:30-10:30 | Granek        | R: Writing Data & dplyr                                                                                    |
+|            |       10:45-12:00 | Granek        | R: tidyr & writing good code                                                                               |
+|            |         1:00-2:15 | Weintraub     | Micro-TED Talks                                                                                            |
+|            |         2:30-3:45 | Weintraub     | Micro-TED Talks                                                                                            |
+| 16-Aug     |        9:30-10:30 | Granek        | [Bash: Intro](http://swcarpentry.github.io/shell-novice/01-intro/index.html)                               |
+|            |                   |               | [Bash: Navigating Files and Directories](http://swcarpentry.github.io/shell-novice/02-filedir/index.html)  |
+|            |                   |               | [Bash: Working With Files and Directories](http://swcarpentry.github.io/shell-novice/03-create/index.html) |
+|            |       10:45-12:00 | Granek        | [Bash: Pipe & Filters](http://swcarpentry.github.io/shell-novice/04-pipefilter/index.html)                 |
+|            |                   |               | [Bash: Loops](http://swcarpentry.github.io/shell-novice/05-loop/index.html)                                |
+|            |                   |               |                                                                                                            |
+
+
+ http://swcarpentry.github.io/r-novice-gapminder/ 
