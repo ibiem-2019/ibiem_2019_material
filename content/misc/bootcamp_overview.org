@@ -2,15 +2,16 @@
 |------------+-------------------+---------------+------------------------------------------------------------------------------------------------------------|
 | 7-Aug      |        9:30-10:30 | Gunsch/Granek | Introduction IBIEM and Microbiome Overview                                                                 |
 |            |       10:45-12:00 | Granek        | Microbiome Overview (continued)                                                                            |
-|            |         1:00-2:15 | Granek        | Fun With R: Data Visualization                                                                             |
-|            |         2:30-3:45 | Granek        | Reproducible Analysis                                                                                      |
-| 8-Aug      |        9:30-10:30 | Granek        | Tour of Rstudio and knitr                                                                                  |
-|            |       10:45-12:00 | Granek        | Intro to Git                                                                                               |
+|            |         1:00-2:15 | Granek        | [Fun With R: Data Visualization](lessons/bootcamp/020_unvotes.md)                                          |
+|            |         2:30-3:45 | Granek        | [Reproducible Analysis](lectures/030_reproducible_research.md)                                             |
+| 8-Aug      |        9:30-10:30 | Granek        | [Tour of Rstudio](http://swcarpentry.github.io/r-novice-gapminder/01-rstudio-intro/index.html)             |
+|            |                   |               | [knitr](http://swcarpentry.github.io/r-novice-gapminder/15-knitr-markdown/index.html)                      |
+|            |       10:45-12:00 | Granek        | [Intro to Git](lessons/bootcamp/040_git_overview.md)                                                       |
 |            |         1:00-2:15 | Murray        | Strength Finder Overview                                                                                   |
 |            |         2:30-3:45 | Murray        | Strengths Finder Activity                                                                                  |
 | 9-Aug      |        9:30-10:30 | Singleton     | Behind the Microbiome: Biology & Experimental Design                                                       |
 |            |       10:45-12:00 | Singleton     | Behind the Microbiome: Biology & Experimental Design                                                       |
-|            |         1:00-2:15 | Granek        | Intro to Git (continued)                                                                                   |
+|            |         1:00-2:15 | Granek        | [Intro to Git](lessons/bootcamp/040_git_overview.md) (continued)                                           |
 |            |         2:30-3:45 | Granek        | Challenge #1 Workshop                                                                                      |
 | 12-Aug     |        9:30-10:30 | Granek        | R: Introduction                                                                                            |
 |            |       10:45-12:00 | Granek        | R: Project Management & Seeking Help                                                                       |
@@ -33,7 +34,5 @@
 |            |                   |               | [Bash: Working With Files and Directories](http://swcarpentry.github.io/shell-novice/03-create/index.html) |
 |            |       10:45-12:00 | Granek        | [Bash: Pipe & Filters](http://swcarpentry.github.io/shell-novice/04-pipefilter/index.html)                 |
 |            |                   |               | [Bash: Loops](http://swcarpentry.github.io/shell-novice/05-loop/index.html)                                |
-|            |                   |               |                                                                                                            |
 
 
- http://swcarpentry.github.io/r-novice-gapminder/ 
