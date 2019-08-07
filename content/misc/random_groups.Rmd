@@ -1,21 +1,26 @@
 ---
 title: "Random Groups"
-output: html_document
+output:
+  pdf_document: default
+  html_document: default
 ---
 
 ```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = TRUE)
+knitr::opts_chunk$set(echo = FALSE, message=FALSE, warning=FALSE)
 ```
 
 
 
 ```{r}
+
 library(readr)
 library(dplyr)
 library(magrittr)
 library(lubridate)
 library(tibble)
 library(chron)
+library(knitr)
+
 set.seed(100)
 
 group_size=2
@@ -59,13 +64,16 @@ tibble(bootcamp_dates) %>%
 ```{r}
 shuffled_group_numbers = data.frame(group_numbers)
 for (cur_date in bootcamp_dates){
-  print(cur_date)
   shuffled_group_numbers = cbind(shuffled_group_numbers, sample(group_numbers))
 }
 
 colnames(shuffled_group_numbers) = c("dropme", bootcamp_dates)
 cbind(students, shuffled_group_numbers) %>%
-  select(-dropme) %>%
-  write_tsv("group_assignments.tsv")
+  select(-dropme) ->
+  group_assignments
+
+write_tsv(group_assignments, "group_assignments.tsv")
+kable(group_assignments)
+
 ```
 
