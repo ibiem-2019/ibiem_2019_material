@@ -25,14 +25,14 @@ Bootcamp Syllabus
 <tr class="odd">
 <td>7-Aug</td>
 <td>9:30-10:30</td>
-<td>Gunsch/Granek</td>
-<td>Introduction IBIEM and Microbiome Overview</td>
+<td>Gunsch</td>
+<td>Introduction to IBIEM</td>
 </tr>
 <tr class="even">
 <td></td>
 <td>10:45-12:00</td>
 <td>Granek</td>
-<td>Microbiome Overview (continued)</td>
+<td><a href="lectures/microbiome_analysis_overview.pdf">Microbiome Overview</a></td>
 </tr>
 <tr class="odd">
 <td></td>
