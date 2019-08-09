@@ -92,7 +92,7 @@ Bootcamp Syllabus
 <td></td>
 <td>1:00-2:15</td>
 <td>Granek</td>
-<td><a href="lessons/bootcamp/040_git_overview.md">Intro to Git</a> (continued)</td>
+<td><a href="lessons/bootcamp/040_git_overview.md#ignoring-things">Intro to Git</a> (continued)</td>
 </tr>
 <tr class="odd">
 <td></td>
@@ -152,7 +152,7 @@ Bootcamp Syllabus
 <td></td>
 <td>1:00-2:15</td>
 <td>Granek</td>
-<td><a href="http://swcarpentry.github.io/r-novice-gapminder/07-control-flow/index.html">R:Control Flow</a></td>
+<td><a href="http://swcarpentry.github.io/r-novice-gapminder/07-control-flow/index.html">R: Control Flow</a></td>
 </tr>
 <tr class="odd">
 <td></td>
