@@ -13,7 +13,8 @@
 |            |       10:45-12:00 | Singleton    | Behind the Microbiome: Biology & Experimental Design                                                             |
 |            |         1:00-2:15 | Granek       | [Intro to Git](lessons/bootcamp/040_git_overview.md#ignoring-things) (continued)                                 |
 |            |         2:30-3:45 | Granek       | [Challenge #1](https://github.com/ibiem-master/challenge_1) Workshop                                             |
-| 12-Aug     |        9:30-10:30 | Granek       | [R: Introduction](http://swcarpentry.github.io/r-novice-gapminder/01-rstudio-intro/index.html#introduction-to-r) |
+|            |                   |              | [R: Introduction](http://swcarpentry.github.io/r-novice-gapminder/01-rstudio-intro/index.html#introduction-to-r) |
+| 12-Aug     |        9:30-10:30 | Granek       | [R: Introduction](http://swcarpentry.github.io/r-novice-gapminder/01-rstudio-intro/index.html#vectorization)     |
 |            |       10:45-12:00 | Granek       | [R: Project Management](http://swcarpentry.github.io/r-novice-gapminder/02-project-intro/index.html)             |
 |            |                   |              | [R: Seeking Help](http://swcarpentry.github.io/r-novice-gapminder/03-seeking-help/index.html)                    |
 |            |         1:00-2:15 | Weintraub    | Science Communication Overview                                                                                   |
