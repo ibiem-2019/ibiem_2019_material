@@ -1,38 +1,43 @@
-| Date&nbsp; | Time &nbsp;&nbsp; | Person        | Topic                                                                                                      |
-|------------+-------------------+---------------+------------------------------------------------------------------------------------------------------------|
-| 7-Aug      |        9:30-10:30 | Gunsch        | Introduction to IBIEM                                                              |
-|            |       10:45-12:00 | Granek        | [Microbiome Overview](lectures/microbiome_analysis_overview.pdf)                                                                |
-|            |         1:00-2:15 | Granek        | [Fun With R: Data Visualization](lessons/bootcamp/020_unvotes.md)                                          |
-|            |         2:30-3:45 | Granek        | [Reproducible Analysis](lectures/030_reproducible_research.md)                                             |
-| 8-Aug      |        9:30-10:30 | Granek        | [Tour of Rstudio](http://swcarpentry.github.io/r-novice-gapminder/01-rstudio-intro/index.html)             |
-|            |                   |               | [knitr](http://swcarpentry.github.io/r-novice-gapminder/15-knitr-markdown/index.html)                      |
-|            |       10:45-12:00 | Granek        | [Intro to Git](lessons/bootcamp/040_git_overview.md)                                                       |
-|            |         1:00-2:15 | Murray        | Strength Finder Overview                                                                                   |
-|            |         2:30-3:45 | Murray        | Strengths Finder Activity                                                                                  |
-| 9-Aug      |        9:30-10:30 | Singleton     | Behind the Microbiome: Biology & Experimental Design                                                       |
-|            |       10:45-12:00 | Singleton     | Behind the Microbiome: Biology & Experimental Design                                                       |
-|            |         1:00-2:15 | Granek        | [Intro to Git](lessons/bootcamp/040_git_overview.md) (continued)                                           |
-|            |         2:30-3:45 | Granek        | Challenge #1 Workshop                                                                                      |
-| 12-Aug     |        9:30-10:30 | Granek        | R: Introduction                                                                                            |
-|            |       10:45-12:00 | Granek        | R: Project Management & Seeking Help                                                                       |
-|            |         1:00-2:15 | Weintraub     | Science Communication Overview                                                                             |
-|            |         2:30-3:45 | Weintraub     | Science Communication Overview                                                                             |
-| 13-Aug     |        9:30-10:30 | Granek        | R: Data Structures                                                                                         |
-|            |       10:45-12:00 | Granek        | R: Exploring Data Frames & Subsetting Data                                                                 |
-|            |         1:00-2:15 | Granek        | R:Control Flow                                                                                             |
-|            |         2:30-3:45 | Granek        | Challenge #2 Workshop                                                                                      |
-| 14-Aug     |        9:30-10:30 | Granek        | R: Data Visualization                                                                                      |
-|            |       10:45-12:00 | Granek        | R: Vectorization & Functions                                                                               |
-|            |         1:00-2:15 | Gunsch/Kelly  | Building Dynamic Research Teams                                                                            |
-|            |         2:30-3:45 | Gunsch        | Developing Your Goals                                                                                      |
-| 15-Aug     |        9:30-10:30 | Granek        | R: Writing Data & dplyr                                                                                    |
-|            |       10:45-12:00 | Granek        | R: tidyr & writing good code                                                                               |
-|            |         1:00-2:15 | Weintraub     | Micro-TED Talks                                                                                            |
-|            |         2:30-3:45 | Weintraub     | Micro-TED Talks                                                                                            |
-| 16-Aug     |        9:30-10:30 | Granek        | [Bash: Intro](http://swcarpentry.github.io/shell-novice/01-intro/index.html)                               |
-|            |                   |               | [Bash: Navigating Files and Directories](http://swcarpentry.github.io/shell-novice/02-filedir/index.html)  |
-|            |                   |               | [Bash: Working With Files and Directories](http://swcarpentry.github.io/shell-novice/03-create/index.html) |
-|            |       10:45-12:00 | Granek        | [Bash: Pipe & Filters](http://swcarpentry.github.io/shell-novice/04-pipefilter/index.html)                 |
-|            |                   |               | [Bash: Loops](http://swcarpentry.github.io/shell-novice/05-loop/index.html)                                |
+| Date&nbsp; | Time &nbsp;&nbsp; | Person       | Topic                                                                                                            |
+|------------+-------------------+--------------+------------------------------------------------------------------------------------------------------------------|
+| 7-Aug      |        9:30-10:30 | Gunsch       | Introduction to IBIEM                                                                                            |
+|            |       10:45-12:00 | Granek       | [Microbiome Overview](lectures/microbiome_analysis_overview.pdf)                                                 |
+|            |         1:00-2:15 | Granek       | [Fun With R: Data Visualization](lessons/bootcamp/020_unvotes.md)                                                |
+|            |         2:30-3:45 | Granek       | [Reproducible Analysis](lectures/030_reproducible_research.md)                                                   |
+| 8-Aug      |        9:30-10:30 | Granek       | [Tour of Rstudio](http://swcarpentry.github.io/r-novice-gapminder/01-rstudio-intro/index.html)                   |
+|            |                   |              | [knitr](http://swcarpentry.github.io/r-novice-gapminder/15-knitr-markdown/index.html)                            |
+|            |       10:45-12:00 | Granek       | [Intro to Git](lessons/bootcamp/040_git_overview.md)                                                             |
+|            |         1:00-2:15 | Murray       | Strength Finder Overview                                                                                         |
+|            |         2:30-3:45 | Murray       | Strengths Finder Activity                                                                                        |
+| 9-Aug      |        9:30-10:30 | Singleton    | Behind the Microbiome: Biology & Experimental Design                                                             |
+|            |       10:45-12:00 | Singleton    | Behind the Microbiome: Biology & Experimental Design                                                             |
+|            |         1:00-2:15 | Granek       | [Intro to Git](lessons/bootcamp/040_git_overview.md) (continued)                                                 |
+|            |         2:30-3:45 | Granek       | [Challenge #1](https://github.com/ibiem-master/challenge_1) Workshop                                             |
+| 12-Aug     |        9:30-10:30 | Granek       | [R: Introduction](http://swcarpentry.github.io/r-novice-gapminder/01-rstudio-intro/index.html#introduction-to-r) |
+|            |       10:45-12:00 | Granek       | [R: Project Management](http://swcarpentry.github.io/r-novice-gapminder/02-project-intro/index.html)             |
+|            |                   |              | [R: Seeking Help](http://swcarpentry.github.io/r-novice-gapminder/03-seeking-help/index.html)                    |
+|            |         1:00-2:15 | Weintraub    | Science Communication Overview                                                                                   |
+|            |         2:30-3:45 | Weintraub    | Science Communication Overview                                                                                   |
+| 13-Aug     |        9:30-10:30 | Granek       | [R: Data Structures](http://swcarpentry.github.io/r-novice-gapminder/04-data-structures-part1/index.html)        |
+|            |       10:45-12:00 | Granek       | [R: Exploring Data Frames](http://swcarpentry.github.io/r-novice-gapminder/05-data-structures-part2/index.html)  |
+|            |                   |              | [R: Subsetting Data](http://swcarpentry.github.io/r-novice-gapminder/06-data-subsetting/index.html)              |
+|            |         1:00-2:15 | Granek       | [R:Control Flow](http://swcarpentry.github.io/r-novice-gapminder/07-control-flow/index.html)                     |
+|            |         2:30-3:45 | Granek       | Challenge #2 Workshop                                                                                            |
+| 14-Aug     |        9:30-10:30 | Granek       | [R: Data Visualization](http://swcarpentry.github.io/r-novice-gapminder/08-plot-ggplot2/index.html)              |
+|            |       10:45-12:00 | Granek       | [R: Vectorization](http://swcarpentry.github.io/r-novice-gapminder/09-vectorization/index.html)                  |
+|            |                   |              | [R: Functions](http://swcarpentry.github.io/r-novice-gapminder/10-functions/index.html)                          |
+|            |         1:00-2:15 | Gunsch/Kelly | Building Dynamic Research Teams                                                                                  |
+|            |         2:30-3:45 | Gunsch       | Developing Your Goals                                                                                            |
+| 15-Aug     |        9:30-10:30 | Granek       | [R: Writing Data](http://swcarpentry.github.io/r-novice-gapminder/11-writing-data/index.html)                    |
+|            |                   |              | [R: dplyr](http://swcarpentry.github.io/r-novice-gapminder/13-dplyr/index.html)                                  |
+|            |       10:45-12:00 | Granek       | [R: tidyr](http://swcarpentry.github.io/r-novice-gapminder/14-tidyr/index.html)                                  |
+|            |                   |              | [R: Writing Good Code](http://swcarpentry.github.io/r-novice-gapminder/16-wrap-up/index.html)                    |
+|            |         1:00-2:15 | Weintraub    | Micro-TED Talks                                                                                                  |
+|            |         2:30-3:45 | Weintraub    | Micro-TED Talks                                                                                                  |
+| 16-Aug     |        9:30-10:30 | Granek       | [Bash: Intro](http://swcarpentry.github.io/shell-novice/01-intro/index.html)                                     |
+|            |                   |              | [Bash: Navigating Files and Directories](http://swcarpentry.github.io/shell-novice/02-filedir/index.html)        |
+|            |                   |              | [Bash: Working With Files and Directories](http://swcarpentry.github.io/shell-novice/03-create/index.html)       |
+|            |       10:45-12:00 | Granek       | [Bash: Pipe & Filters](http://swcarpentry.github.io/shell-novice/04-pipefilter/index.html)                       |
+|            |                   |              | [Bash: Loops](http://swcarpentry.github.io/shell-novice/05-loop/index.html)                                      |
 
 

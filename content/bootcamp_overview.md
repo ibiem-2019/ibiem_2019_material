@@ -9,9 +9,9 @@ Bootcamp Syllabus
 <table>
 <colgroup>
 <col style="width: 7%" />
-<col style="width: 12%" />
-<col style="width: 9%" />
-<col style="width: 70%" />
+<col style="width: 11%" />
+<col style="width: 8%" />
+<col style="width: 71%" />
 </colgroup>
 <thead>
 <tr class="header">
@@ -98,49 +98,61 @@ Bootcamp Syllabus
 <td></td>
 <td>2:30-3:45</td>
 <td>Granek</td>
-<td>Challenge #1 Workshop</td>
+<td><a href="https://github.com/ibiem-master/challenge_1">Challenge #1</a> Workshop</td>
 </tr>
 <tr class="even">
 <td>12-Aug</td>
 <td>9:30-10:30</td>
 <td>Granek</td>
-<td>R: Introduction</td>
+<td><a href="http://swcarpentry.github.io/r-novice-gapminder/01-rstudio-intro/index.html#introduction-to-r">R: Introduction</a></td>
 </tr>
 <tr class="odd">
 <td></td>
 <td>10:45-12:00</td>
 <td>Granek</td>
-<td>R: Project Management &amp; Seeking Help</td>
+<td><a href="http://swcarpentry.github.io/r-novice-gapminder/02-project-intro/index.html">R: Project Management</a></td>
 </tr>
 <tr class="even">
+<td></td>
+<td></td>
+<td></td>
+<td><a href="http://swcarpentry.github.io/r-novice-gapminder/03-seeking-help/index.html">R: Seeking Help</a></td>
+</tr>
+<tr class="odd">
 <td></td>
 <td>1:00-2:15</td>
 <td>Weintraub</td>
 <td>Science Communication Overview</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td></td>
 <td>2:30-3:45</td>
 <td>Weintraub</td>
 <td>Science Communication Overview</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td>13-Aug</td>
 <td>9:30-10:30</td>
 <td>Granek</td>
-<td>R: Data Structures</td>
+<td><a href="http://swcarpentry.github.io/r-novice-gapminder/04-data-structures-part1/index.html">R: Data Structures</a></td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td></td>
 <td>10:45-12:00</td>
 <td>Granek</td>
-<td>R: Exploring Data Frames &amp; Subsetting Data</td>
+<td><a href="http://swcarpentry.github.io/r-novice-gapminder/05-data-structures-part2/index.html">R: Exploring Data Frames</a></td>
+</tr>
+<tr class="odd">
+<td></td>
+<td></td>
+<td></td>
+<td><a href="http://swcarpentry.github.io/r-novice-gapminder/06-data-subsetting/index.html">R: Subsetting Data</a></td>
 </tr>
 <tr class="even">
 <td></td>
 <td>1:00-2:15</td>
 <td>Granek</td>
-<td>R:Control Flow</td>
+<td><a href="http://swcarpentry.github.io/r-novice-gapminder/07-control-flow/index.html">R:Control Flow</a></td>
 </tr>
 <tr class="odd">
 <td></td>
@@ -152,75 +164,93 @@ Bootcamp Syllabus
 <td>14-Aug</td>
 <td>9:30-10:30</td>
 <td>Granek</td>
-<td>R: Data Visualization</td>
+<td><a href="http://swcarpentry.github.io/r-novice-gapminder/08-plot-ggplot2/index.html">R: Data Visualization</a></td>
 </tr>
 <tr class="odd">
 <td></td>
 <td>10:45-12:00</td>
 <td>Granek</td>
-<td>R: Vectorization &amp; Functions</td>
+<td><a href="http://swcarpentry.github.io/r-novice-gapminder/09-vectorization/index.html">R: Vectorization</a></td>
 </tr>
 <tr class="even">
+<td></td>
+<td></td>
+<td></td>
+<td><a href="http://swcarpentry.github.io/r-novice-gapminder/10-functions/index.html">R: Functions</a></td>
+</tr>
+<tr class="odd">
 <td></td>
 <td>1:00-2:15</td>
 <td>Gunsch/Kelly</td>
 <td>Building Dynamic Research Teams</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td></td>
 <td>2:30-3:45</td>
 <td>Gunsch</td>
 <td>Developing Your Goals</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td>15-Aug</td>
 <td>9:30-10:30</td>
 <td>Granek</td>
-<td>R: Writing Data &amp; dplyr</td>
+<td><a href="http://swcarpentry.github.io/r-novice-gapminder/11-writing-data/index.html">R: Writing Data</a></td>
+</tr>
+<tr class="even">
+<td></td>
+<td></td>
+<td></td>
+<td><a href="http://swcarpentry.github.io/r-novice-gapminder/13-dplyr/index.html">R: dplyr</a></td>
 </tr>
 <tr class="odd">
 <td></td>
 <td>10:45-12:00</td>
 <td>Granek</td>
-<td>R: tidyr &amp; writing good code</td>
+<td><a href="http://swcarpentry.github.io/r-novice-gapminder/14-tidyr/index.html">R: tidyr</a></td>
 </tr>
 <tr class="even">
+<td></td>
+<td></td>
+<td></td>
+<td><a href="http://swcarpentry.github.io/r-novice-gapminder/16-wrap-up/index.html">R: Writing Good Code</a></td>
+</tr>
+<tr class="odd">
 <td></td>
 <td>1:00-2:15</td>
 <td>Weintraub</td>
 <td>Micro-TED Talks</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td></td>
 <td>2:30-3:45</td>
 <td>Weintraub</td>
 <td>Micro-TED Talks</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td>16-Aug</td>
 <td>9:30-10:30</td>
 <td>Granek</td>
 <td><a href="http://swcarpentry.github.io/shell-novice/01-intro/index.html">Bash: Intro</a></td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td></td>
 <td></td>
 <td></td>
 <td><a href="http://swcarpentry.github.io/shell-novice/02-filedir/index.html">Bash: Navigating Files and Directories</a></td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td></td>
 <td></td>
 <td></td>
 <td><a href="http://swcarpentry.github.io/shell-novice/03-create/index.html">Bash: Working With Files and Directories</a></td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td></td>
 <td>10:45-12:00</td>
 <td>Granek</td>
 <td><a href="http://swcarpentry.github.io/shell-novice/04-pipefilter/index.html">Bash: Pipe &amp; Filters</a></td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td></td>
 <td></td>
 <td></td>
