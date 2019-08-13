@@ -23,7 +23,7 @@
 |            |       10:45-12:00 | Granek       | [R: Exploring Data Frames](http://swcarpentry.github.io/r-novice-gapminder/05-data-structures-part2/index.html)  |
 |            |                   |              | [R: Subsetting Data](http://swcarpentry.github.io/r-novice-gapminder/06-data-subsetting/index.html)              |
 |            |         1:00-2:15 | Granek       | [R: Control Flow](http://swcarpentry.github.io/r-novice-gapminder/07-control-flow/index.html)                    |
-|            |         2:30-3:45 | Granek       | Challenge #2 Workshop                                                                                            |
+|            |         2:30-3:45 | Granek       | [Challenge #2](https://github.com/ibiem-master/challenge_2) Workshop                                             |
 | 14-Aug     |        9:30-10:30 | Granek       | [R: Data Visualization](http://swcarpentry.github.io/r-novice-gapminder/08-plot-ggplot2/index.html)              |
 |            |       10:45-12:00 | Granek       | [R: Vectorization](http://swcarpentry.github.io/r-novice-gapminder/09-vectorization/index.html)                  |
 |            |                   |              | [R: Functions](http://swcarpentry.github.io/r-novice-gapminder/10-functions/index.html)                          |

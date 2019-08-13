@@ -164,7 +164,7 @@ Bootcamp Syllabus
 <td></td>
 <td>2:30-3:45</td>
 <td>Granek</td>
-<td>Challenge #2 Workshop</td>
+<td><a href="https://github.com/ibiem-master/challenge_2">Challenge #2</a> Workshop</td>
 </tr>
 <tr class="odd">
 <td>14-Aug</td>
