@@ -1,43 +1,50 @@
-| Date&nbsp; |  Time | Person | Topic                                                                                 | Notes                                      | Notes |
-|------------+-------+--------+---------------------------------------------------------------------------------------+--------------------------------------------+-------|
-| 30-Aug     | 10-11 |        | [Bash: Shell Scripts](http://swcarpentry.github.io/shell-novice/06-script/index.html) |                                            |       |
-|            | 11-12 |        |                                                                                       |                                            |       |
-|            |  12-1 |        |                                                                                       |                                            |       |
-| 6-Sep      | 10-11 |        | Bash: Finding Things                                                                  |                                            |       |
-|            | 11-12 |        |                                                                                       |                                            |       |
-|            |  12-1 |        |                                                                                       |                                            |       |
-| 13-Sep     | 10-11 |        | Bash: Shell Extras                                                                    | http://swcarpentry.github.io/shell-extras/ |       |
-|            | 11-12 |        |                                                                                       |                                            |       |
-|            |  12-1 |        |                                                                                       |                                            |       |
-| 20-Sep     | 10-11 |        | HTS Sequencing                                                                        |                                            |       |
-|            | 11-12 |        |                                                                                       |                                            |       |
-|            |  12-1 |        |                                                                                       |                                            |       |
-| 27-Sep     | 10-11 |        | Bioinformatics Background & DADA2                                                     |                                            |       |
-|            | 11-12 |        |                                                                                       |                                            |       |
-|            |  12-1 |        |                                                                                       |                                            |       |
-| 4-Oct      | 10-11 |        |                                                                                       |                                            |       |
-|            | 11-12 |        |                                                                                       |                                            |       |
-|            |  12-1 |        |                                                                                       |                                            |       |
-| 11-Oct     | 10-11 |        |                                                                                       |                                            |       |
-|            | 11-12 |        |                                                                                       |                                            |       |
-|            |  12-1 |        |                                                                                       |                                            |       |
-| 18-Oct     | 10-11 |        |                                                                                       |                                            |       |
-|            | 11-12 |        |                                                                                       |                                            |       |
-|            |  12-1 |        |                                                                                       |                                            |       |
-| 25-Oct     | 10-11 |        |                                                                                       |                                            |       |
-|            | 11-12 |        |                                                                                       |                                            |       |
-|            |  12-1 |        |                                                                                       |                                            |       |
-| 1-Nov      | 10-11 |        |                                                                                       |                                            |       |
-|            | 11-12 |        |                                                                                       |                                            |       |
-|            |  12-1 |        |                                                                                       |                                            |       |
-| 8-Nov      | 10-11 |        |                                                                                       |                                            |       |
-|            | 11-12 |        |                                                                                       |                                            |       |
-|            |  12-1 |        |                                                                                       |                                            |       |
-| 15-Nov     | 10-11 |        |                                                                                       |                                            |       |
-|            | 11-12 |        |                                                                                       |                                            |       |
-|            |  12-1 |        |                                                                                       |                                            |       |
-| 22-Nov     | 10-11 |        |                                                                                       |                                            |       |
-|            | 11-12 |        |                                                                                       |                                            |       |
-|            |  12-1 |        |                                                                                       |                                            |       |
-|            |       |        |                                                                                       |                                            |       |
-| ?????      | 10-11 | Granek | [Collaborating in Git](lessons/bootcamp/040_git_overview.md#collaborating)            | before students start projects             |       |
+| Date   |  Time | Topic                                                                                                      |
+|--------+-------+------------------------------------------------------------------------------------------------------------|
+| 30-Aug | 10-11 | [R: Writing Good Code](http://swcarpentry.github.io/r-novice-gapminder/16-wrap-up/index.html)              |
+|        |       | [Bash: Intro](http://swcarpentry.github.io/shell-novice/01-intro/index.html)                               |
+|        |       | [Bash: Navigating Files and Directories](http://swcarpentry.github.io/shell-novice/02-filedir/index.html)  |
+|        | 11-12 | [Bash: Working With Files and Directories](http://swcarpentry.github.io/shell-novice/03-create/index.html) |
+|        |       | [Bash: Permissions](http://swcarpentry.github.io/shell-extras/04-permissions/)                             |
+|        |       | Bash: Shell Variables                                                                                      |
+|        |  12-1 | Office Hours                                                                                               |
+| 6-Sep  | 10-11 | Lecture: HTS Sequencing                                                                                    |
+|        | 11-12 | Lecture: Bioinformatics Background                                                                         |
+|        |  12-1 | Office Hours                                                                                               |
+| 13-Sep | 10-11 | [Lecture: Amplicon Bioinformatics Analysis](content/lectures/dada2_pipeline.pdf)                           |
+|        | 11-12 | Guest Speaker #1                                                                                           |
+|        |  12-1 | Office Hours or Lunch                                                                                      |
+| 20-Sep | 10-11 | [Hands-on: Demultiplexing](lessons/demultiplex_tutorial.md)                                                |
+|        |       | [Hands-on: DADA2 #1](lessons/dada2_tutorial_1_6.md)                                                        |
+|        | 11-12 | Guest Speaker #2                                                                                           |
+|        |  12-1 | Office Hours or Lunch                                                                                      |
+| 27-Sep | 10-11 | [Hands-on: DADA2 #2](lessons/dada2_tutorial_1_6.md)                                                        |
+|        | 11-12 | Guest Speaker #3                                                                                           |
+|        |  12-1 | Office Hours or Lunch                                                                                      |
+| 4-Oct  | 10-11 | [Lecture: Phyloseq, Abundance, and Diversity](lectures/statistical_analysis_1.pdf)                         |
+|        |       | [Hands-on: Phyloseq, Abundance, and Diversity](lessons/absolute_abundance_plots.md)                        |
+|        | 11-12 | Guest Speaker #4                                                                                           |
+|        |  12-1 | Office Hours or Lunch                                                                                      |
+| 11-Oct | 10-11 | [Hands-on: Alpha Diversity](lessons/alpha_diversity.md)                                                    |
+|        |       | [Hands-on: Relative Abundance](lessons/relative_abundance.md)                                              |
+|        | 11-12 | Guest Speaker #5                                                                                           |
+|        |  12-1 | Office Hours or Lunch                                                                                      |
+| 18-Oct | 10-11 | [Lecture: Beta Diversity](lectures/statistical_analysis_2.pdf)                                             |
+|        | 11-12 | Guest Speaker #6                                                                                           |
+|        |  12-1 | Office Hours or Lunch                                                                                      |
+| 25-Oct | 10-11 | [Lecture: Beta Diversity & Ordination](lectures/statistical_analysis_3.pdf)                                |
+|        | 11-12 | Guest Speaker #7                                                                                           |
+|        |  12-1 | Office Hours or Lunch                                                                                      |
+| 1-Nov  | 10-11 | [Hands-on: Beta Diversity & Ordination](lessons/ordination.md)                                             |
+|        | 11-12 | Guest Speaker #8                                                                                           |
+|        |  12-1 | Office Hours or Lunch                                                                                      |
+| 8-Nov  | 10-11 | [Git: Collaborating](lessons/bootcamp/040_git_overview.md#collaborating)                                   |
+|        | 11-12 | IBIEM Alums #1                                                                                             |
+|        |  12-1 | Office Hours or Lunch                                                                                      |
+| 15-Nov | 10-11 | Project Mentors 1 & 2                                                                                      |
+|        | 11-12 | Project Mentors 3 & 4                                                                                      |
+|        |  12-1 | Office Hours or Lunch                                                                                      |
+| 22-Nov | 10-11 | Git: Branching and Stashing                                                                                |
+|        | 11-12 | IBIEM Alums #2                                                                                             |
+|        |  12-1 | Office Hours or Lunch                                                                                      |
+
+

@@ -1,5 +1,5 @@
 | Date&nbsp; | Time &nbsp;&nbsp; | Person       | Topic                                                                                                            |
-|------------+-------------------+--------------+------------------------------------------------------------------------------------------------------------------|
+|------------+-------------------+--------------+------------------------------------------------------------------------------------------------------------------+
 | 7-Aug      |        9:30-10:30 | Gunsch       | Introduction to IBIEM                                                                                            |
 |            |       10:45-12:00 | Granek       | [Microbiome Overview](lectures/microbiome_analysis_overview.pdf)                                                 |
 |            |         1:00-2:15 | Granek       | [Fun With R: Data Visualization](lessons/bootcamp/020_unvotes.md)                                                |
@@ -19,24 +19,18 @@
 |            |                   |              | [R: Seeking Help](http://swcarpentry.github.io/r-novice-gapminder/03-seeking-help/index.html)                    |
 |            |         1:00-2:15 | Weintraub    | Science Communication Overview                                                                                   |
 |            |         2:30-3:45 | Weintraub    | Science Communication Overview                                                                                   |
-| 13-Aug     |        9:30-10:30 | Granek       | [R: Data Structures](http://swcarpentry.github.io/r-novice-gapminder/04-data-structures-part1/index.html)        |
-|            |       10:45-12:00 | Granek       | [R: Exploring Data Frames](http://swcarpentry.github.io/r-novice-gapminder/05-data-structures-part2/index.html)  |
-|            |                   |              | [R: Subsetting Data](http://swcarpentry.github.io/r-novice-gapminder/06-data-subsetting/index.html)              |
-|            |         1:00-2:15 | Granek       | [R: Control Flow](http://swcarpentry.github.io/r-novice-gapminder/07-control-flow/index.html)                    |
+| 13-Aug     |        9:30-10:30 | Granek       |                                                                                                                  |
+|            |       10:45-12:00 | Granek       | [R: Data Structures](http://swcarpentry.github.io/r-novice-gapminder/04-data-structures-part1/index.html)        |
+|            |         1:00-2:15 | Granek       | [R: Exploring Data Frames](http://swcarpentry.github.io/r-novice-gapminder/05-data-structures-part2/index.html)  |
 |            |         2:30-3:45 | Granek       | [Challenge #2](https://github.com/ibiem-master/challenge_2) Workshop                                             |
-| 14-Aug     |        9:30-10:30 | Granek       | [R: Data Visualization](http://swcarpentry.github.io/r-novice-gapminder/08-plot-ggplot2/index.html)              |
+| 14-Aug     |        9:30-10:30 | Granek       |                                                                                                                  |
+|            |       10:45-12:00 | Granek       | [R: Subsetting Data](http://swcarpentry.github.io/r-novice-gapminder/06-data-subsetting/index.html)              |
+|            |         1:00-2:15 | Gunsch/Kelly | Building Dynamic Research Teams                                                                                  |
+|            |         2:30-3:45 | Granek       | [R: Control Flow](http://swcarpentry.github.io/r-novice-gapminder/07-control-flow/index.html)                    |
+| 15-Aug     |        9:30-10:30 | Granek       | [R: Data Visualization](http://swcarpentry.github.io/r-novice-gapminder/08-plot-ggplot2/index.html)              |
 |            |       10:45-12:00 | Granek       | [R: Vectorization](http://swcarpentry.github.io/r-novice-gapminder/09-vectorization/index.html)                  |
 |            |                   |              | [R: Functions](http://swcarpentry.github.io/r-novice-gapminder/10-functions/index.html)                          |
-|            |         1:00-2:15 | Gunsch/Kelly | Building Dynamic Research Teams                                                                                  |
-|            |         2:30-3:45 | Gunsch       | Developing Your Goals                                                                                            |
-| 15-Aug     |        9:30-10:30 | Granek       | [R: Writing Data](http://swcarpentry.github.io/r-novice-gapminder/11-writing-data/index.html)                    |
-|            |                   |              | [R: dplyr](http://swcarpentry.github.io/r-novice-gapminder/13-dplyr/index.html)                                  |
-|            |       10:45-12:00 | Granek       | [R: tidyr](http://swcarpentry.github.io/r-novice-gapminder/14-tidyr/index.html)                                  |
-|            |                   |              | [R: Writing Good Code](http://swcarpentry.github.io/r-novice-gapminder/16-wrap-up/index.html)                    |
 |            |         1:00-2:15 | Weintraub    | Micro-TED Talks                                                                                                  |
 |            |         2:30-3:45 | Weintraub    | Micro-TED Talks                                                                                                  |
-| 16-Aug     |        9:30-10:30 | Granek       | [Bash: Intro](http://swcarpentry.github.io/shell-novice/01-intro/index.html)                                     |
-|            |                   |              | [Bash: Navigating Files and Directories](http://swcarpentry.github.io/shell-novice/02-filedir/index.html)        |
-|            |                   |              | [Bash: Working With Files and Directories](http://swcarpentry.github.io/shell-novice/03-create/index.html)       |
-|            |       10:45-12:00 | Granek       | [Bash: Pipe & Filters](http://swcarpentry.github.io/shell-novice/04-pipefilter/index.html)                       |
-|            |                   |              | [Bash: Loops](http://swcarpentry.github.io/shell-novice/05-loop/index.html)                                      |
+| 16-Aug     |        9:30-10:30 | Granek       | [R: dplyr](http://swcarpentry.github.io/r-novice-gapminder/13-dplyr/index.html)                                  |
+|            |       10:45-12:00 | Granek       | [R: tidyr](http://swcarpentry.github.io/r-novice-gapminder/14-tidyr/index.html)                                  |

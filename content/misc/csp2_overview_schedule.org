@@ -10,3 +10,14 @@
 |    8 | 3/8  | NO CLASS - Spring Break                                                                               |                                            |                                                        |            |
 |    9 | 3/15 | NO CLASS - Spring Break                                                                               |                                            |                                                        |            |
 |   10 | 3/22 | [Beta Diversity & Ordination](lessons/ordination.md)                                                  |                                            | [Challenge 10](https://github.com/IBIEM/challenge_10/) | 4/12 @ 6pm |
+
+
+
+
+| Date&nbsp; |        Time | Topic                                                                                                      |
+|------------+-------------+------------------------------------------------------------------------------------------------------------|
+|            | 10:45-12:00 | [Bash: Pipe & Filters](http://swcarpentry.github.io/shell-novice/04-pipefilter/index.html)                 |
+|            |             | [Bash: Loops](http://swcarpentry.github.io/shell-novice/05-loop/index.html)                                |
+| 30-Aug     |       10-11 | [Bash: Shell Scripts](http://swcarpentry.github.io/shell-novice/06-script/index.html)                      |
+|            |             | Bash: Finding Things                                                                                       |
+|            |             | Bash: Shell Extras                                                                                         |
