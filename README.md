@@ -1,8 +1,5 @@
-This website can be reached at:
-<a href="https://bit.ly/2KbTnIa" class="uri">https://bit.ly/2KbTnIa</a>
+This website can be reached at: https://bit.ly/2KbTnIa
 
-Quick Links
-===========
-
--   [Bootcamp Overview](content/bootcamp_overview.md)
--   [IBIEM Computing.md](content/misc/ibiem_computing.md)
+# Quick Links
+- [Bootcamp Overview](content/bootcamp_overview.md)
+- [References](content/misc/reference_info.md)
