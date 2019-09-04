@@ -77,7 +77,7 @@
 <tr class="even">
 <td>6-Sep</td>
 <td>10-11</td>
-<td>Lecture: HTS Sequencing</td>
+<td><a href="content/lectures/hts_background.pdf">Lecture: HTS Sequencing</a></td>
 <td><a href="https://github.com/ibiem-master/challenge_3">Challenge 3</a></td>
 <td>9/20</td>
 <td>Duke</td>
@@ -272,7 +272,7 @@
 <td><a href="lectures/statistical_analysis_3.pdf">Lecture: Beta Diversity &amp; Ordination</a></td>
 <td><a href="https://github.com/ibiem-master/challenge_10">Challenge 10</a></td>
 <td>11/8</td>
-<td>Jsnn</td>
+<td>JSNN</td>
 </tr>
 <tr class="odd">
 <td></td>
