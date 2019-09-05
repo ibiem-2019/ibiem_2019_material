@@ -1,5 +1,7 @@
 ---
 title: "Relative Abundance"
+params:
+  atacama_ps_rds: /data/tutorial_data/atacama_10pct.rds
 output:
   md_document:
      variant: markdown_github
@@ -24,13 +26,19 @@ library(tibble)
 library(dplyr)
 ```
 
-```{r files_and_directories}
+```{r files_and_directories, include=FALSE}
 # Directories
-atacama.rds = "/data/tutorial_data/atacama_10pct.rds"
+
+if(exists("params") && 
+   !is.null(params[["atacama_ps_rds"]])){
+  atacama.ps.rds=params[["atacama_ps_rds"]]
+} else {
+  atacama.ps.rds = "/data/tutorial_data/atacama_10pct.rds"
+  }
 ```
 
 ```{r}
-atacama.ps = read_rds(atacama.rds)
+atacama.ps = read_rds(atacama.ps.rds)
 print(atacama.ps)
 ```
 

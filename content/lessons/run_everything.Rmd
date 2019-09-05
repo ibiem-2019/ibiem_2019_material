@@ -54,10 +54,17 @@ regression_rmds = c("../misc/downloading/atacama_1pct_download.Rmd",
 
 ```{r run_render}
 #R -e "rmarkdown::render('run_full_lemur_data.Rmd',output_file='run_full_lemur_data.html')"
+render_params = list(
+  atacama_ps_rds=path_real("~/scratch/atacama_1pct/dada2/atacama_1pct.rds")
+)
+outdir=path_real("~/scratch/render_run/")
 
 for (cur_rmd in regression_rmds){
   print(cur_rmd)
-  render(cur_rmd, output_format="html_document")
+  render(cur_rmd, 
+         output_format="html_document",
+         params=render_params,
+         output_dir=outdir)
 }
 ```
 
