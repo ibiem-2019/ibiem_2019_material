@@ -2,7 +2,14 @@ DEMO_BASE="/tmp/reproducible_demo"
 WORK_DIR="$DEMO_BASE/work"
 DATA_DIR="$DEMO_BASE/data"
 DOCKER_IMAGENAME="ibiem/docker_rstudio_ibiem2019"
+
+EXPOSE_PORT="127.0.0.1\:8787\:8787"
+EXPOSE_PORT=${1:-$EXPOSE_PORT}
 MY_PASSWORD="BadPa55word"
+MY_PASSWORD=${2:-$MY_PASSWORD}
+
+
+
 
 mkdir -p $WORK_DIR $DATA_DIR
 
@@ -24,7 +31,7 @@ docker pull $DOCKER_IMAGENAME
 
 printf "\n${SEP_STRING} Running Docker ${SEP_STRING}"
 docker run --name ibiem \
-    -d -p 127.0.0.1\:8787\:8787 \
+    -d --expose $EXPOSE_PORT \
     -e USERPASS=${MY_PASSWORD} \
     -v ${WORK_DIR}:/home/guest \
     -v ${DATA_DIR}:/data \
