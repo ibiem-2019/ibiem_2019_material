@@ -41,7 +41,36 @@ list.files(".", pattern = ".Rmd", full.names = TRUE) %>%
 ```
 
 ```{r choose_regerssion_rmds}
-regression_rmds = c("../misc/downloading/atacama_1pct_download.Rmd",
+regression_rmds_1pct = c("../misc/downloading/atacama_1pct_download.Rmd",
+                    "../misc/downloading/download_dada_references.Rmd",
+                    "./demultiplex_tutorial.Rmd",
+                    "./dada2_tutorial_1_6.Rmd",
+                    "./alpha_diversity.Rmd",
+                    "./absolute_abundance_plots.Rmd",
+                    "./relative_abundance.Rmd")
+# The ordination Rmd has a problem with the atacama_1pct.rds.  It works with the atacama_10pct.rds
+# ,
+#                     "./ordination.Rmd"
+#                     )
+```
+
+```{r run_render}
+render_params = list(
+  atacama_ps_rds=path_real("~/scratch/atacama_1pct/dada2/atacama_1pct.rds")
+)
+render_outdir=path_real("~/scratch/atacama_1pct_render_run/")
+dir_create(render_outdir)
+for (cur_rmd in regression_rmds){
+  print(cur_rmd)
+  render(cur_rmd, 
+         output_format="html_document",
+         params=render_params,
+         output_dir=render_outdir)
+}
+```
+
+```{r regerssion_rmds_10pct}
+regression_rmds_10pct = c("../misc/downloading/atacama_10pct_download.Rmd",
                     "../misc/downloading/download_dada_references.Rmd",
                     "./demultiplex_tutorial.Rmd",
                     "./dada2_tutorial_1_6.Rmd",
@@ -52,21 +81,7 @@ regression_rmds = c("../misc/downloading/atacama_1pct_download.Rmd",
                     )
 ```
 
-```{r run_render}
-#R -e "rmarkdown::render('run_full_lemur_data.Rmd',output_file='run_full_lemur_data.html')"
-render_params = list(
-  atacama_ps_rds=path_real("~/scratch/atacama_1pct/dada2/atacama_1pct.rds")
-)
-outdir=path_real("~/scratch/render_run/")
 
-for (cur_rmd in regression_rmds){
-  print(cur_rmd)
-  render(cur_rmd, 
-         output_format="html_document",
-         params=render_params,
-         output_dir=outdir)
-}
-```
 
 
 # SessionInfo
