@@ -1,5 +1,7 @@
 ---
 title: "Ordination"
+params:
+  atacama_ps_rds: "/data/tutorial_data/atacama_10pct.rds"
 output:
   md_document:
      variant: markdown_github
@@ -14,6 +16,7 @@ knitr::opts_chunk$set(echo=TRUE, include=TRUE)
 
 ## Data
 This tutorial uses the 10% Atacama subset data (note that for the demux and dada2 tutorial we used the 1% Atacama subset)
+There is a problem when running `ordinate` on the 1% dataset.  Not sure what it is!
 
 # Getting ready
 
@@ -26,14 +29,20 @@ library(phyloseq)
 
 ```{r files_and_directories}
 # Directories
-atacama.rds = "/data/tutorial_data/atacama_10pct.rds"
+
+if(exists("params") && 
+   !is.null(params[["atacama_ps_rds"]])){
+  atacama.ps.rds=params[["atacama_ps_rds"]]
+} else {
+  atacama.ps.rds = "/data/tutorial_data/atacama_10pct.rds"
+}
+print(atacama.ps.rds)
 ```
 
 ```{r}
-atacama.ps = read_rds(atacama.rds)
+atacama.ps = read_rds(atacama.ps.rds)
 print(atacama.ps)
 ```
-
 
 ## Data Preprocessing
 As with relative abundance plots, before performing ordination we will want to prune rare taxa and transform the data.  We prune because we don't want small differences in rare taxa to swamp out major trends.  The transformation is important because some methods depend on absolute numerical differences in abundance between samples.  Since absolute counts are not meaningful in amplicon sequence data, we want to prevent such differences from affecting the ordination results.
