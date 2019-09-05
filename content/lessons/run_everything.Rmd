@@ -60,7 +60,7 @@ render_params = list(
 )
 render_outdir=path_real("~/scratch/atacama_1pct_render_run/")
 dir_create(render_outdir)
-for (cur_rmd in regression_rmds){
+for (cur_rmd in regression_rmds_1pct){
   print(cur_rmd)
   render(cur_rmd, 
          output_format="html_document",
