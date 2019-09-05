@@ -12,32 +12,17 @@ To keep the code readable and portable, it is nice to assign paths to variables.
 # Directories
 
 data.dir = "/data/tutorial_data"
-atacama.1pct.dir = file.path(data.dir, "atacama_1pct")
 atacama.10pct.dir = file.path(data.dir, "atacama_10pct")
-dir.create(atacama.1pct.dir, recursive = TRUE)
 dir.create(atacama.10pct.dir, recursive = TRUE)
 
 # Set variables for bash
-Sys.setenv(ATACAMA_1PCT_DIR = atacama.1pct.dir)
 Sys.setenv(ATACAMA_10PCT_DIR = atacama.10pct.dir)
 ```
 
 # Download Data
 https://docs.qiime2.org/2018.11/tutorials/atacama-soils/#subsample-data
 
-```{bash}
-# set -u
-wget --no-verbose --directory-prefix $ATACAMA_1PCT_DIR \
-  https://data.qiime2.org/2018.11/tutorials/atacama-soils/sample_metadata.tsv \
-  https://data.qiime2.org/2018.11/tutorials/atacama-soils/1p/forward.fastq.gz \
-  https://data.qiime2.org/2018.11/tutorials/atacama-soils/1p/reverse.fastq.gz \
-  https://data.qiime2.org/2018.11/tutorials/atacama-soils/1p/barcodes.fastq.gz
-```
 
-```{bash}
-cd $ATACAMA_1PCT_DIR
-md5sum * > md5sum.txt
-```
 
 
 ```{bash}

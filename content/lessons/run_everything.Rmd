@@ -41,7 +41,7 @@ list.files(".", pattern = ".Rmd", full.names = TRUE) %>%
 ```
 
 ```{r choose_regerssion_rmds}
-regression_rmds = c("../misc/downloading/atacama_download.Rmd",
+regression_rmds = c("../misc/downloading/atacama_1pct_download.Rmd",
                     "../misc/downloading/download_dada_references.Rmd",
                     "./demultiplex_tutorial.Rmd",
                     "./dada2_tutorial_1_6.Rmd",
