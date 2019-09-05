@@ -1,0 +1,70 @@
+---
+title: "Run Everything"
+output:
+  md_document:
+    variant: markdown_github
+  html_document:
+    df_print: paged
+---
+
+
+
+```{r load_libraries}
+library(here)
+library(dplyr)
+library(fs)
+library(rmarkdown)
+library(magrittr)
+```
+
+```{r set_paths, eval=FALSE, include=FALSE}
+source("run_config.R")
+```
+
+```{r prepare_output_dir, eval=FALSE, include=FALSE}
+if (dir_exists(out.dir)) {dir_delete(out.dir)}
+
+regression_output_dir = file.path(out.dir, "full_run_html")
+dir.create(regression_output_dir, recursive = TRUE)
+```
+
+```{r find_rmds2, eval=FALSE, include=TRUE}
+list.files("../misc/downloading", pattern = ".Rmd", full.names = TRUE) %>%
+  paste(collapse = '", "') %>%
+  print
+```
+
+```{r find_rmds, eval=FALSE, include=TRUE}
+list.files(".", pattern = ".Rmd", full.names = TRUE) %>%
+  paste(collapse = '", "') %>%
+  print
+```
+
+```{r choose_regerssion_rmds}
+regression_rmds = c("atacama_10pct_download.Rmd",
+                    "demultiplex_atacama_10pct.Rmd",
+                    "dada2_atacama_10pct.Rmd"
+                    )
+```
+
+```{r run_render}
+render_params = list(
+)
+outdir=path_real("~/scratch/atacama_10pct/")
+
+for (cur_rmd in regression_rmds){
+  print(cur_rmd)
+  render(cur_rmd, 
+         output_format="html_document",
+         params=render_params,
+         output_dir=outdir)
+}
+```
+
+
+# SessionInfo
+```{r session_info}
+sessionInfo()
+```
+
+
