@@ -66,8 +66,8 @@ dir_create(scratch.dir)
 
 ps.rds = file.path(scratch.dir, "atacama_1pct.rds")
 
-silva.ref = "/data/references/dada/silva_nr_v128_train_set.fa.gz"
-silva.species.ref = "/data/references/dada/silva_species_assignment_v128.fa.gz"
+silva.ref = "/data/references/dada/silva_nr_v132_train_set.fa.gz"
+silva.species.ref = "/data/references/dada/silva_species_assignment_v132.fa.gz"
 ```
 
 &nbsp;
@@ -391,7 +391,7 @@ We have downloaded a shared IBIEM copy of of the DADA2 formated Silva database a
 taxa <- assignTaxonomy(seqtab.nochim, silva.ref, multithread=TRUE)
 ```
 
-**Optional:** The dada2 package also implements a method to make [species level assignments based on **exact matching**](assign.html#species-assignment) between ASVs and sequenced reference strains. Currently species-assignment training fastas are available for the Silva and RDP 16S databases. To follow the optional species addition step, download the `silva_species_assignment_v128.fa.gz` file, and place it in the directory with the fastq files.
+**Optional:** The dada2 package also implements a method to make [species level assignments based on **exact matching**](assign.html#species-assignment) between ASVs and sequenced reference strains. Currently species-assignment training fastas are available for the Silva and RDP 16S databases. To follow the optional species addition step, download the `silva_species_assignment_v132.fa.gz` file, and place it in the directory with the fastq files.
 
 ```{r species}
 taxa <- addSpecies(taxa, silva.species.ref)
