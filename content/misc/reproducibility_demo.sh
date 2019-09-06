@@ -24,8 +24,8 @@ echo "expose argument: ${EXPOSE_PORT}"
 
 mkdir -p $WORK_DIR $DATA_DIR
 
-git clone git@github.com:ibiem-2019/ibiem_2019_material.git ${WORK_DIR}/demo
-# git clone https://github.com/ibiem-2019/ibiem_2019_material.git ${WORK_DIR}/demo
+# git clone git@github.com:ibiem-2019/ibiem_2019_material.git ${WORK_DIR}/demo
+git clone https://github.com/ibiem-2019/ibiem_2019_material.git ${WORK_DIR}/demo
 
 
 printf "\n${SEP_STRING} Pulling docker image: $DOCKER_IMAGENAME ${SEP_STRING}"
