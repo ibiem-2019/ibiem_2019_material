@@ -39,7 +39,6 @@ docker pull $DOCKER_IMAGENAME
 # 
 # printf "\n${SEP_STRING} Cloning repo from gitlab ${SEP_STRING}"
 # 
-# git clone https://gitlab.oit.duke.edu/hts2019/hts2019-notebooks.git $WORK_DIR/hts2019-notebooks
 
 
 printf "\n${SEP_STRING} Running Docker ${SEP_STRING}"
@@ -53,7 +52,7 @@ printf "${SEP_STRING}In RStudio:\n1. New Project: https://github.com/ibiem-2019/
 
 printf "\n${SEP_STRING} To clean up: \n\n"
 echo "rm -rf $DEMO_BASE"
-echo "docker rm -f" `docker ps -aq`
-echo "docker rmi" `docker images -aq`
+echo "docker rm -f \`docker ps -aq\`"
+echo "docker rmi \`docker images -aq\`"
 printf "${SEP_STRING}\n"
 
