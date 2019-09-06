@@ -15,7 +15,7 @@ if [ $REMOTE_OR_LOCAL == "REMOTE" ]; then
     EXPOSE_PORT="${HOST_PORT}:8787"
     URL="http://`hostname -A | cut -f1 -d' '`:${HOST_PORT}/"
 else
-    EXPOSE_PORT="127.0.0.1\:${HOST_PORT}\:8787"
+    EXPOSE_PORT="127.0.0.1:${HOST_PORT}:8787"
     URL="http://localhost:${HOST_PORT}/"
 fi
 echo "expose argument: ${EXPOSE_PORT}"
