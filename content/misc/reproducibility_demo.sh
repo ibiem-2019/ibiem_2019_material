@@ -6,7 +6,8 @@ SEP_STRING="\n--------------------------------------------------\n"
 
 
 REMOTE_OR_LOCAL=${1:-"LOCAL"}
-MY_PASSWORD=${2:-"BadPa55word"}
+# MY_PASSWORD=${2:-"BadPa55word"}
+MY_PASSWORD="`openssl rand -base64 16 | colrm 20`"
 
 HOST_PORT=8787
 
