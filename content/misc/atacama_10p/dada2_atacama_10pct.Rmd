@@ -64,8 +64,8 @@ dir_create(scratch.dir)
 
 ps.rds = file.path(scratch.dir, "atacama_10pct.rds")
 
-silva.ref = "/data/references/dada/silva_nr_v128_train_set.fa.gz"
-silva.species.ref = "/data/references/dada/silva_species_assignment_v128.fa.gz"
+silva.ref = "/data/references/dada/silva_nr_v132_train_set.fa.gz"
+silva.species.ref = "/data/references/dada/silva_species_assignment_v132.fa.gz"
 ```
 
 &nbsp;
@@ -381,13 +381,13 @@ track
 
 It is common at this point, especially in 16S/18S/ITS amplicon sequencing, to classify sequence variants taxonomically. The DADA2 package provides a native implementation of [the RDP's naive Bayesian classifier](http://www.ncbi.nlm.nih.gov/pubmed/17586664) for this purpose. The `assignTaxonomy` function takes a set of sequences and a training set of taxonomically classified sequences, and outputs the taxonomic assignments with at least `minBoot` bootstrap confidence. 
 
-We maintain [formatted training fastas for the RDP training set, GreenGenes clustered at 97\% identity, and the Silva reference database](training.html). For fungal taxonomy, the General Fasta release files from the [UNITE ITS database](https://unite.ut.ee/repository.php) can be used as is. To follow along, download the `silva_nr_v128_train_set.fa.gz` file, and place it in the directory with the fastq files.
+We maintain [formatted training fastas for the RDP training set, GreenGenes clustered at 97\% identity, and the Silva reference database](training.html). For fungal taxonomy, the General Fasta release files from the [UNITE ITS database](https://unite.ut.ee/repository.php) can be used as is. To follow along, download the `silva_nr_v132_train_set.fa.gz` file, and place it in the directory with the fastq files.
 
 ```{r taxify}
 taxa <- assignTaxonomy(seqtab.nochim, silva.ref, multithread=TRUE)
 ```
 
-**Optional:** The dada2 package also implements a method to make [species level assignments based on **exact matching**](assign.html#species-assignment) between ASVs and sequenced reference strains. Currently species-assignment training fastas are available for the Silva and RDP 16S databases. To follow the optional species addition step, download the `silva_species_assignment_v128.fa.gz` file, and place it in the directory with the fastq files.
+**Optional:** The dada2 package also implements a method to make [species level assignments based on **exact matching**](assign.html#species-assignment) between ASVs and sequenced reference strains. Currently species-assignment training fastas are available for the Silva and RDP 16S databases. To follow the optional species addition step, download the `silva_species_assignment_v132.fa.gz` file, and place it in the directory with the fastq files.
 
 ```{r species}
 taxa <- addSpecies(taxa, silva.species.ref)

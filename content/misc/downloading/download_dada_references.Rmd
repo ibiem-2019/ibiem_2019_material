@@ -43,6 +43,16 @@ dir.create(ref.dir, recursive = TRUE, showWarnings = FALSE)
 tribble(
   ~path, ~md5sum,
   "silva_nr_v132_train_set.fa.gz", "2c4e2d8d9a936cdf24a91c0d2c113a43", 
+  "silva_species_assignment_v132.fa.gz", "059fa72391d6aa2f17bf69f2cd63b8ea" 
+) %>%
+  select(md5sum, path) %>%
+  write_tsv(md5.file, col_names=FALSE)
+```
+
+```{r eval=FALSE, include=FALSE}
+tribble(
+  ~path, ~md5sum,
+  "silva_nr_v132_train_set.fa.gz", "2c4e2d8d9a936cdf24a91c0d2c113a43", 
   "silva_species_assignment_v132.fa.gz", "059fa72391d6aa2f17bf69f2cd63b8ea", 
   "silva_nr_v128_train_set.fa.gz", "26b23e13ed310174ae5563e8f7258ecc",
   "silva_species_assignment_v128.fa.gz", "f67d7d9443312ca38a9fbf61fc744ae4",
@@ -52,7 +62,6 @@ tribble(
   select(md5sum, path) %>%
   write_tsv(md5.file, col_names=FALSE)
 ```
-
 
 # Download data
 
@@ -67,8 +76,9 @@ downloadReferences = function(reference_url, output_directory){
 
 silva_132.url = "https://zenodo.org/record/1172783/files/silva_nr_v132_train_set.fa.gz"
 silva_132_species.url= "https://zenodo.org/record/1172783/files/silva_species_assignment_v132.fa.gz"
-
-downloadReferences(c(silva_132.url, silva_132_species.url), ref.dir)
+for (url in c(silva_132.url, silva_132_species.url)) {
+  downloadReferences(url, ref.dir)
+}
 
 ```
 
