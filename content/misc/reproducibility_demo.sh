@@ -1,4 +1,4 @@
-DEMO_BASE="/tmp/reproducible_demo"
+DEMO_BASE="/tmp/reproducible_demo_`date +%s`_tmp"
 WORK_DIR="$DEMO_BASE/work"
 DATA_DIR="$DEMO_BASE/data"
 DOCKER_IMAGENAME="ibiem/docker_rstudio_ibiem2019"
