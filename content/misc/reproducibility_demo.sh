@@ -1,9 +1,14 @@
+#!/usr/bin/env bash
 
 if ! [[ "$1" =~ ^(LOCAL|REMOTE|COMMAND)$ ]]; then
     printf "Run with LOCAL or REMOTE or COMMAND\n"
     printf "\tREMOTE: run RStudio\n"
     printf "\tLOCAL: run RStudio with access restricted to a web browser on the same machine\n"
     printf "\tCOMMAND: run demonstration dada2 and phyloseq pipeline, then exit\n"
+    printf "\n\nMemory limitation can cause this to fail at the assignTaxonomy step.\n"
+    printf "This can be a problem if there is not enough memory on the host machine,\n"
+    printf "or if Docker is run with a memory cap. Docker Desktop on MacOS and Windows\n"
+    printf "seems to default to a value that is too low"
     exit 1
 else
     REMOTE_OR_LOCAL=${1}
@@ -48,6 +53,7 @@ if [ $REMOTE_OR_LOCAL == "COMMAND" ]; then
 	   $DOCKER_IMAGENAME \
 	   Rscript -e "rmarkdown::render('/home/guest/demo/content/lessons/run_everything.Rmd')"
     printf "\n${SEP_STRING} FINISHED Pipeline ${SEP_STRING}"
+    printf "\n${SEP_STRING} Results output to ${WORK_DIR}/scratch"
     exit 0
 elif [ $REMOTE_OR_LOCAL == "REMOTE" ]; then
     EXPOSE_PORT="${HOST_PORT}:8787"
