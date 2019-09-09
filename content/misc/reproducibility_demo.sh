@@ -13,7 +13,7 @@ fi
 DEMO_BASE="/tmp/reproducible_demo_`date +%s`_tmp"
 WORK_DIR="$DEMO_BASE/work"
 DATA_DIR="$DEMO_BASE/data"
-DOCKER_IMAGENAME="ibiem/docker_rstudio_ibiem2019"
+DOCKER_IMAGENAME="ibiem/docker_rstudio_ibiem2019:latest"
 SEP_STRING="\n--------------------------------------------------\n"
 
 # REMOTE_OR_LOCAL=$1
@@ -44,6 +44,7 @@ if [ $REMOTE_OR_LOCAL == "COMMAND" ]; then
 	   --rm \
 	   -v ${WORK_DIR}:/home/guest \
 	   -v ${DATA_DIR}:/data \
+	   --user guest \
 	   $DOCKER_IMAGENAME \
 	   Rscript -e "rmarkdown::render('/home/guest/demo/content/lessons/run_everything.Rmd')"
     printf "\n${SEP_STRING} FINISHED Pipeline ${SEP_STRING}"
