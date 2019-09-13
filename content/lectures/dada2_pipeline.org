@@ -1,6 +1,6 @@
 #+TITLE:     Amplicon Bioinformatic Analysis: DADA2
 #+AUTHOR:    Josh Granek
-#+DATE:      November 2, 2018
+#+DATE:      September 13, 2019
 
 
 * Bioinformatic Goals
