@@ -1,15 +1,15 @@
 <table>
 <colgroup>
-<col style="width: 8%" />
+<col style="width: 11%" />
 <col style="width: 5%" />
-<col style="width: 49%" />
-<col style="width: 28%" />
+<col style="width: 48%" />
+<col style="width: 27%" />
 <col style="width: 3%" />
 <col style="width: 4%" />
 </colgroup>
 <thead>
 <tr class="header">
-<th>Date  </th>
+<th>Date    </th>
 <th>Time </th>
 <th>Topic</th>
 <th>Assignment</th>
