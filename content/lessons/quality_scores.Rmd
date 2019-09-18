@@ -1,0 +1,86 @@
+---
+title: "Quality Scores"
+output:
+  md_document:
+     variant: markdown_github
+  html_document:
+    df_print: paged
+---
+
+```{r global_options, include=FALSE}
+knitr::opts_chunk$set(echo=TRUE, include=TRUE, python.reticulate = FALSE)
+```
+
+# What do quality scores mean?
+
+
+## Phred Quality Scores
+We can calculate the *phred quality score* from the probability of sequencing error (i.e. the base call is wrong) using:
+
+
+\begin{equation*}
+Q = -10 \log_{10} p
+\end{equation*}
+
+Alternatively, we can rearrange to calculate the probability of error from the *phred quality score* using:
+
+\begin{equation*}
+p = 10^{\frac{Q}{-10}}
+\end{equation*}
+
+Where $Q$ is the *phred quality score* and $p$ is the probability of error (i.e. the base call is wrong)
+
+
+
+
+```{python python.reticulate = FALSE}
+def error_prob(quality):
+    qval = quality
+    return 10**(qval/-10.0)
+
+print ("{0:^5}  {1:^10}".format("Phred", "Prob of"))
+print ("{0:^5}  {1:^10}".format("score", "Error"))
+for phred in range(0,42):
+    print ("{0:^5}  {1:03.5f}".format(phred, error_prob(phred)))
+```
+
+## Ascii Codes
+In FASTQ files, phred scores are represented using characters.  Each character on the keyboard can be represented by a number, called an ascii code.
+
+
+```{python}
+print ("{0:^8}  {1:^8}".format("Character", "ASCII #"))
+for i in range(33,90):
+    print("{0:^8}  {1:^8}".format(chr(i),i))
+```
+
+## Phred Encodings
+There are several different ways to encode phred scores with ascii characters.  The two most common are called phred+33 and phred+64.  The names are strange until you understand how then encoding works.  
+
+### Phred+33
+To use the phred+33 encoding, take the phred quality score, add 33 to it, then use the ascii character corresponding to the sum.  For example, using the phred+33 encoding, a quality score of 30 would be represented with the ascii character with the ascii code of 63 (30 + 33), which is '?'.
+
+### Phred+64
+The phred+64 encoding works the same as the phred+33 encoding, except you add 64 to the phred score to determine the ascii code of the quality character.  You will only find phred+64 encoding on older data, which was sequenced several years ago.  The tricky part is that there is no indication in the FASTQ file as to which encoding was used, you have to make an educated guess.
+
+
+```{python}
+def error_prob(quality):
+    qval = quality
+    return 10**(qval/-10.0)
+    
+print ("{0:^5}  {1:^8}  {2:^8}  {3:^8}".format("Phred",  "Prob of", "Phred+33", "Phred+64"))
+print ("{0:^5}  {1:^8}  {2:^8}  {3:^8}".format("score",  "Error", "Ascii", "Ascii"))
+for phred in range(0,42):
+    print ("{0:^5}  {1:03.5f}  {2:^8}  {3:^8}".format(phred, error_prob(phred), chr(phred+33), chr(phred+64)))
+```
+
+## Why +33?
+ASCII 33 is the first "normal" ASCII character that. 1 through 32 include whitespace and non-printing characters, which cannot be identified by eye)
+
+
+```{python}
+print ("{0:^8}  {1:^8}".format("Character", "ASCII #"))
+for i in range(0,40):
+    print("{0:^8}  {1:^8}".format(chr(i),i))
+```

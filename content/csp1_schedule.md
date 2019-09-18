@@ -1,15 +1,15 @@
 <table>
 <colgroup>
-<col style="width: 8%" />
+<col style="width: 11%" />
 <col style="width: 5%" />
-<col style="width: 49%" />
-<col style="width: 28%" />
+<col style="width: 48%" />
+<col style="width: 27%" />
 <col style="width: 3%" />
 <col style="width: 4%" />
 </colgroup>
 <thead>
 <tr class="header">
-<th>Date  </th>
+<th>Date    </th>
 <th>Time </th>
 <th>Topic</th>
 <th>Assignment</th>
@@ -101,20 +101,28 @@
 <tr class="odd">
 <td>13-Sep</td>
 <td>10-11</td>
-<td><a href="content/lectures/dada2_pipeline.pdf">Lecture: Amplicon Bioinformatics Analysis</a></td>
+<td><a href="lectures/hts_background.pdf">Lecture: HTS Sequencing (continued)</a></td>
 <td><a href="https://github.com/ibiem-master/challenge_4">Challenge 4</a></td>
 <td>9/27</td>
 <td>Duke</td>
 </tr>
 <tr class="even">
 <td></td>
-<td>11-12</td>
-<td>Lecture: Bioinformatics Background</td>
+<td></td>
+<td><a href="lectures/bioinformatics_background.pdf">Lecture: Bioinformatics Background</a></td>
 <td></td>
 <td></td>
 <td></td>
 </tr>
 <tr class="odd">
+<td></td>
+<td>11-12</td>
+<td><a href="lectures/dada2_pipeline.pdf">Lecture: Amplicon Bioinformatics Analysis</a></td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr class="even">
 <td></td>
 <td>12-1</td>
 <td>Office Hours</td>
@@ -122,7 +130,7 @@
 <td></td>
 <td></td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td>20-Sep</td>
 <td>10-11</td>
 <td><a href="lessons/demultiplex_tutorial.md">Hands-on: Demultiplexing</a></td>
@@ -130,7 +138,7 @@
 <td>10/4</td>
 <td></td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td></td>
 <td></td>
 <td><a href="lessons/dada2_tutorial_1_6.md">Hands-on: DADA2 #1</a></td>
@@ -138,23 +146,23 @@
 <td></td>
 <td></td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td></td>
 <td>11-12</td>
-<td>Guest Speaker #2</td>
+<td>Glenda Kelly: Learner Centered Rubrics: A Progression for your IBIEM Goals</td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr class="even">
+<td></td>
+<td>12-1</td>
+<td>Office Hours</td>
 <td></td>
 <td></td>
 <td></td>
 </tr>
 <tr class="odd">
-<td></td>
-<td>12-1</td>
-<td>Office Hours or Lunch</td>
-<td></td>
-<td></td>
-<td></td>
-</tr>
-<tr class="even">
 <td>27-Sep</td>
 <td>10-11</td>
 <td><a href="lessons/dada2_tutorial_1_6.md">Hands-on: DADA2 #2</a></td>
@@ -162,7 +170,7 @@
 <td>10/11</td>
 <td></td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td></td>
 <td>11-12</td>
 <td>Guest Speaker #3</td>
@@ -170,7 +178,7 @@
 <td></td>
 <td></td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td></td>
 <td>12-1</td>
 <td>Office Hours or Lunch</td>
@@ -178,7 +186,7 @@
 <td></td>
 <td></td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td>4-Oct</td>
 <td>10-11</td>
 <td><a href="lectures/statistical_analysis_1.pdf">Lecture: Phyloseq, Abundance, and Diversity</a></td>
@@ -186,7 +194,7 @@
 <td>10/18</td>
 <td>Duke</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td></td>
 <td></td>
 <td><a href="lessons/absolute_abundance_plots.md">Hands-on: Phyloseq, Abundance, and Diversity</a></td>
@@ -194,7 +202,7 @@
 <td></td>
 <td></td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td></td>
 <td>11-12</td>
 <td>Jessica Maia (BD)</td>
@@ -202,7 +210,7 @@
 <td></td>
 <td></td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td></td>
 <td>12-1</td>
 <td>Office Hours or Lunch</td>
@@ -210,7 +218,7 @@
 <td></td>
 <td></td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td>11-Oct</td>
 <td>10-11</td>
 <td><a href="lessons/alpha_diversity.md">Hands-on: Alpha Diversity</a></td>
@@ -218,7 +226,7 @@
 <td>10/25</td>
 <td></td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td></td>
 <td></td>
 <td><a href="lessons/relative_abundance.md">Hands-on: Relative Abundance</a></td>
@@ -226,7 +234,7 @@
 <td>10/25</td>
 <td></td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td></td>
 <td>11-12</td>
 <td>Guest Speaker #5</td>
@@ -234,7 +242,7 @@
 <td></td>
 <td></td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td></td>
 <td>12-1</td>
 <td>Office Hours or Lunch</td>
@@ -242,7 +250,7 @@
 <td></td>
 <td></td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td>18-Oct</td>
 <td>10-11</td>
 <td><a href="lectures/statistical_analysis_2.pdf">Lecture: Beta Diversity</a></td>
@@ -250,7 +258,7 @@
 <td>11/1</td>
 <td></td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td></td>
 <td>11-12</td>
 <td>Guest Speaker #6</td>
@@ -258,7 +266,7 @@
 <td></td>
 <td></td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td></td>
 <td>12-1</td>
 <td>Office Hours or Lunch</td>
@@ -266,7 +274,7 @@
 <td></td>
 <td></td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td>25-Oct</td>
 <td>10-11</td>
 <td><a href="lectures/statistical_analysis_3.pdf">Lecture: Beta Diversity &amp; Ordination</a></td>
@@ -274,7 +282,7 @@
 <td>11/8</td>
 <td>JSNN</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td></td>
 <td>11-12</td>
 <td>Joe Graves (readings on Google Drive)</td>
@@ -282,7 +290,7 @@
 <td></td>
 <td></td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td></td>
 <td>12-1</td>
 <td>Office Hours or Lunch</td>
@@ -290,7 +298,7 @@
 <td></td>
 <td></td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td>1-Nov</td>
 <td>10-11</td>
 <td><a href="lessons/ordination.md">Hands-on: Beta Diversity &amp; Ordination</a></td>
@@ -298,7 +306,7 @@
 <td></td>
 <td>Duke</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td></td>
 <td>11-12</td>
 <td>Benjamin Callahan (NCSU)</td>
@@ -306,7 +314,7 @@
 <td></td>
 <td></td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td></td>
 <td>12-1</td>
 <td>Office Hours or Lunch</td>
@@ -314,7 +322,7 @@
 <td></td>
 <td></td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td>8-Nov</td>
 <td>10-11</td>
 <td><a href="lessons/bootcamp/040_git_overview.md#collaborating">Git: Collaborating</a></td>
@@ -322,7 +330,7 @@
 <td></td>
 <td>Duke</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td></td>
 <td>11-12</td>
 <td>IBIEM Alums #1</td>
@@ -330,7 +338,7 @@
 <td></td>
 <td></td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td></td>
 <td>12-1</td>
 <td>Office Hours or Lunch</td>
@@ -338,8 +346,32 @@
 <td></td>
 <td></td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td>15-Nov</td>
+<td>10-11</td>
+<td>Class Cancelled for Food Symposium</td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr class="odd">
+<td></td>
+<td>11-12</td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr class="even">
+<td></td>
+<td>12-1</td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr class="odd">
+<td>22-Nov</td>
 <td>10-11</td>
 <td>Project Mentors 1 &amp; 2</td>
 <td></td>
@@ -355,30 +387,6 @@
 <td></td>
 </tr>
 <tr class="odd">
-<td></td>
-<td>12-1</td>
-<td>Office Hours or Lunch</td>
-<td></td>
-<td></td>
-<td></td>
-</tr>
-<tr class="even">
-<td>22-Nov</td>
-<td>10-11</td>
-<td>Git: Branching and Stashing</td>
-<td></td>
-<td></td>
-<td></td>
-</tr>
-<tr class="odd">
-<td></td>
-<td>11-12</td>
-<td>IBIEM Alums #2</td>
-<td></td>
-<td></td>
-<td></td>
-</tr>
-<tr class="even">
 <td></td>
 <td>12-1</td>
 <td>Office Hours or Lunch</td>
