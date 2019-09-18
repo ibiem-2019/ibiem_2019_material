@@ -15,7 +15,7 @@ library(readr)
 
 ```{r files_and_directories}
 # Directories
-data.dir = "/data/ibiem_2016_data"
+data.dir = "/data/tutorial_data/ibiem_2016_lemur_data/"
 subset.dir = file.path("/data/tutorial_data/ibiem2016_subset")
 
 # make directory for output
