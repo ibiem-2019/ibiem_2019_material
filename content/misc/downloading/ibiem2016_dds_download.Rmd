@@ -1,0 +1,24 @@
+---
+title: "Download IBIEM 2016 Data From DDS"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{bash}
+ddsclient -h
+```
+
+```{bash}
+ddsclient list -p IBIEM_2016
+```
+
+```{bash}
+ddsclient download -h
+```
+
+```{bash}
+ddsclient download -p IBIEM_2016 /data/tutorial_data
+```
