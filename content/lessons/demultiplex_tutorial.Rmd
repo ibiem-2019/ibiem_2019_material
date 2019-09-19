@@ -16,6 +16,7 @@ First we load libraries.
 ```{r libraries, message=FALSE, warning=FALSE}
 library(readr)
 library(fs)
+library(R.utils)
 ```
 
 ## Paths, Directories, and Shell Variables
@@ -288,9 +289,9 @@ for (curread in c("forward","reverse")) {
     print(new_path)
     new_path = path_file(new_path)
     print(new_path)
-    new_path = path(demux.dir, new_path, ext=paste0(curread,".fastq"))
+    new_path = path(demux.dir, new_path, ext=paste0(curread,".fastq.gz"))
     print(new_path)
-    file_move(fastq_path, new_path)
+    gzip(fastq_path, new_path)
   }
 }
 ```

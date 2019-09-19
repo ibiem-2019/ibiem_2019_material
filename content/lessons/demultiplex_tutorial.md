@@ -1,7 +1,8 @@
 Atacama Data
 ============
 
-Atacama data is from <https://docs.qiime2.org/2018.11/tutorials/atacama-soils/#subsample-data>
+Atacama data is from
+<a href="https://docs.qiime2.org/2018.11/tutorials/atacama-soils/#subsample-data" class="uri">https://docs.qiime2.org/2018.11/tutorials/atacama-soils/#subsample-data</a>
 
 Setup
 =====
@@ -11,12 +12,15 @@ First we load libraries.
 ``` r
 library(readr)
 library(fs)
+library(R.utils)
 ```
 
 Paths, Directories, and Shell Variables
 ---------------------------------------
 
-To keep the code readable and portable, it is nice to assign paths to variables. We also need to use the R `Sys.setenv` command to make shell variables that can be used in the bash chunks below.
+To keep the code readable and portable, it is nice to assign paths to
+variables. We also need to use the R `Sys.setenv` command to make shell
+variables that can be used in the bash chunks below.
 
 ``` r
 # Directories
@@ -58,7 +62,8 @@ md5sum -c md5sum.txt
 Assemble Metadata Table (Map)
 =============================
 
-You are in luck, because you there is a metadata table already made for you. Let's check it out \#\# Examine Metadata Table (Map)
+You are in luck, because you there is a metadata table already made for
+you. Let’s check it out \#\# Examine Metadata Table (Map)
 
 ``` r
 meta.df = read_tsv(map.file)
@@ -95,7 +100,13 @@ head(meta.df)
 Check Map File
 --------------
 
-QIIME is inflexible about map file formatting. Fortunately, QIIME includes the [validate\_mapping\_file.py](http://qiime.org/scripts/validate_mapping_file.html) script that checks your map file to see if the format meets its specifications. Unfortunately the script is not very robust, so incorrectly formated map files sometimes make it crash without giving a useful error message. Let's run it anyway . . .
+QIIME is inflexible about map file formatting. Fortunately, QIIME
+includes the
+[validate\_mapping\_file.py](http://qiime.org/scripts/validate_mapping_file.html)
+script that checks your map file to see if the format meets its
+specifications. Unfortunately the script is not very robust, so
+incorrectly formated map files sometimes make it crash without giving a
+useful error message. Let’s run it anyway . . .
 
 ``` bash
 validate_mapping_file.py -m $MAP_FILE -o $OUT_DIR/validate_mapfile
@@ -103,20 +114,31 @@ validate_mapping_file.py -m $MAP_FILE -o $OUT_DIR/validate_mapfile
 
     ## Errors and/or warnings detected in mapping file.  Please check the log and html file for details.
 
-Once you have run `validate_mapping_file.py` you can view the report through RStudio:
+Once you have run `validate_mapping_file.py` you can view the report
+through RStudio:
 
-1.  In the *Files* pane, Navigate to /home/guest/scratch/atacama\_1pct/validate\_mapfile
+1.  In the *Files* pane, Navigate to
+    /home/guest/scratch/atacama\_1pct/validate\_mapfile
 2.  Click on `sample_metadata.tsv.html` and select *View in Web Browser*
 3.  Look around the output! How does it look?
 
 Demultiplexing
 ==============
 
-Remember from the map file that our dataset consists of reads from multiple samples. In order to tally the number of different bacteria corresponding to each sample, we need to separate reads according to the sample of origin.
+Remember from the map file that our dataset consists of reads from
+multiple samples. In order to tally the number of different bacteria
+corresponding to each sample, we need to separate reads according to the
+sample of origin.
 
-We will be using `split_libraries_fastq.py` and `split_sequence_file_on_sample_ids.py` to demultiplex the data. The documentation for these programs is available here: - [split\_libraries\_fastq.py](http://qiime.org/scripts/split_libraries_fastq.html) - [split\_sequence\_file\_on\_sample\_ids.py](http://qiime.org/scripts/split_sequence_file_on_sample_ids.html)
+We will be using `split_libraries_fastq.py` and
+`split_sequence_file_on_sample_ids.py` to demultiplex the data. The
+documentation for these programs is available here: -
+[split\_libraries\_fastq.py](http://qiime.org/scripts/split_libraries_fastq.html)
+-
+[split\_sequence\_file\_on\_sample\_ids.py](http://qiime.org/scripts/split_sequence_file_on_sample_ids.html)
 
-Alternatively we can get some instructions if we run the programs with the `--help` command line option.
+Alternatively we can get some instructions if we run the programs with
+the `--help` command line option.
 
 ``` bash
 split_libraries_fastq.py --help
@@ -226,21 +248,32 @@ split_libraries_fastq.py --help
 Running split\_libraries\_fastq.py
 ----------------------------------
 
-We are now ready to run `split_libraries_fastq.py`. Here is an explanation for the command line options that we use
+We are now ready to run `split_libraries_fastq.py`. Here is an
+explanation for the command line options that we use
 
--   Quality Parameters: `split_libraries_fastq.py` can do quality filtering, but we don't want it to because we will be doing quality filtering in DADA2, so we will set these paramters to the least stringent values possible to be sure that nothing gets filtered
-    -   -r, --max\_bad\_run\_length
-    -   -p, --min\_per\_read\_length\_fraction
-    -   -n, --sequence\_max\_n
-    -   -q, --phred\_quality\_threshold
--   --sequence\_read\_fps : this is the FASTQ that is being demuxtiplexed, we have to run `split_libraries_fastq.py` separately on the R1 and R2 files
--   --output\_dir : the output directory; there is more than one output file
--   --barcode\_read\_fps : the barcode FASTQ
--   --mapping\_fps : the file mapping samples to barcodes (and other metadata)
--   --phred\_offset : are the FASTQs phred33 or phred66?
--   --barcode\_type : Are the barcodes EMP golay codes? How long are they
--   --store\_demultiplexed\_fastq : save demultiplexed FASTQs (default is to only generate a FASTA because that's what the qiime pipeline uses after this point)
--   --retain\_unassigned\_reads : be a packrat - don't throw out reads that don't match a barcode
+-   Quality Parameters: `split_libraries_fastq.py` can do quality
+    filtering, but we don’t want it to because we will be doing quality
+    filtering in DADA2, so we will set these paramters to the least
+    stringent values possible to be sure that nothing gets filtered
+    -   -r, –max\_bad\_run\_length
+    -   -p, –min\_per\_read\_length\_fraction
+    -   -n, –sequence\_max\_n
+    -   -q, –phred\_quality\_threshold
+-   –sequence\_read\_fps : this is the FASTQ that is being
+    demuxtiplexed, we have to run `split_libraries_fastq.py` separately
+    on the R1 and R2 files
+-   –output\_dir : the output directory; there is more than one output
+    file
+-   –barcode\_read\_fps : the barcode FASTQ
+-   –mapping\_fps : the file mapping samples to barcodes (and other
+    metadata)
+-   –phred\_offset : are the FASTQs phred33 or phred66?
+-   –barcode\_type : Are the barcodes EMP golay codes? How long are they
+-   –store\_demultiplexed\_fastq : save demultiplexed FASTQs (default is
+    to only generate a FASTA because that’s what the qiime pipeline uses
+    after this point)
+-   –retain\_unassigned\_reads : be a packrat - don’t throw out reads
+    that don’t match a barcode
 
 ``` bash
 set -u
@@ -262,15 +295,24 @@ split_libraries_fastq.py -r 999 -n 999 -q 0 -p 0.0001 \
     ## If you need help with QIIME, see:
     ## http://help.qiime.org
 
-Hmm, an error message! Let's read it carefully to see what it says.
+Hmm, an error message! Let’s read it carefully to see what it says.
 
-It is saying that some of the barcodes are not valid golay codes. We know that these barcodes are golay barcodes (as is common with 16s barcodes), so that can't be right.
+It is saying that some of the barcodes are not valid golay codes. We
+know that these barcodes are golay barcodes (as is common with 16s
+barcodes), so that can’t be right.
 
-It says that we could disable barcode error correction with the `--barcode_type 12` option, but that's a bit like disabling the brakes in our car because they squeal.
+It says that we could disable barcode error correction with the
+`--barcode_type 12` option, but that’s a bit like disabling the brakes
+in our car because they squeal.
 
-It asks if they "need to be reverse complemented". There are two options for doing that: - --rev\_comp\_barcode: Reverse complement barcode reads before lookup \[default: False\] - --rev\_comp\_mapping\_barcodes: Reverse complement barcode in mapping before lookup (useful if barcodes in mapping file are reverse complements of golay codes) \[default: False\]
+It asks if they “need to be reverse complemented”. There are two options
+for doing that: - –rev\_comp\_barcode: Reverse complement barcode reads
+before lookup \[default: False\] - –rev\_comp\_mapping\_barcodes:
+Reverse complement barcode in mapping before lookup (useful if barcodes
+in mapping file are reverse complements of golay codes) \[default:
+False\]
 
-Let's try one
+Let’s try one
 
 ``` bash
 set -u
@@ -293,7 +335,7 @@ split_libraries_fastq.py -r 999 -n 999 -q 0 -p 0.0001 \
     ## If you need help with QIIME, see:
     ## http://help.qiime.org
 
-That didn't work, let's try both
+That didn’t work, let’s try both
 
 ``` bash
 set -u
@@ -311,7 +353,7 @@ split_libraries_fastq.py -r 999 -n 999 -q 0 -p 0.0001 \
         --retain_unassigned_reads
 ```
 
-That's better, let's check the output:
+That’s better, let’s check the output:
 
 ``` bash
 ls $DEMUX_DIR/tagged_3/
@@ -429,15 +471,25 @@ cat $DEMUX_DIR/tagged_3/split_library_log.txt
     ## Total number seqs written    2712
     ## ---
 
-`split_library_log.txt` gives us some summary statistics: total number of reads processed, number of reads that fail various quality tests, number of reads assigned to each sample (based on their barcode), and total number of reads that were assigned to all barcodes.
+`split_library_log.txt` gives us some summary statistics: total number
+of reads processed, number of reads that fail various quality tests,
+number of reads assigned to each sample (based on their barcode), and
+total number of reads that were assigned to all barcodes.
 
-This doesn't look so good!
+This doesn’t look so good!
 
-"Total number of input sequences: 135487"
+“Total number of input sequences: 135487”
 
-So we are inputting 135487 reads into `split_libraries_fastq.py` (Is this what you expected?), but only 2712 are assigned to a barcode (confusingly 2711 are assigned to the "Unassigned" barcode, so only one read is assigned to a sample). We are losing almost all of our reds!
+So we are inputting 135487 reads into `split_libraries_fastq.py` (Is
+this what you expected?), but only 2712 are assigned to a barcode
+(confusingly 2711 are assigned to the “Unassigned” barcode, so only one
+read is assigned to a sample). We are losing almost all of our reds!
 
-The quality filtering looks good, except "Barcode errors exceed max: 132775"; that's where the most of the reads are going (98%). This could be a problem with our data, but it suggests that there might be a problem with our analysis, particularly how we are handling the barcodes. Perhaps we still haven't figured it out yet! Let's try this:
+The quality filtering looks good, except “Barcode errors exceed max:
+132775”; that’s where the most of the reads are going (98%). This could
+be a problem with our data, but it suggests that there might be a
+problem with our analysis, particularly how we are handling the
+barcodes. Perhaps we still haven’t figured it out yet! Let’s try this:
 
 ``` bash
 set -u
@@ -553,12 +605,20 @@ cat $DEMUX_DIR/tagged_4/split_library_log.txt
     ## Total number seqs written    106799
     ## ---
 
-We still have a bunch of Barcode errors but many fewer (17% instead of 98%). Many are still Unassigned, but most of our samples have some reads, and many of our samples have a large number. It looks like we needed to reverse complement both the barcodes as supplied in the map file and the barcodes as sequenced.
+We still have a bunch of Barcode errors but many fewer (17% instead of
+98%). Many are still Unassigned, but most of our samples have some
+reads, and many of our samples have a large number. It looks like we
+needed to reverse complement both the barcodes as supplied in the map
+file and the barcodes as sequenced.
 
 Running `split_sequence_file_on_sample_ids.py`
 ----------------------------------------------
 
-Despite its name `split_libraries_fastq.py` does not actually *spilt* the FASTQ, it just relabels or "tags" it. To actually do the demultiplexing we need another program: `split_sequence_file_on_sample_ids.py`. Fortunately the commands for `split_sequence_file_on_sample_ids.py` are a little simpler.
+Despite its name `split_libraries_fastq.py` does not actually *spilt*
+the FASTQ, it just relabels or “tags” it. To actually do the
+demultiplexing we need another program:
+`split_sequence_file_on_sample_ids.py`. Fortunately the commands for
+`split_sequence_file_on_sample_ids.py` are a little simpler.
 
 ``` bash
 split_sequence_file_on_sample_ids.py -h
@@ -601,11 +661,11 @@ split_sequence_file_on_sample_ids.py -h
     ##     -o OUTPUT_DIR, --output_dir=OUTPUT_DIR
     ##                         the output directory [default: none] [REQUIRED]
 
-Here's what we will use:
+Here’s what we will use:
 
--   --input\_seqs\_fp: the "tagged" fastq
--   --file\_type: FASTA or FASTQ?
--   --output\_dir: where to put the demuxed FASTQs
+-   –input\_seqs\_fp: the “tagged” fastq
+-   –file\_type: FASTA or FASTQ?
+-   –output\_dir: where to put the demuxed FASTQs
 
 ``` bash
 TAGDIR=$DEMUX_DIR/tagged_4
@@ -615,82 +675,86 @@ split_sequence_file_on_sample_ids.py --input_seqs_fp $TAGDIR/seqs.fastq \
                      --output_dir $SPLITDIR
 ```
 
-Now let's check that it worked
+Now let’s check that it worked
 
 ``` bash
 ls -lSrh $DEMUX_DIR/split_4
 ```
 
     ## total 44M
-    ## -rw-r--r-- 1 guest users  427 Apr  1 14:41 YUN1242.2.fastq
-    ## -rw-r--r-- 1 guest users  428 Apr  1 14:41 YUN3184.2.fastq
-    ## -rw-r--r-- 1 guest users  428 Apr  1 14:41 YUN3008.3.fastq
-    ## -rw-r--r-- 1 guest users  428 Apr  1 14:41 YUN2029.3.fastq
-    ## -rw-r--r-- 1 guest users  429 Apr  1 14:41 BAQ1370.1.3.fastq
-    ## -rw-r--r-- 1 guest users  430 Apr  1 14:41 YUN3008.1.3.fastq
-    ## -rw-r--r-- 1 guest users  430 Apr  1 14:41 BAQ1552.1.1.fastq
-    ## -rw-r--r-- 1 guest users 2.6K Apr  1 14:41 YUN2029.1.fastq
-    ## -rw-r--r-- 1 guest users  24K Apr  1 14:41 YUN3259.1.1.fastq
-    ## -rw-r--r-- 1 guest users  72K Apr  1 14:41 YUN3346.2.fastq
-    ## -rw-r--r-- 1 guest users 115K Apr  1 14:41 YUN3259.1.3.fastq
-    ## -rw-r--r-- 1 guest users 155K Apr  1 14:41 BAQ2838.3.fastq
-    ## -rw-r--r-- 1 guest users 169K Apr  1 14:41 YUN1005.3.fastq
-    ## -rw-r--r-- 1 guest users 186K Apr  1 14:41 YUN3153.2.fastq
-    ## -rw-r--r-- 1 guest users 195K Apr  1 14:41 BAQ2462.3.fastq
-    ## -rw-r--r-- 1 guest users 205K Apr  1 14:41 BAQ2838.2.fastq
-    ## -rw-r--r-- 1 guest users 224K Apr  1 14:41 YUN1242.1.fastq
-    ## -rw-r--r-- 1 guest users 238K Apr  1 14:41 YUN3153.3.fastq
-    ## -rw-r--r-- 1 guest users 246K Apr  1 14:41 BAQ2838.1.fastq
-    ## -rw-r--r-- 1 guest users 250K Apr  1 14:41 BAQ2462.2.fastq
-    ## -rw-r--r-- 1 guest users 256K Apr  1 14:41 BAQ2420.2.fastq
-    ## -rw-r--r-- 1 guest users 269K Apr  1 14:41 BAQ2420.1.2.fastq
-    ## -rw-r--r-- 1 guest users 271K Apr  1 14:41 BAQ2420.3.fastq
-    ## -rw-r--r-- 1 guest users 273K Apr  1 14:41 YUN3346.1.fastq
-    ## -rw-r--r-- 1 guest users 273K Apr  1 14:41 YUN3856.1.3.fastq
-    ## -rw-r--r-- 1 guest users 276K Apr  1 14:41 BAQ2687.2.fastq
-    ## -rw-r--r-- 1 guest users 276K Apr  1 14:41 BAQ2420.1.3.fastq
-    ## -rw-r--r-- 1 guest users 287K Apr  1 14:41 YUN3259.1.2.fastq
-    ## -rw-r--r-- 1 guest users 303K Apr  1 14:41 BAQ2420.1.1.fastq
-    ## -rw-r--r-- 1 guest users 305K Apr  1 14:41 YUN1609.1.fastq
-    ## -rw-r--r-- 1 guest users 307K Apr  1 14:41 YUN1242.3.fastq
-    ## -rw-r--r-- 1 guest users 318K Apr  1 14:41 BAQ4697.2.fastq
-    ## -rw-r--r-- 1 guest users 321K Apr  1 14:41 YUN3533.1.3.fastq
-    ## -rw-r--r-- 1 guest users 332K Apr  1 14:41 YUN3346.3.fastq
-    ## -rw-r--r-- 1 guest users 343K Apr  1 14:41 BAQ4697.1.fastq
-    ## -rw-r--r-- 1 guest users 344K Apr  1 14:41 BAQ3473.2.fastq
-    ## -rw-r--r-- 1 guest users 349K Apr  1 14:41 YUN2029.2.fastq
-    ## -rw-r--r-- 1 guest users 363K Apr  1 14:41 BAQ2462.1.fastq
-    ## -rw-r--r-- 1 guest users 363K Apr  1 14:41 BAQ2687.1.fastq
-    ## -rw-r--r-- 1 guest users 367K Apr  1 14:41 YUN1005.1.1.fastq
-    ## -rw-r--r-- 1 guest users 368K Apr  1 14:41 BAQ2687.3.fastq
-    ## -rw-r--r-- 1 guest users 372K Apr  1 14:41 YUN3533.1.2.fastq
-    ## -rw-r--r-- 1 guest users 393K Apr  1 14:41 YUN3533.1.1.fastq
-    ## -rw-r--r-- 1 guest users 400K Apr  1 14:41 YUN3856.1.1.fastq
-    ## -rw-r--r-- 1 guest users 408K Apr  1 14:41 YUN3856.1.2.fastq
-    ## -rw-r--r-- 1 guest users 411K Apr  1 14:41 YUN3856.2.fastq
-    ## -rw-r--r-- 1 guest users 423K Apr  1 14:41 YUN3259.2.fastq
-    ## -rw-r--r-- 1 guest users 424K Apr  1 14:41 YUN3428.3.fastq
-    ## -rw-r--r-- 1 guest users 436K Apr  1 14:41 BAQ4166.1.1.fastq
-    ## -rw-r--r-- 1 guest users 442K Apr  1 14:41 BAQ4166.1.3.fastq
-    ## -rw-r--r-- 1 guest users 445K Apr  1 14:41 YUN3428.1.fastq
-    ## -rw-r--r-- 1 guest users 452K Apr  1 14:41 YUN3259.3.fastq
-    ## -rw-r--r-- 1 guest users 453K Apr  1 14:41 BAQ4697.3.fastq
-    ## -rw-r--r-- 1 guest users 458K Apr  1 14:41 BAQ3473.1.fastq
-    ## -rw-r--r-- 1 guest users 484K Apr  1 14:41 YUN3533.2.fastq
-    ## -rw-r--r-- 1 guest users 490K Apr  1 14:41 BAQ3473.3.fastq
-    ## -rw-r--r-- 1 guest users 515K Apr  1 14:41 YUN3856.3.fastq
-    ## -rw-r--r-- 1 guest users 516K Apr  1 14:41 BAQ4166.3.fastq
-    ## -rw-r--r-- 1 guest users 524K Apr  1 14:41 YUN3533.3.fastq
-    ## -rw-r--r-- 1 guest users 528K Apr  1 14:41 BAQ4166.2.fastq
-    ## -rw-r--r-- 1 guest users 547K Apr  1 14:41 BAQ4166.1.2.fastq
-    ## -rw-r--r-- 1 guest users 576K Apr  1 14:41 YUN3428.2.fastq
-    ## -rw-r--r-- 1 guest users  26M Apr  1 14:41 Unassigned.fastq
+    ## -rw-r--r-- 1 guest users  427 Sep 19 18:12 YUN1242.2.fastq
+    ## -rw-r--r-- 1 guest users  428 Sep 19 18:12 YUN3184.2.fastq
+    ## -rw-r--r-- 1 guest users  428 Sep 19 18:12 YUN3008.3.fastq
+    ## -rw-r--r-- 1 guest users  428 Sep 19 18:12 YUN2029.3.fastq
+    ## -rw-r--r-- 1 guest users  429 Sep 19 18:12 BAQ1370.1.3.fastq
+    ## -rw-r--r-- 1 guest users  430 Sep 19 18:12 YUN3008.1.3.fastq
+    ## -rw-r--r-- 1 guest users  430 Sep 19 18:12 BAQ1552.1.1.fastq
+    ## -rw-r--r-- 1 guest users 2.6K Sep 19 18:12 YUN2029.1.fastq
+    ## -rw-r--r-- 1 guest users  24K Sep 19 18:12 YUN3259.1.1.fastq
+    ## -rw-r--r-- 1 guest users  72K Sep 19 18:12 YUN3346.2.fastq
+    ## -rw-r--r-- 1 guest users 115K Sep 19 18:12 YUN3259.1.3.fastq
+    ## -rw-r--r-- 1 guest users 155K Sep 19 18:12 BAQ2838.3.fastq
+    ## -rw-r--r-- 1 guest users 169K Sep 19 18:12 YUN1005.3.fastq
+    ## -rw-r--r-- 1 guest users 186K Sep 19 18:12 YUN3153.2.fastq
+    ## -rw-r--r-- 1 guest users 195K Sep 19 18:12 BAQ2462.3.fastq
+    ## -rw-r--r-- 1 guest users 205K Sep 19 18:12 BAQ2838.2.fastq
+    ## -rw-r--r-- 1 guest users 224K Sep 19 18:12 YUN1242.1.fastq
+    ## -rw-r--r-- 1 guest users 238K Sep 19 18:12 YUN3153.3.fastq
+    ## -rw-r--r-- 1 guest users 246K Sep 19 18:12 BAQ2838.1.fastq
+    ## -rw-r--r-- 1 guest users 250K Sep 19 18:12 BAQ2462.2.fastq
+    ## -rw-r--r-- 1 guest users 256K Sep 19 18:12 BAQ2420.2.fastq
+    ## -rw-r--r-- 1 guest users 269K Sep 19 18:12 BAQ2420.1.2.fastq
+    ## -rw-r--r-- 1 guest users 271K Sep 19 18:12 BAQ2420.3.fastq
+    ## -rw-r--r-- 1 guest users 273K Sep 19 18:12 YUN3346.1.fastq
+    ## -rw-r--r-- 1 guest users 273K Sep 19 18:12 YUN3856.1.3.fastq
+    ## -rw-r--r-- 1 guest users 276K Sep 19 18:12 BAQ2687.2.fastq
+    ## -rw-r--r-- 1 guest users 276K Sep 19 18:12 BAQ2420.1.3.fastq
+    ## -rw-r--r-- 1 guest users 287K Sep 19 18:12 YUN3259.1.2.fastq
+    ## -rw-r--r-- 1 guest users 303K Sep 19 18:12 BAQ2420.1.1.fastq
+    ## -rw-r--r-- 1 guest users 305K Sep 19 18:12 YUN1609.1.fastq
+    ## -rw-r--r-- 1 guest users 307K Sep 19 18:12 YUN1242.3.fastq
+    ## -rw-r--r-- 1 guest users 318K Sep 19 18:12 BAQ4697.2.fastq
+    ## -rw-r--r-- 1 guest users 321K Sep 19 18:12 YUN3533.1.3.fastq
+    ## -rw-r--r-- 1 guest users 332K Sep 19 18:12 YUN3346.3.fastq
+    ## -rw-r--r-- 1 guest users 343K Sep 19 18:12 BAQ4697.1.fastq
+    ## -rw-r--r-- 1 guest users 344K Sep 19 18:12 BAQ3473.2.fastq
+    ## -rw-r--r-- 1 guest users 349K Sep 19 18:12 YUN2029.2.fastq
+    ## -rw-r--r-- 1 guest users 363K Sep 19 18:12 BAQ2462.1.fastq
+    ## -rw-r--r-- 1 guest users 363K Sep 19 18:12 BAQ2687.1.fastq
+    ## -rw-r--r-- 1 guest users 367K Sep 19 18:12 YUN1005.1.1.fastq
+    ## -rw-r--r-- 1 guest users 368K Sep 19 18:12 BAQ2687.3.fastq
+    ## -rw-r--r-- 1 guest users 372K Sep 19 18:12 YUN3533.1.2.fastq
+    ## -rw-r--r-- 1 guest users 393K Sep 19 18:12 YUN3533.1.1.fastq
+    ## -rw-r--r-- 1 guest users 400K Sep 19 18:12 YUN3856.1.1.fastq
+    ## -rw-r--r-- 1 guest users 408K Sep 19 18:12 YUN3856.1.2.fastq
+    ## -rw-r--r-- 1 guest users 411K Sep 19 18:12 YUN3856.2.fastq
+    ## -rw-r--r-- 1 guest users 423K Sep 19 18:12 YUN3259.2.fastq
+    ## -rw-r--r-- 1 guest users 424K Sep 19 18:12 YUN3428.3.fastq
+    ## -rw-r--r-- 1 guest users 436K Sep 19 18:12 BAQ4166.1.1.fastq
+    ## -rw-r--r-- 1 guest users 442K Sep 19 18:12 BAQ4166.1.3.fastq
+    ## -rw-r--r-- 1 guest users 445K Sep 19 18:12 YUN3428.1.fastq
+    ## -rw-r--r-- 1 guest users 452K Sep 19 18:12 YUN3259.3.fastq
+    ## -rw-r--r-- 1 guest users 453K Sep 19 18:12 BAQ4697.3.fastq
+    ## -rw-r--r-- 1 guest users 458K Sep 19 18:12 BAQ3473.1.fastq
+    ## -rw-r--r-- 1 guest users 484K Sep 19 18:12 YUN3533.2.fastq
+    ## -rw-r--r-- 1 guest users 490K Sep 19 18:12 BAQ3473.3.fastq
+    ## -rw-r--r-- 1 guest users 515K Sep 19 18:12 YUN3856.3.fastq
+    ## -rw-r--r-- 1 guest users 516K Sep 19 18:12 BAQ4166.3.fastq
+    ## -rw-r--r-- 1 guest users 524K Sep 19 18:12 YUN3533.3.fastq
+    ## -rw-r--r-- 1 guest users 528K Sep 19 18:12 BAQ4166.2.fastq
+    ## -rw-r--r-- 1 guest users 547K Sep 19 18:12 BAQ4166.1.2.fastq
+    ## -rw-r--r-- 1 guest users 576K Sep 19 18:12 YUN3428.2.fastq
+    ## -rw-r--r-- 1 guest users  26M Sep 19 18:12 Unassigned.fastq
 
 Looks good like we generated a demultiplexed FASTQ for each sample!
 
 ### Putting it together for R1 and R2
 
-This will run `split_libraries_fastq.py` and `split_sequence_file_on_sample_ids.py` on both R1 and R2, and do a little cleanup (get rid of the results of `split_libraries_fastq.py` once we have demuxed it. We can drop "--retain\_unassigned\_reads" since we have already reviewed the results.
+This will run `split_libraries_fastq.py` and
+`split_sequence_file_on_sample_ids.py` on both R1 and R2, and do a
+little cleanup (get rid of the results of `split_libraries_fastq.py`
+once we have demuxed it. We can drop “–retain\_unassigned\_reads” since
+we have already reviewed the results.
 
 ``` bash
 set -u
@@ -860,10 +924,30 @@ ls $DEMUX_DIR/forward $DEMUX_DIR/reverse
     ## YUN3856.2.fastq
     ## YUN3856.3.fastq
 
-So the demuxed forward reads are in the `forward` directory and the demuxed reverse reads are in the `reverse` directory. We are ready for DADA2!
+So the demuxed forward reads are in the `forward` directory and the
+demuxed reverse reads are in the `reverse` directory. We are ready for
+DADA2!
 
 Bonus: Rename and move split FASTQs
 -----------------------------------
+
+``` r
+for (curread in c("R1","R2")) {
+  curpath = file.path(demux.dir,curread)
+  print(curpath)
+  for (fastq_path in list.files(curpath, full.names = TRUE,pattern = ".fastq")){
+    fastq_path %>%
+      path_ext_remove %>%
+      path_file %>%
+      path(demux.dir, ., ext=paste0(curread,".fastq.gz")) ->
+      new_path
+    gzip(fastq_path, new_path)
+  }
+}
+```
+
+    ## [1] "/home/guest/scratch/atacama_1pct/demux/R1"
+    ## [1] "/home/guest/scratch/atacama_1pct/demux/R2"
 
 ``` r
 for (curread in c("forward","reverse")) {
@@ -877,9 +961,9 @@ for (curread in c("forward","reverse")) {
     print(new_path)
     new_path = path_file(new_path)
     print(new_path)
-    new_path = path(demux.dir, new_path, ext=paste0(curread,".fastq"))
+    new_path = path(demux.dir, new_path, ext=paste0(curread,".fastq.gz"))
     print(new_path)
-    file_move(fastq_path, new_path)
+    gzip(fastq_path, new_path)
   }
 }
 ```
@@ -887,501 +971,501 @@ for (curread in c("forward","reverse")) {
     ## [1] "/home/guest/scratch/atacama_1pct/demux/forward"
     ## [1] "/home/guest/scratch/atacama_1pct/demux/forward/BAQ1370.1.3.fastq"
     ## [1] "/home/guest/scratch/atacama_1pct/demux/forward/BAQ1370.1.3"
-    ## BAQ1370.1.3
-    ## /home/guest/scratch/atacama_1pct/demux/BAQ1370.1.3.forward.fastq
+    ## [1] "BAQ1370.1.3"
+    ## /home/guest/scratch/atacama_1pct/demux/BAQ1370.1.3.forward.fastq.gz
     ## [1] "/home/guest/scratch/atacama_1pct/demux/forward/BAQ1552.1.1.fastq"
     ## [1] "/home/guest/scratch/atacama_1pct/demux/forward/BAQ1552.1.1"
-    ## BAQ1552.1.1
-    ## /home/guest/scratch/atacama_1pct/demux/BAQ1552.1.1.forward.fastq
+    ## [1] "BAQ1552.1.1"
+    ## /home/guest/scratch/atacama_1pct/demux/BAQ1552.1.1.forward.fastq.gz
     ## [1] "/home/guest/scratch/atacama_1pct/demux/forward/BAQ2420.1.1.fastq"
     ## [1] "/home/guest/scratch/atacama_1pct/demux/forward/BAQ2420.1.1"
-    ## BAQ2420.1.1
-    ## /home/guest/scratch/atacama_1pct/demux/BAQ2420.1.1.forward.fastq
+    ## [1] "BAQ2420.1.1"
+    ## /home/guest/scratch/atacama_1pct/demux/BAQ2420.1.1.forward.fastq.gz
     ## [1] "/home/guest/scratch/atacama_1pct/demux/forward/BAQ2420.1.2.fastq"
     ## [1] "/home/guest/scratch/atacama_1pct/demux/forward/BAQ2420.1.2"
-    ## BAQ2420.1.2
-    ## /home/guest/scratch/atacama_1pct/demux/BAQ2420.1.2.forward.fastq
+    ## [1] "BAQ2420.1.2"
+    ## /home/guest/scratch/atacama_1pct/demux/BAQ2420.1.2.forward.fastq.gz
     ## [1] "/home/guest/scratch/atacama_1pct/demux/forward/BAQ2420.1.3.fastq"
     ## [1] "/home/guest/scratch/atacama_1pct/demux/forward/BAQ2420.1.3"
-    ## BAQ2420.1.3
-    ## /home/guest/scratch/atacama_1pct/demux/BAQ2420.1.3.forward.fastq
+    ## [1] "BAQ2420.1.3"
+    ## /home/guest/scratch/atacama_1pct/demux/BAQ2420.1.3.forward.fastq.gz
     ## [1] "/home/guest/scratch/atacama_1pct/demux/forward/BAQ2420.2.fastq"
     ## [1] "/home/guest/scratch/atacama_1pct/demux/forward/BAQ2420.2"
-    ## BAQ2420.2
-    ## /home/guest/scratch/atacama_1pct/demux/BAQ2420.2.forward.fastq
+    ## [1] "BAQ2420.2"
+    ## /home/guest/scratch/atacama_1pct/demux/BAQ2420.2.forward.fastq.gz
     ## [1] "/home/guest/scratch/atacama_1pct/demux/forward/BAQ2420.3.fastq"
     ## [1] "/home/guest/scratch/atacama_1pct/demux/forward/BAQ2420.3"
-    ## BAQ2420.3
-    ## /home/guest/scratch/atacama_1pct/demux/BAQ2420.3.forward.fastq
+    ## [1] "BAQ2420.3"
+    ## /home/guest/scratch/atacama_1pct/demux/BAQ2420.3.forward.fastq.gz
     ## [1] "/home/guest/scratch/atacama_1pct/demux/forward/BAQ2462.1.fastq"
     ## [1] "/home/guest/scratch/atacama_1pct/demux/forward/BAQ2462.1"
-    ## BAQ2462.1
-    ## /home/guest/scratch/atacama_1pct/demux/BAQ2462.1.forward.fastq
+    ## [1] "BAQ2462.1"
+    ## /home/guest/scratch/atacama_1pct/demux/BAQ2462.1.forward.fastq.gz
     ## [1] "/home/guest/scratch/atacama_1pct/demux/forward/BAQ2462.2.fastq"
     ## [1] "/home/guest/scratch/atacama_1pct/demux/forward/BAQ2462.2"
-    ## BAQ2462.2
-    ## /home/guest/scratch/atacama_1pct/demux/BAQ2462.2.forward.fastq
+    ## [1] "BAQ2462.2"
+    ## /home/guest/scratch/atacama_1pct/demux/BAQ2462.2.forward.fastq.gz
     ## [1] "/home/guest/scratch/atacama_1pct/demux/forward/BAQ2462.3.fastq"
     ## [1] "/home/guest/scratch/atacama_1pct/demux/forward/BAQ2462.3"
-    ## BAQ2462.3
-    ## /home/guest/scratch/atacama_1pct/demux/BAQ2462.3.forward.fastq
+    ## [1] "BAQ2462.3"
+    ## /home/guest/scratch/atacama_1pct/demux/BAQ2462.3.forward.fastq.gz
     ## [1] "/home/guest/scratch/atacama_1pct/demux/forward/BAQ2687.1.fastq"
     ## [1] "/home/guest/scratch/atacama_1pct/demux/forward/BAQ2687.1"
-    ## BAQ2687.1
-    ## /home/guest/scratch/atacama_1pct/demux/BAQ2687.1.forward.fastq
+    ## [1] "BAQ2687.1"
+    ## /home/guest/scratch/atacama_1pct/demux/BAQ2687.1.forward.fastq.gz
     ## [1] "/home/guest/scratch/atacama_1pct/demux/forward/BAQ2687.2.fastq"
     ## [1] "/home/guest/scratch/atacama_1pct/demux/forward/BAQ2687.2"
-    ## BAQ2687.2
-    ## /home/guest/scratch/atacama_1pct/demux/BAQ2687.2.forward.fastq
+    ## [1] "BAQ2687.2"
+    ## /home/guest/scratch/atacama_1pct/demux/BAQ2687.2.forward.fastq.gz
     ## [1] "/home/guest/scratch/atacama_1pct/demux/forward/BAQ2687.3.fastq"
     ## [1] "/home/guest/scratch/atacama_1pct/demux/forward/BAQ2687.3"
-    ## BAQ2687.3
-    ## /home/guest/scratch/atacama_1pct/demux/BAQ2687.3.forward.fastq
+    ## [1] "BAQ2687.3"
+    ## /home/guest/scratch/atacama_1pct/demux/BAQ2687.3.forward.fastq.gz
     ## [1] "/home/guest/scratch/atacama_1pct/demux/forward/BAQ2838.1.fastq"
     ## [1] "/home/guest/scratch/atacama_1pct/demux/forward/BAQ2838.1"
-    ## BAQ2838.1
-    ## /home/guest/scratch/atacama_1pct/demux/BAQ2838.1.forward.fastq
+    ## [1] "BAQ2838.1"
+    ## /home/guest/scratch/atacama_1pct/demux/BAQ2838.1.forward.fastq.gz
     ## [1] "/home/guest/scratch/atacama_1pct/demux/forward/BAQ2838.2.fastq"
     ## [1] "/home/guest/scratch/atacama_1pct/demux/forward/BAQ2838.2"
-    ## BAQ2838.2
-    ## /home/guest/scratch/atacama_1pct/demux/BAQ2838.2.forward.fastq
+    ## [1] "BAQ2838.2"
+    ## /home/guest/scratch/atacama_1pct/demux/BAQ2838.2.forward.fastq.gz
     ## [1] "/home/guest/scratch/atacama_1pct/demux/forward/BAQ2838.3.fastq"
     ## [1] "/home/guest/scratch/atacama_1pct/demux/forward/BAQ2838.3"
-    ## BAQ2838.3
-    ## /home/guest/scratch/atacama_1pct/demux/BAQ2838.3.forward.fastq
+    ## [1] "BAQ2838.3"
+    ## /home/guest/scratch/atacama_1pct/demux/BAQ2838.3.forward.fastq.gz
     ## [1] "/home/guest/scratch/atacama_1pct/demux/forward/BAQ3473.1.fastq"
     ## [1] "/home/guest/scratch/atacama_1pct/demux/forward/BAQ3473.1"
-    ## BAQ3473.1
-    ## /home/guest/scratch/atacama_1pct/demux/BAQ3473.1.forward.fastq
+    ## [1] "BAQ3473.1"
+    ## /home/guest/scratch/atacama_1pct/demux/BAQ3473.1.forward.fastq.gz
     ## [1] "/home/guest/scratch/atacama_1pct/demux/forward/BAQ3473.2.fastq"
     ## [1] "/home/guest/scratch/atacama_1pct/demux/forward/BAQ3473.2"
-    ## BAQ3473.2
-    ## /home/guest/scratch/atacama_1pct/demux/BAQ3473.2.forward.fastq
+    ## [1] "BAQ3473.2"
+    ## /home/guest/scratch/atacama_1pct/demux/BAQ3473.2.forward.fastq.gz
     ## [1] "/home/guest/scratch/atacama_1pct/demux/forward/BAQ3473.3.fastq"
     ## [1] "/home/guest/scratch/atacama_1pct/demux/forward/BAQ3473.3"
-    ## BAQ3473.3
-    ## /home/guest/scratch/atacama_1pct/demux/BAQ3473.3.forward.fastq
+    ## [1] "BAQ3473.3"
+    ## /home/guest/scratch/atacama_1pct/demux/BAQ3473.3.forward.fastq.gz
     ## [1] "/home/guest/scratch/atacama_1pct/demux/forward/BAQ4166.1.1.fastq"
     ## [1] "/home/guest/scratch/atacama_1pct/demux/forward/BAQ4166.1.1"
-    ## BAQ4166.1.1
-    ## /home/guest/scratch/atacama_1pct/demux/BAQ4166.1.1.forward.fastq
+    ## [1] "BAQ4166.1.1"
+    ## /home/guest/scratch/atacama_1pct/demux/BAQ4166.1.1.forward.fastq.gz
     ## [1] "/home/guest/scratch/atacama_1pct/demux/forward/BAQ4166.1.2.fastq"
     ## [1] "/home/guest/scratch/atacama_1pct/demux/forward/BAQ4166.1.2"
-    ## BAQ4166.1.2
-    ## /home/guest/scratch/atacama_1pct/demux/BAQ4166.1.2.forward.fastq
+    ## [1] "BAQ4166.1.2"
+    ## /home/guest/scratch/atacama_1pct/demux/BAQ4166.1.2.forward.fastq.gz
     ## [1] "/home/guest/scratch/atacama_1pct/demux/forward/BAQ4166.1.3.fastq"
     ## [1] "/home/guest/scratch/atacama_1pct/demux/forward/BAQ4166.1.3"
-    ## BAQ4166.1.3
-    ## /home/guest/scratch/atacama_1pct/demux/BAQ4166.1.3.forward.fastq
+    ## [1] "BAQ4166.1.3"
+    ## /home/guest/scratch/atacama_1pct/demux/BAQ4166.1.3.forward.fastq.gz
     ## [1] "/home/guest/scratch/atacama_1pct/demux/forward/BAQ4166.2.fastq"
     ## [1] "/home/guest/scratch/atacama_1pct/demux/forward/BAQ4166.2"
-    ## BAQ4166.2
-    ## /home/guest/scratch/atacama_1pct/demux/BAQ4166.2.forward.fastq
+    ## [1] "BAQ4166.2"
+    ## /home/guest/scratch/atacama_1pct/demux/BAQ4166.2.forward.fastq.gz
     ## [1] "/home/guest/scratch/atacama_1pct/demux/forward/BAQ4166.3.fastq"
     ## [1] "/home/guest/scratch/atacama_1pct/demux/forward/BAQ4166.3"
-    ## BAQ4166.3
-    ## /home/guest/scratch/atacama_1pct/demux/BAQ4166.3.forward.fastq
+    ## [1] "BAQ4166.3"
+    ## /home/guest/scratch/atacama_1pct/demux/BAQ4166.3.forward.fastq.gz
     ## [1] "/home/guest/scratch/atacama_1pct/demux/forward/BAQ4697.1.fastq"
     ## [1] "/home/guest/scratch/atacama_1pct/demux/forward/BAQ4697.1"
-    ## BAQ4697.1
-    ## /home/guest/scratch/atacama_1pct/demux/BAQ4697.1.forward.fastq
+    ## [1] "BAQ4697.1"
+    ## /home/guest/scratch/atacama_1pct/demux/BAQ4697.1.forward.fastq.gz
     ## [1] "/home/guest/scratch/atacama_1pct/demux/forward/BAQ4697.2.fastq"
     ## [1] "/home/guest/scratch/atacama_1pct/demux/forward/BAQ4697.2"
-    ## BAQ4697.2
-    ## /home/guest/scratch/atacama_1pct/demux/BAQ4697.2.forward.fastq
+    ## [1] "BAQ4697.2"
+    ## /home/guest/scratch/atacama_1pct/demux/BAQ4697.2.forward.fastq.gz
     ## [1] "/home/guest/scratch/atacama_1pct/demux/forward/BAQ4697.3.fastq"
     ## [1] "/home/guest/scratch/atacama_1pct/demux/forward/BAQ4697.3"
-    ## BAQ4697.3
-    ## /home/guest/scratch/atacama_1pct/demux/BAQ4697.3.forward.fastq
+    ## [1] "BAQ4697.3"
+    ## /home/guest/scratch/atacama_1pct/demux/BAQ4697.3.forward.fastq.gz
     ## [1] "/home/guest/scratch/atacama_1pct/demux/forward/YUN1005.1.1.fastq"
     ## [1] "/home/guest/scratch/atacama_1pct/demux/forward/YUN1005.1.1"
-    ## YUN1005.1.1
-    ## /home/guest/scratch/atacama_1pct/demux/YUN1005.1.1.forward.fastq
+    ## [1] "YUN1005.1.1"
+    ## /home/guest/scratch/atacama_1pct/demux/YUN1005.1.1.forward.fastq.gz
     ## [1] "/home/guest/scratch/atacama_1pct/demux/forward/YUN1005.3.fastq"
     ## [1] "/home/guest/scratch/atacama_1pct/demux/forward/YUN1005.3"
-    ## YUN1005.3
-    ## /home/guest/scratch/atacama_1pct/demux/YUN1005.3.forward.fastq
+    ## [1] "YUN1005.3"
+    ## /home/guest/scratch/atacama_1pct/demux/YUN1005.3.forward.fastq.gz
     ## [1] "/home/guest/scratch/atacama_1pct/demux/forward/YUN1242.1.fastq"
     ## [1] "/home/guest/scratch/atacama_1pct/demux/forward/YUN1242.1"
-    ## YUN1242.1
-    ## /home/guest/scratch/atacama_1pct/demux/YUN1242.1.forward.fastq
+    ## [1] "YUN1242.1"
+    ## /home/guest/scratch/atacama_1pct/demux/YUN1242.1.forward.fastq.gz
     ## [1] "/home/guest/scratch/atacama_1pct/demux/forward/YUN1242.2.fastq"
     ## [1] "/home/guest/scratch/atacama_1pct/demux/forward/YUN1242.2"
-    ## YUN1242.2
-    ## /home/guest/scratch/atacama_1pct/demux/YUN1242.2.forward.fastq
+    ## [1] "YUN1242.2"
+    ## /home/guest/scratch/atacama_1pct/demux/YUN1242.2.forward.fastq.gz
     ## [1] "/home/guest/scratch/atacama_1pct/demux/forward/YUN1242.3.fastq"
     ## [1] "/home/guest/scratch/atacama_1pct/demux/forward/YUN1242.3"
-    ## YUN1242.3
-    ## /home/guest/scratch/atacama_1pct/demux/YUN1242.3.forward.fastq
+    ## [1] "YUN1242.3"
+    ## /home/guest/scratch/atacama_1pct/demux/YUN1242.3.forward.fastq.gz
     ## [1] "/home/guest/scratch/atacama_1pct/demux/forward/YUN1609.1.fastq"
     ## [1] "/home/guest/scratch/atacama_1pct/demux/forward/YUN1609.1"
-    ## YUN1609.1
-    ## /home/guest/scratch/atacama_1pct/demux/YUN1609.1.forward.fastq
+    ## [1] "YUN1609.1"
+    ## /home/guest/scratch/atacama_1pct/demux/YUN1609.1.forward.fastq.gz
     ## [1] "/home/guest/scratch/atacama_1pct/demux/forward/YUN2029.1.fastq"
     ## [1] "/home/guest/scratch/atacama_1pct/demux/forward/YUN2029.1"
-    ## YUN2029.1
-    ## /home/guest/scratch/atacama_1pct/demux/YUN2029.1.forward.fastq
+    ## [1] "YUN2029.1"
+    ## /home/guest/scratch/atacama_1pct/demux/YUN2029.1.forward.fastq.gz
     ## [1] "/home/guest/scratch/atacama_1pct/demux/forward/YUN2029.2.fastq"
     ## [1] "/home/guest/scratch/atacama_1pct/demux/forward/YUN2029.2"
-    ## YUN2029.2
-    ## /home/guest/scratch/atacama_1pct/demux/YUN2029.2.forward.fastq
+    ## [1] "YUN2029.2"
+    ## /home/guest/scratch/atacama_1pct/demux/YUN2029.2.forward.fastq.gz
     ## [1] "/home/guest/scratch/atacama_1pct/demux/forward/YUN2029.3.fastq"
     ## [1] "/home/guest/scratch/atacama_1pct/demux/forward/YUN2029.3"
-    ## YUN2029.3
-    ## /home/guest/scratch/atacama_1pct/demux/YUN2029.3.forward.fastq
+    ## [1] "YUN2029.3"
+    ## /home/guest/scratch/atacama_1pct/demux/YUN2029.3.forward.fastq.gz
     ## [1] "/home/guest/scratch/atacama_1pct/demux/forward/YUN3008.1.3.fastq"
     ## [1] "/home/guest/scratch/atacama_1pct/demux/forward/YUN3008.1.3"
-    ## YUN3008.1.3
-    ## /home/guest/scratch/atacama_1pct/demux/YUN3008.1.3.forward.fastq
+    ## [1] "YUN3008.1.3"
+    ## /home/guest/scratch/atacama_1pct/demux/YUN3008.1.3.forward.fastq.gz
     ## [1] "/home/guest/scratch/atacama_1pct/demux/forward/YUN3008.3.fastq"
     ## [1] "/home/guest/scratch/atacama_1pct/demux/forward/YUN3008.3"
-    ## YUN3008.3
-    ## /home/guest/scratch/atacama_1pct/demux/YUN3008.3.forward.fastq
+    ## [1] "YUN3008.3"
+    ## /home/guest/scratch/atacama_1pct/demux/YUN3008.3.forward.fastq.gz
     ## [1] "/home/guest/scratch/atacama_1pct/demux/forward/YUN3153.2.fastq"
     ## [1] "/home/guest/scratch/atacama_1pct/demux/forward/YUN3153.2"
-    ## YUN3153.2
-    ## /home/guest/scratch/atacama_1pct/demux/YUN3153.2.forward.fastq
+    ## [1] "YUN3153.2"
+    ## /home/guest/scratch/atacama_1pct/demux/YUN3153.2.forward.fastq.gz
     ## [1] "/home/guest/scratch/atacama_1pct/demux/forward/YUN3153.3.fastq"
     ## [1] "/home/guest/scratch/atacama_1pct/demux/forward/YUN3153.3"
-    ## YUN3153.3
-    ## /home/guest/scratch/atacama_1pct/demux/YUN3153.3.forward.fastq
+    ## [1] "YUN3153.3"
+    ## /home/guest/scratch/atacama_1pct/demux/YUN3153.3.forward.fastq.gz
     ## [1] "/home/guest/scratch/atacama_1pct/demux/forward/YUN3184.2.fastq"
     ## [1] "/home/guest/scratch/atacama_1pct/demux/forward/YUN3184.2"
-    ## YUN3184.2
-    ## /home/guest/scratch/atacama_1pct/demux/YUN3184.2.forward.fastq
+    ## [1] "YUN3184.2"
+    ## /home/guest/scratch/atacama_1pct/demux/YUN3184.2.forward.fastq.gz
     ## [1] "/home/guest/scratch/atacama_1pct/demux/forward/YUN3259.1.1.fastq"
     ## [1] "/home/guest/scratch/atacama_1pct/demux/forward/YUN3259.1.1"
-    ## YUN3259.1.1
-    ## /home/guest/scratch/atacama_1pct/demux/YUN3259.1.1.forward.fastq
+    ## [1] "YUN3259.1.1"
+    ## /home/guest/scratch/atacama_1pct/demux/YUN3259.1.1.forward.fastq.gz
     ## [1] "/home/guest/scratch/atacama_1pct/demux/forward/YUN3259.1.2.fastq"
     ## [1] "/home/guest/scratch/atacama_1pct/demux/forward/YUN3259.1.2"
-    ## YUN3259.1.2
-    ## /home/guest/scratch/atacama_1pct/demux/YUN3259.1.2.forward.fastq
+    ## [1] "YUN3259.1.2"
+    ## /home/guest/scratch/atacama_1pct/demux/YUN3259.1.2.forward.fastq.gz
     ## [1] "/home/guest/scratch/atacama_1pct/demux/forward/YUN3259.1.3.fastq"
     ## [1] "/home/guest/scratch/atacama_1pct/demux/forward/YUN3259.1.3"
-    ## YUN3259.1.3
-    ## /home/guest/scratch/atacama_1pct/demux/YUN3259.1.3.forward.fastq
+    ## [1] "YUN3259.1.3"
+    ## /home/guest/scratch/atacama_1pct/demux/YUN3259.1.3.forward.fastq.gz
     ## [1] "/home/guest/scratch/atacama_1pct/demux/forward/YUN3259.2.fastq"
     ## [1] "/home/guest/scratch/atacama_1pct/demux/forward/YUN3259.2"
-    ## YUN3259.2
-    ## /home/guest/scratch/atacama_1pct/demux/YUN3259.2.forward.fastq
+    ## [1] "YUN3259.2"
+    ## /home/guest/scratch/atacama_1pct/demux/YUN3259.2.forward.fastq.gz
     ## [1] "/home/guest/scratch/atacama_1pct/demux/forward/YUN3259.3.fastq"
     ## [1] "/home/guest/scratch/atacama_1pct/demux/forward/YUN3259.3"
-    ## YUN3259.3
-    ## /home/guest/scratch/atacama_1pct/demux/YUN3259.3.forward.fastq
+    ## [1] "YUN3259.3"
+    ## /home/guest/scratch/atacama_1pct/demux/YUN3259.3.forward.fastq.gz
     ## [1] "/home/guest/scratch/atacama_1pct/demux/forward/YUN3346.1.fastq"
     ## [1] "/home/guest/scratch/atacama_1pct/demux/forward/YUN3346.1"
-    ## YUN3346.1
-    ## /home/guest/scratch/atacama_1pct/demux/YUN3346.1.forward.fastq
+    ## [1] "YUN3346.1"
+    ## /home/guest/scratch/atacama_1pct/demux/YUN3346.1.forward.fastq.gz
     ## [1] "/home/guest/scratch/atacama_1pct/demux/forward/YUN3346.2.fastq"
     ## [1] "/home/guest/scratch/atacama_1pct/demux/forward/YUN3346.2"
-    ## YUN3346.2
-    ## /home/guest/scratch/atacama_1pct/demux/YUN3346.2.forward.fastq
+    ## [1] "YUN3346.2"
+    ## /home/guest/scratch/atacama_1pct/demux/YUN3346.2.forward.fastq.gz
     ## [1] "/home/guest/scratch/atacama_1pct/demux/forward/YUN3346.3.fastq"
     ## [1] "/home/guest/scratch/atacama_1pct/demux/forward/YUN3346.3"
-    ## YUN3346.3
-    ## /home/guest/scratch/atacama_1pct/demux/YUN3346.3.forward.fastq
+    ## [1] "YUN3346.3"
+    ## /home/guest/scratch/atacama_1pct/demux/YUN3346.3.forward.fastq.gz
     ## [1] "/home/guest/scratch/atacama_1pct/demux/forward/YUN3428.1.fastq"
     ## [1] "/home/guest/scratch/atacama_1pct/demux/forward/YUN3428.1"
-    ## YUN3428.1
-    ## /home/guest/scratch/atacama_1pct/demux/YUN3428.1.forward.fastq
+    ## [1] "YUN3428.1"
+    ## /home/guest/scratch/atacama_1pct/demux/YUN3428.1.forward.fastq.gz
     ## [1] "/home/guest/scratch/atacama_1pct/demux/forward/YUN3428.2.fastq"
     ## [1] "/home/guest/scratch/atacama_1pct/demux/forward/YUN3428.2"
-    ## YUN3428.2
-    ## /home/guest/scratch/atacama_1pct/demux/YUN3428.2.forward.fastq
+    ## [1] "YUN3428.2"
+    ## /home/guest/scratch/atacama_1pct/demux/YUN3428.2.forward.fastq.gz
     ## [1] "/home/guest/scratch/atacama_1pct/demux/forward/YUN3428.3.fastq"
     ## [1] "/home/guest/scratch/atacama_1pct/demux/forward/YUN3428.3"
-    ## YUN3428.3
-    ## /home/guest/scratch/atacama_1pct/demux/YUN3428.3.forward.fastq
+    ## [1] "YUN3428.3"
+    ## /home/guest/scratch/atacama_1pct/demux/YUN3428.3.forward.fastq.gz
     ## [1] "/home/guest/scratch/atacama_1pct/demux/forward/YUN3533.1.1.fastq"
     ## [1] "/home/guest/scratch/atacama_1pct/demux/forward/YUN3533.1.1"
-    ## YUN3533.1.1
-    ## /home/guest/scratch/atacama_1pct/demux/YUN3533.1.1.forward.fastq
+    ## [1] "YUN3533.1.1"
+    ## /home/guest/scratch/atacama_1pct/demux/YUN3533.1.1.forward.fastq.gz
     ## [1] "/home/guest/scratch/atacama_1pct/demux/forward/YUN3533.1.2.fastq"
     ## [1] "/home/guest/scratch/atacama_1pct/demux/forward/YUN3533.1.2"
-    ## YUN3533.1.2
-    ## /home/guest/scratch/atacama_1pct/demux/YUN3533.1.2.forward.fastq
+    ## [1] "YUN3533.1.2"
+    ## /home/guest/scratch/atacama_1pct/demux/YUN3533.1.2.forward.fastq.gz
     ## [1] "/home/guest/scratch/atacama_1pct/demux/forward/YUN3533.1.3.fastq"
     ## [1] "/home/guest/scratch/atacama_1pct/demux/forward/YUN3533.1.3"
-    ## YUN3533.1.3
-    ## /home/guest/scratch/atacama_1pct/demux/YUN3533.1.3.forward.fastq
+    ## [1] "YUN3533.1.3"
+    ## /home/guest/scratch/atacama_1pct/demux/YUN3533.1.3.forward.fastq.gz
     ## [1] "/home/guest/scratch/atacama_1pct/demux/forward/YUN3533.2.fastq"
     ## [1] "/home/guest/scratch/atacama_1pct/demux/forward/YUN3533.2"
-    ## YUN3533.2
-    ## /home/guest/scratch/atacama_1pct/demux/YUN3533.2.forward.fastq
+    ## [1] "YUN3533.2"
+    ## /home/guest/scratch/atacama_1pct/demux/YUN3533.2.forward.fastq.gz
     ## [1] "/home/guest/scratch/atacama_1pct/demux/forward/YUN3533.3.fastq"
     ## [1] "/home/guest/scratch/atacama_1pct/demux/forward/YUN3533.3"
-    ## YUN3533.3
-    ## /home/guest/scratch/atacama_1pct/demux/YUN3533.3.forward.fastq
+    ## [1] "YUN3533.3"
+    ## /home/guest/scratch/atacama_1pct/demux/YUN3533.3.forward.fastq.gz
     ## [1] "/home/guest/scratch/atacama_1pct/demux/forward/YUN3856.1.1.fastq"
     ## [1] "/home/guest/scratch/atacama_1pct/demux/forward/YUN3856.1.1"
-    ## YUN3856.1.1
-    ## /home/guest/scratch/atacama_1pct/demux/YUN3856.1.1.forward.fastq
+    ## [1] "YUN3856.1.1"
+    ## /home/guest/scratch/atacama_1pct/demux/YUN3856.1.1.forward.fastq.gz
     ## [1] "/home/guest/scratch/atacama_1pct/demux/forward/YUN3856.1.2.fastq"
     ## [1] "/home/guest/scratch/atacama_1pct/demux/forward/YUN3856.1.2"
-    ## YUN3856.1.2
-    ## /home/guest/scratch/atacama_1pct/demux/YUN3856.1.2.forward.fastq
+    ## [1] "YUN3856.1.2"
+    ## /home/guest/scratch/atacama_1pct/demux/YUN3856.1.2.forward.fastq.gz
     ## [1] "/home/guest/scratch/atacama_1pct/demux/forward/YUN3856.1.3.fastq"
     ## [1] "/home/guest/scratch/atacama_1pct/demux/forward/YUN3856.1.3"
-    ## YUN3856.1.3
-    ## /home/guest/scratch/atacama_1pct/demux/YUN3856.1.3.forward.fastq
+    ## [1] "YUN3856.1.3"
+    ## /home/guest/scratch/atacama_1pct/demux/YUN3856.1.3.forward.fastq.gz
     ## [1] "/home/guest/scratch/atacama_1pct/demux/forward/YUN3856.2.fastq"
     ## [1] "/home/guest/scratch/atacama_1pct/demux/forward/YUN3856.2"
-    ## YUN3856.2
-    ## /home/guest/scratch/atacama_1pct/demux/YUN3856.2.forward.fastq
+    ## [1] "YUN3856.2"
+    ## /home/guest/scratch/atacama_1pct/demux/YUN3856.2.forward.fastq.gz
     ## [1] "/home/guest/scratch/atacama_1pct/demux/forward/YUN3856.3.fastq"
     ## [1] "/home/guest/scratch/atacama_1pct/demux/forward/YUN3856.3"
-    ## YUN3856.3
-    ## /home/guest/scratch/atacama_1pct/demux/YUN3856.3.forward.fastq
+    ## [1] "YUN3856.3"
+    ## /home/guest/scratch/atacama_1pct/demux/YUN3856.3.forward.fastq.gz
     ## [1] "/home/guest/scratch/atacama_1pct/demux/reverse"
     ## [1] "/home/guest/scratch/atacama_1pct/demux/reverse/BAQ1370.1.3.fastq"
     ## [1] "/home/guest/scratch/atacama_1pct/demux/reverse/BAQ1370.1.3"
-    ## BAQ1370.1.3
-    ## /home/guest/scratch/atacama_1pct/demux/BAQ1370.1.3.reverse.fastq
+    ## [1] "BAQ1370.1.3"
+    ## /home/guest/scratch/atacama_1pct/demux/BAQ1370.1.3.reverse.fastq.gz
     ## [1] "/home/guest/scratch/atacama_1pct/demux/reverse/BAQ1552.1.1.fastq"
     ## [1] "/home/guest/scratch/atacama_1pct/demux/reverse/BAQ1552.1.1"
-    ## BAQ1552.1.1
-    ## /home/guest/scratch/atacama_1pct/demux/BAQ1552.1.1.reverse.fastq
+    ## [1] "BAQ1552.1.1"
+    ## /home/guest/scratch/atacama_1pct/demux/BAQ1552.1.1.reverse.fastq.gz
     ## [1] "/home/guest/scratch/atacama_1pct/demux/reverse/BAQ2420.1.1.fastq"
     ## [1] "/home/guest/scratch/atacama_1pct/demux/reverse/BAQ2420.1.1"
-    ## BAQ2420.1.1
-    ## /home/guest/scratch/atacama_1pct/demux/BAQ2420.1.1.reverse.fastq
+    ## [1] "BAQ2420.1.1"
+    ## /home/guest/scratch/atacama_1pct/demux/BAQ2420.1.1.reverse.fastq.gz
     ## [1] "/home/guest/scratch/atacama_1pct/demux/reverse/BAQ2420.1.2.fastq"
     ## [1] "/home/guest/scratch/atacama_1pct/demux/reverse/BAQ2420.1.2"
-    ## BAQ2420.1.2
-    ## /home/guest/scratch/atacama_1pct/demux/BAQ2420.1.2.reverse.fastq
+    ## [1] "BAQ2420.1.2"
+    ## /home/guest/scratch/atacama_1pct/demux/BAQ2420.1.2.reverse.fastq.gz
     ## [1] "/home/guest/scratch/atacama_1pct/demux/reverse/BAQ2420.1.3.fastq"
     ## [1] "/home/guest/scratch/atacama_1pct/demux/reverse/BAQ2420.1.3"
-    ## BAQ2420.1.3
-    ## /home/guest/scratch/atacama_1pct/demux/BAQ2420.1.3.reverse.fastq
+    ## [1] "BAQ2420.1.3"
+    ## /home/guest/scratch/atacama_1pct/demux/BAQ2420.1.3.reverse.fastq.gz
     ## [1] "/home/guest/scratch/atacama_1pct/demux/reverse/BAQ2420.2.fastq"
     ## [1] "/home/guest/scratch/atacama_1pct/demux/reverse/BAQ2420.2"
-    ## BAQ2420.2
-    ## /home/guest/scratch/atacama_1pct/demux/BAQ2420.2.reverse.fastq
+    ## [1] "BAQ2420.2"
+    ## /home/guest/scratch/atacama_1pct/demux/BAQ2420.2.reverse.fastq.gz
     ## [1] "/home/guest/scratch/atacama_1pct/demux/reverse/BAQ2420.3.fastq"
     ## [1] "/home/guest/scratch/atacama_1pct/demux/reverse/BAQ2420.3"
-    ## BAQ2420.3
-    ## /home/guest/scratch/atacama_1pct/demux/BAQ2420.3.reverse.fastq
+    ## [1] "BAQ2420.3"
+    ## /home/guest/scratch/atacama_1pct/demux/BAQ2420.3.reverse.fastq.gz
     ## [1] "/home/guest/scratch/atacama_1pct/demux/reverse/BAQ2462.1.fastq"
     ## [1] "/home/guest/scratch/atacama_1pct/demux/reverse/BAQ2462.1"
-    ## BAQ2462.1
-    ## /home/guest/scratch/atacama_1pct/demux/BAQ2462.1.reverse.fastq
+    ## [1] "BAQ2462.1"
+    ## /home/guest/scratch/atacama_1pct/demux/BAQ2462.1.reverse.fastq.gz
     ## [1] "/home/guest/scratch/atacama_1pct/demux/reverse/BAQ2462.2.fastq"
     ## [1] "/home/guest/scratch/atacama_1pct/demux/reverse/BAQ2462.2"
-    ## BAQ2462.2
-    ## /home/guest/scratch/atacama_1pct/demux/BAQ2462.2.reverse.fastq
+    ## [1] "BAQ2462.2"
+    ## /home/guest/scratch/atacama_1pct/demux/BAQ2462.2.reverse.fastq.gz
     ## [1] "/home/guest/scratch/atacama_1pct/demux/reverse/BAQ2462.3.fastq"
     ## [1] "/home/guest/scratch/atacama_1pct/demux/reverse/BAQ2462.3"
-    ## BAQ2462.3
-    ## /home/guest/scratch/atacama_1pct/demux/BAQ2462.3.reverse.fastq
+    ## [1] "BAQ2462.3"
+    ## /home/guest/scratch/atacama_1pct/demux/BAQ2462.3.reverse.fastq.gz
     ## [1] "/home/guest/scratch/atacama_1pct/demux/reverse/BAQ2687.1.fastq"
     ## [1] "/home/guest/scratch/atacama_1pct/demux/reverse/BAQ2687.1"
-    ## BAQ2687.1
-    ## /home/guest/scratch/atacama_1pct/demux/BAQ2687.1.reverse.fastq
+    ## [1] "BAQ2687.1"
+    ## /home/guest/scratch/atacama_1pct/demux/BAQ2687.1.reverse.fastq.gz
     ## [1] "/home/guest/scratch/atacama_1pct/demux/reverse/BAQ2687.2.fastq"
     ## [1] "/home/guest/scratch/atacama_1pct/demux/reverse/BAQ2687.2"
-    ## BAQ2687.2
-    ## /home/guest/scratch/atacama_1pct/demux/BAQ2687.2.reverse.fastq
+    ## [1] "BAQ2687.2"
+    ## /home/guest/scratch/atacama_1pct/demux/BAQ2687.2.reverse.fastq.gz
     ## [1] "/home/guest/scratch/atacama_1pct/demux/reverse/BAQ2687.3.fastq"
     ## [1] "/home/guest/scratch/atacama_1pct/demux/reverse/BAQ2687.3"
-    ## BAQ2687.3
-    ## /home/guest/scratch/atacama_1pct/demux/BAQ2687.3.reverse.fastq
+    ## [1] "BAQ2687.3"
+    ## /home/guest/scratch/atacama_1pct/demux/BAQ2687.3.reverse.fastq.gz
     ## [1] "/home/guest/scratch/atacama_1pct/demux/reverse/BAQ2838.1.fastq"
     ## [1] "/home/guest/scratch/atacama_1pct/demux/reverse/BAQ2838.1"
-    ## BAQ2838.1
-    ## /home/guest/scratch/atacama_1pct/demux/BAQ2838.1.reverse.fastq
+    ## [1] "BAQ2838.1"
+    ## /home/guest/scratch/atacama_1pct/demux/BAQ2838.1.reverse.fastq.gz
     ## [1] "/home/guest/scratch/atacama_1pct/demux/reverse/BAQ2838.2.fastq"
     ## [1] "/home/guest/scratch/atacama_1pct/demux/reverse/BAQ2838.2"
-    ## BAQ2838.2
-    ## /home/guest/scratch/atacama_1pct/demux/BAQ2838.2.reverse.fastq
+    ## [1] "BAQ2838.2"
+    ## /home/guest/scratch/atacama_1pct/demux/BAQ2838.2.reverse.fastq.gz
     ## [1] "/home/guest/scratch/atacama_1pct/demux/reverse/BAQ2838.3.fastq"
     ## [1] "/home/guest/scratch/atacama_1pct/demux/reverse/BAQ2838.3"
-    ## BAQ2838.3
-    ## /home/guest/scratch/atacama_1pct/demux/BAQ2838.3.reverse.fastq
+    ## [1] "BAQ2838.3"
+    ## /home/guest/scratch/atacama_1pct/demux/BAQ2838.3.reverse.fastq.gz
     ## [1] "/home/guest/scratch/atacama_1pct/demux/reverse/BAQ3473.1.fastq"
     ## [1] "/home/guest/scratch/atacama_1pct/demux/reverse/BAQ3473.1"
-    ## BAQ3473.1
-    ## /home/guest/scratch/atacama_1pct/demux/BAQ3473.1.reverse.fastq
+    ## [1] "BAQ3473.1"
+    ## /home/guest/scratch/atacama_1pct/demux/BAQ3473.1.reverse.fastq.gz
     ## [1] "/home/guest/scratch/atacama_1pct/demux/reverse/BAQ3473.2.fastq"
     ## [1] "/home/guest/scratch/atacama_1pct/demux/reverse/BAQ3473.2"
-    ## BAQ3473.2
-    ## /home/guest/scratch/atacama_1pct/demux/BAQ3473.2.reverse.fastq
+    ## [1] "BAQ3473.2"
+    ## /home/guest/scratch/atacama_1pct/demux/BAQ3473.2.reverse.fastq.gz
     ## [1] "/home/guest/scratch/atacama_1pct/demux/reverse/BAQ3473.3.fastq"
     ## [1] "/home/guest/scratch/atacama_1pct/demux/reverse/BAQ3473.3"
-    ## BAQ3473.3
-    ## /home/guest/scratch/atacama_1pct/demux/BAQ3473.3.reverse.fastq
+    ## [1] "BAQ3473.3"
+    ## /home/guest/scratch/atacama_1pct/demux/BAQ3473.3.reverse.fastq.gz
     ## [1] "/home/guest/scratch/atacama_1pct/demux/reverse/BAQ4166.1.1.fastq"
     ## [1] "/home/guest/scratch/atacama_1pct/demux/reverse/BAQ4166.1.1"
-    ## BAQ4166.1.1
-    ## /home/guest/scratch/atacama_1pct/demux/BAQ4166.1.1.reverse.fastq
+    ## [1] "BAQ4166.1.1"
+    ## /home/guest/scratch/atacama_1pct/demux/BAQ4166.1.1.reverse.fastq.gz
     ## [1] "/home/guest/scratch/atacama_1pct/demux/reverse/BAQ4166.1.2.fastq"
     ## [1] "/home/guest/scratch/atacama_1pct/demux/reverse/BAQ4166.1.2"
-    ## BAQ4166.1.2
-    ## /home/guest/scratch/atacama_1pct/demux/BAQ4166.1.2.reverse.fastq
+    ## [1] "BAQ4166.1.2"
+    ## /home/guest/scratch/atacama_1pct/demux/BAQ4166.1.2.reverse.fastq.gz
     ## [1] "/home/guest/scratch/atacama_1pct/demux/reverse/BAQ4166.1.3.fastq"
     ## [1] "/home/guest/scratch/atacama_1pct/demux/reverse/BAQ4166.1.3"
-    ## BAQ4166.1.3
-    ## /home/guest/scratch/atacama_1pct/demux/BAQ4166.1.3.reverse.fastq
+    ## [1] "BAQ4166.1.3"
+    ## /home/guest/scratch/atacama_1pct/demux/BAQ4166.1.3.reverse.fastq.gz
     ## [1] "/home/guest/scratch/atacama_1pct/demux/reverse/BAQ4166.2.fastq"
     ## [1] "/home/guest/scratch/atacama_1pct/demux/reverse/BAQ4166.2"
-    ## BAQ4166.2
-    ## /home/guest/scratch/atacama_1pct/demux/BAQ4166.2.reverse.fastq
+    ## [1] "BAQ4166.2"
+    ## /home/guest/scratch/atacama_1pct/demux/BAQ4166.2.reverse.fastq.gz
     ## [1] "/home/guest/scratch/atacama_1pct/demux/reverse/BAQ4166.3.fastq"
     ## [1] "/home/guest/scratch/atacama_1pct/demux/reverse/BAQ4166.3"
-    ## BAQ4166.3
-    ## /home/guest/scratch/atacama_1pct/demux/BAQ4166.3.reverse.fastq
+    ## [1] "BAQ4166.3"
+    ## /home/guest/scratch/atacama_1pct/demux/BAQ4166.3.reverse.fastq.gz
     ## [1] "/home/guest/scratch/atacama_1pct/demux/reverse/BAQ4697.1.fastq"
     ## [1] "/home/guest/scratch/atacama_1pct/demux/reverse/BAQ4697.1"
-    ## BAQ4697.1
-    ## /home/guest/scratch/atacama_1pct/demux/BAQ4697.1.reverse.fastq
+    ## [1] "BAQ4697.1"
+    ## /home/guest/scratch/atacama_1pct/demux/BAQ4697.1.reverse.fastq.gz
     ## [1] "/home/guest/scratch/atacama_1pct/demux/reverse/BAQ4697.2.fastq"
     ## [1] "/home/guest/scratch/atacama_1pct/demux/reverse/BAQ4697.2"
-    ## BAQ4697.2
-    ## /home/guest/scratch/atacama_1pct/demux/BAQ4697.2.reverse.fastq
+    ## [1] "BAQ4697.2"
+    ## /home/guest/scratch/atacama_1pct/demux/BAQ4697.2.reverse.fastq.gz
     ## [1] "/home/guest/scratch/atacama_1pct/demux/reverse/BAQ4697.3.fastq"
     ## [1] "/home/guest/scratch/atacama_1pct/demux/reverse/BAQ4697.3"
-    ## BAQ4697.3
-    ## /home/guest/scratch/atacama_1pct/demux/BAQ4697.3.reverse.fastq
+    ## [1] "BAQ4697.3"
+    ## /home/guest/scratch/atacama_1pct/demux/BAQ4697.3.reverse.fastq.gz
     ## [1] "/home/guest/scratch/atacama_1pct/demux/reverse/YUN1005.1.1.fastq"
     ## [1] "/home/guest/scratch/atacama_1pct/demux/reverse/YUN1005.1.1"
-    ## YUN1005.1.1
-    ## /home/guest/scratch/atacama_1pct/demux/YUN1005.1.1.reverse.fastq
+    ## [1] "YUN1005.1.1"
+    ## /home/guest/scratch/atacama_1pct/demux/YUN1005.1.1.reverse.fastq.gz
     ## [1] "/home/guest/scratch/atacama_1pct/demux/reverse/YUN1005.3.fastq"
     ## [1] "/home/guest/scratch/atacama_1pct/demux/reverse/YUN1005.3"
-    ## YUN1005.3
-    ## /home/guest/scratch/atacama_1pct/demux/YUN1005.3.reverse.fastq
+    ## [1] "YUN1005.3"
+    ## /home/guest/scratch/atacama_1pct/demux/YUN1005.3.reverse.fastq.gz
     ## [1] "/home/guest/scratch/atacama_1pct/demux/reverse/YUN1242.1.fastq"
     ## [1] "/home/guest/scratch/atacama_1pct/demux/reverse/YUN1242.1"
-    ## YUN1242.1
-    ## /home/guest/scratch/atacama_1pct/demux/YUN1242.1.reverse.fastq
+    ## [1] "YUN1242.1"
+    ## /home/guest/scratch/atacama_1pct/demux/YUN1242.1.reverse.fastq.gz
     ## [1] "/home/guest/scratch/atacama_1pct/demux/reverse/YUN1242.2.fastq"
     ## [1] "/home/guest/scratch/atacama_1pct/demux/reverse/YUN1242.2"
-    ## YUN1242.2
-    ## /home/guest/scratch/atacama_1pct/demux/YUN1242.2.reverse.fastq
+    ## [1] "YUN1242.2"
+    ## /home/guest/scratch/atacama_1pct/demux/YUN1242.2.reverse.fastq.gz
     ## [1] "/home/guest/scratch/atacama_1pct/demux/reverse/YUN1242.3.fastq"
     ## [1] "/home/guest/scratch/atacama_1pct/demux/reverse/YUN1242.3"
-    ## YUN1242.3
-    ## /home/guest/scratch/atacama_1pct/demux/YUN1242.3.reverse.fastq
+    ## [1] "YUN1242.3"
+    ## /home/guest/scratch/atacama_1pct/demux/YUN1242.3.reverse.fastq.gz
     ## [1] "/home/guest/scratch/atacama_1pct/demux/reverse/YUN1609.1.fastq"
     ## [1] "/home/guest/scratch/atacama_1pct/demux/reverse/YUN1609.1"
-    ## YUN1609.1
-    ## /home/guest/scratch/atacama_1pct/demux/YUN1609.1.reverse.fastq
+    ## [1] "YUN1609.1"
+    ## /home/guest/scratch/atacama_1pct/demux/YUN1609.1.reverse.fastq.gz
     ## [1] "/home/guest/scratch/atacama_1pct/demux/reverse/YUN2029.1.fastq"
     ## [1] "/home/guest/scratch/atacama_1pct/demux/reverse/YUN2029.1"
-    ## YUN2029.1
-    ## /home/guest/scratch/atacama_1pct/demux/YUN2029.1.reverse.fastq
+    ## [1] "YUN2029.1"
+    ## /home/guest/scratch/atacama_1pct/demux/YUN2029.1.reverse.fastq.gz
     ## [1] "/home/guest/scratch/atacama_1pct/demux/reverse/YUN2029.2.fastq"
     ## [1] "/home/guest/scratch/atacama_1pct/demux/reverse/YUN2029.2"
-    ## YUN2029.2
-    ## /home/guest/scratch/atacama_1pct/demux/YUN2029.2.reverse.fastq
+    ## [1] "YUN2029.2"
+    ## /home/guest/scratch/atacama_1pct/demux/YUN2029.2.reverse.fastq.gz
     ## [1] "/home/guest/scratch/atacama_1pct/demux/reverse/YUN2029.3.fastq"
     ## [1] "/home/guest/scratch/atacama_1pct/demux/reverse/YUN2029.3"
-    ## YUN2029.3
-    ## /home/guest/scratch/atacama_1pct/demux/YUN2029.3.reverse.fastq
+    ## [1] "YUN2029.3"
+    ## /home/guest/scratch/atacama_1pct/demux/YUN2029.3.reverse.fastq.gz
     ## [1] "/home/guest/scratch/atacama_1pct/demux/reverse/YUN3008.1.3.fastq"
     ## [1] "/home/guest/scratch/atacama_1pct/demux/reverse/YUN3008.1.3"
-    ## YUN3008.1.3
-    ## /home/guest/scratch/atacama_1pct/demux/YUN3008.1.3.reverse.fastq
+    ## [1] "YUN3008.1.3"
+    ## /home/guest/scratch/atacama_1pct/demux/YUN3008.1.3.reverse.fastq.gz
     ## [1] "/home/guest/scratch/atacama_1pct/demux/reverse/YUN3008.3.fastq"
     ## [1] "/home/guest/scratch/atacama_1pct/demux/reverse/YUN3008.3"
-    ## YUN3008.3
-    ## /home/guest/scratch/atacama_1pct/demux/YUN3008.3.reverse.fastq
+    ## [1] "YUN3008.3"
+    ## /home/guest/scratch/atacama_1pct/demux/YUN3008.3.reverse.fastq.gz
     ## [1] "/home/guest/scratch/atacama_1pct/demux/reverse/YUN3153.2.fastq"
     ## [1] "/home/guest/scratch/atacama_1pct/demux/reverse/YUN3153.2"
-    ## YUN3153.2
-    ## /home/guest/scratch/atacama_1pct/demux/YUN3153.2.reverse.fastq
+    ## [1] "YUN3153.2"
+    ## /home/guest/scratch/atacama_1pct/demux/YUN3153.2.reverse.fastq.gz
     ## [1] "/home/guest/scratch/atacama_1pct/demux/reverse/YUN3153.3.fastq"
     ## [1] "/home/guest/scratch/atacama_1pct/demux/reverse/YUN3153.3"
-    ## YUN3153.3
-    ## /home/guest/scratch/atacama_1pct/demux/YUN3153.3.reverse.fastq
+    ## [1] "YUN3153.3"
+    ## /home/guest/scratch/atacama_1pct/demux/YUN3153.3.reverse.fastq.gz
     ## [1] "/home/guest/scratch/atacama_1pct/demux/reverse/YUN3184.2.fastq"
     ## [1] "/home/guest/scratch/atacama_1pct/demux/reverse/YUN3184.2"
-    ## YUN3184.2
-    ## /home/guest/scratch/atacama_1pct/demux/YUN3184.2.reverse.fastq
+    ## [1] "YUN3184.2"
+    ## /home/guest/scratch/atacama_1pct/demux/YUN3184.2.reverse.fastq.gz
     ## [1] "/home/guest/scratch/atacama_1pct/demux/reverse/YUN3259.1.1.fastq"
     ## [1] "/home/guest/scratch/atacama_1pct/demux/reverse/YUN3259.1.1"
-    ## YUN3259.1.1
-    ## /home/guest/scratch/atacama_1pct/demux/YUN3259.1.1.reverse.fastq
+    ## [1] "YUN3259.1.1"
+    ## /home/guest/scratch/atacama_1pct/demux/YUN3259.1.1.reverse.fastq.gz
     ## [1] "/home/guest/scratch/atacama_1pct/demux/reverse/YUN3259.1.2.fastq"
     ## [1] "/home/guest/scratch/atacama_1pct/demux/reverse/YUN3259.1.2"
-    ## YUN3259.1.2
-    ## /home/guest/scratch/atacama_1pct/demux/YUN3259.1.2.reverse.fastq
+    ## [1] "YUN3259.1.2"
+    ## /home/guest/scratch/atacama_1pct/demux/YUN3259.1.2.reverse.fastq.gz
     ## [1] "/home/guest/scratch/atacama_1pct/demux/reverse/YUN3259.1.3.fastq"
     ## [1] "/home/guest/scratch/atacama_1pct/demux/reverse/YUN3259.1.3"
-    ## YUN3259.1.3
-    ## /home/guest/scratch/atacama_1pct/demux/YUN3259.1.3.reverse.fastq
+    ## [1] "YUN3259.1.3"
+    ## /home/guest/scratch/atacama_1pct/demux/YUN3259.1.3.reverse.fastq.gz
     ## [1] "/home/guest/scratch/atacama_1pct/demux/reverse/YUN3259.2.fastq"
     ## [1] "/home/guest/scratch/atacama_1pct/demux/reverse/YUN3259.2"
-    ## YUN3259.2
-    ## /home/guest/scratch/atacama_1pct/demux/YUN3259.2.reverse.fastq
+    ## [1] "YUN3259.2"
+    ## /home/guest/scratch/atacama_1pct/demux/YUN3259.2.reverse.fastq.gz
     ## [1] "/home/guest/scratch/atacama_1pct/demux/reverse/YUN3259.3.fastq"
     ## [1] "/home/guest/scratch/atacama_1pct/demux/reverse/YUN3259.3"
-    ## YUN3259.3
-    ## /home/guest/scratch/atacama_1pct/demux/YUN3259.3.reverse.fastq
+    ## [1] "YUN3259.3"
+    ## /home/guest/scratch/atacama_1pct/demux/YUN3259.3.reverse.fastq.gz
     ## [1] "/home/guest/scratch/atacama_1pct/demux/reverse/YUN3346.1.fastq"
     ## [1] "/home/guest/scratch/atacama_1pct/demux/reverse/YUN3346.1"
-    ## YUN3346.1
-    ## /home/guest/scratch/atacama_1pct/demux/YUN3346.1.reverse.fastq
+    ## [1] "YUN3346.1"
+    ## /home/guest/scratch/atacama_1pct/demux/YUN3346.1.reverse.fastq.gz
     ## [1] "/home/guest/scratch/atacama_1pct/demux/reverse/YUN3346.2.fastq"
     ## [1] "/home/guest/scratch/atacama_1pct/demux/reverse/YUN3346.2"
-    ## YUN3346.2
-    ## /home/guest/scratch/atacama_1pct/demux/YUN3346.2.reverse.fastq
+    ## [1] "YUN3346.2"
+    ## /home/guest/scratch/atacama_1pct/demux/YUN3346.2.reverse.fastq.gz
     ## [1] "/home/guest/scratch/atacama_1pct/demux/reverse/YUN3346.3.fastq"
     ## [1] "/home/guest/scratch/atacama_1pct/demux/reverse/YUN3346.3"
-    ## YUN3346.3
-    ## /home/guest/scratch/atacama_1pct/demux/YUN3346.3.reverse.fastq
+    ## [1] "YUN3346.3"
+    ## /home/guest/scratch/atacama_1pct/demux/YUN3346.3.reverse.fastq.gz
     ## [1] "/home/guest/scratch/atacama_1pct/demux/reverse/YUN3428.1.fastq"
     ## [1] "/home/guest/scratch/atacama_1pct/demux/reverse/YUN3428.1"
-    ## YUN3428.1
-    ## /home/guest/scratch/atacama_1pct/demux/YUN3428.1.reverse.fastq
+    ## [1] "YUN3428.1"
+    ## /home/guest/scratch/atacama_1pct/demux/YUN3428.1.reverse.fastq.gz
     ## [1] "/home/guest/scratch/atacama_1pct/demux/reverse/YUN3428.2.fastq"
     ## [1] "/home/guest/scratch/atacama_1pct/demux/reverse/YUN3428.2"
-    ## YUN3428.2
-    ## /home/guest/scratch/atacama_1pct/demux/YUN3428.2.reverse.fastq
+    ## [1] "YUN3428.2"
+    ## /home/guest/scratch/atacama_1pct/demux/YUN3428.2.reverse.fastq.gz
     ## [1] "/home/guest/scratch/atacama_1pct/demux/reverse/YUN3428.3.fastq"
     ## [1] "/home/guest/scratch/atacama_1pct/demux/reverse/YUN3428.3"
-    ## YUN3428.3
-    ## /home/guest/scratch/atacama_1pct/demux/YUN3428.3.reverse.fastq
+    ## [1] "YUN3428.3"
+    ## /home/guest/scratch/atacama_1pct/demux/YUN3428.3.reverse.fastq.gz
     ## [1] "/home/guest/scratch/atacama_1pct/demux/reverse/YUN3533.1.1.fastq"
     ## [1] "/home/guest/scratch/atacama_1pct/demux/reverse/YUN3533.1.1"
-    ## YUN3533.1.1
-    ## /home/guest/scratch/atacama_1pct/demux/YUN3533.1.1.reverse.fastq
+    ## [1] "YUN3533.1.1"
+    ## /home/guest/scratch/atacama_1pct/demux/YUN3533.1.1.reverse.fastq.gz
     ## [1] "/home/guest/scratch/atacama_1pct/demux/reverse/YUN3533.1.2.fastq"
     ## [1] "/home/guest/scratch/atacama_1pct/demux/reverse/YUN3533.1.2"
-    ## YUN3533.1.2
-    ## /home/guest/scratch/atacama_1pct/demux/YUN3533.1.2.reverse.fastq
+    ## [1] "YUN3533.1.2"
+    ## /home/guest/scratch/atacama_1pct/demux/YUN3533.1.2.reverse.fastq.gz
     ## [1] "/home/guest/scratch/atacama_1pct/demux/reverse/YUN3533.1.3.fastq"
     ## [1] "/home/guest/scratch/atacama_1pct/demux/reverse/YUN3533.1.3"
-    ## YUN3533.1.3
-    ## /home/guest/scratch/atacama_1pct/demux/YUN3533.1.3.reverse.fastq
+    ## [1] "YUN3533.1.3"
+    ## /home/guest/scratch/atacama_1pct/demux/YUN3533.1.3.reverse.fastq.gz
     ## [1] "/home/guest/scratch/atacama_1pct/demux/reverse/YUN3533.2.fastq"
     ## [1] "/home/guest/scratch/atacama_1pct/demux/reverse/YUN3533.2"
-    ## YUN3533.2
-    ## /home/guest/scratch/atacama_1pct/demux/YUN3533.2.reverse.fastq
+    ## [1] "YUN3533.2"
+    ## /home/guest/scratch/atacama_1pct/demux/YUN3533.2.reverse.fastq.gz
     ## [1] "/home/guest/scratch/atacama_1pct/demux/reverse/YUN3533.3.fastq"
     ## [1] "/home/guest/scratch/atacama_1pct/demux/reverse/YUN3533.3"
-    ## YUN3533.3
-    ## /home/guest/scratch/atacama_1pct/demux/YUN3533.3.reverse.fastq
+    ## [1] "YUN3533.3"
+    ## /home/guest/scratch/atacama_1pct/demux/YUN3533.3.reverse.fastq.gz
     ## [1] "/home/guest/scratch/atacama_1pct/demux/reverse/YUN3856.1.1.fastq"
     ## [1] "/home/guest/scratch/atacama_1pct/demux/reverse/YUN3856.1.1"
-    ## YUN3856.1.1
-    ## /home/guest/scratch/atacama_1pct/demux/YUN3856.1.1.reverse.fastq
+    ## [1] "YUN3856.1.1"
+    ## /home/guest/scratch/atacama_1pct/demux/YUN3856.1.1.reverse.fastq.gz
     ## [1] "/home/guest/scratch/atacama_1pct/demux/reverse/YUN3856.1.2.fastq"
     ## [1] "/home/guest/scratch/atacama_1pct/demux/reverse/YUN3856.1.2"
-    ## YUN3856.1.2
-    ## /home/guest/scratch/atacama_1pct/demux/YUN3856.1.2.reverse.fastq
+    ## [1] "YUN3856.1.2"
+    ## /home/guest/scratch/atacama_1pct/demux/YUN3856.1.2.reverse.fastq.gz
     ## [1] "/home/guest/scratch/atacama_1pct/demux/reverse/YUN3856.1.3.fastq"
     ## [1] "/home/guest/scratch/atacama_1pct/demux/reverse/YUN3856.1.3"
-    ## YUN3856.1.3
-    ## /home/guest/scratch/atacama_1pct/demux/YUN3856.1.3.reverse.fastq
+    ## [1] "YUN3856.1.3"
+    ## /home/guest/scratch/atacama_1pct/demux/YUN3856.1.3.reverse.fastq.gz
     ## [1] "/home/guest/scratch/atacama_1pct/demux/reverse/YUN3856.2.fastq"
     ## [1] "/home/guest/scratch/atacama_1pct/demux/reverse/YUN3856.2"
-    ## YUN3856.2
-    ## /home/guest/scratch/atacama_1pct/demux/YUN3856.2.reverse.fastq
+    ## [1] "YUN3856.2"
+    ## /home/guest/scratch/atacama_1pct/demux/YUN3856.2.reverse.fastq.gz
     ## [1] "/home/guest/scratch/atacama_1pct/demux/reverse/YUN3856.3.fastq"
     ## [1] "/home/guest/scratch/atacama_1pct/demux/reverse/YUN3856.3"
-    ## YUN3856.3
-    ## /home/guest/scratch/atacama_1pct/demux/YUN3856.3.reverse.fastq
+    ## [1] "YUN3856.3"
+    ## /home/guest/scratch/atacama_1pct/demux/YUN3856.3.reverse.fastq.gz
 
 Session Info
 ============
@@ -1392,12 +1476,12 @@ Always print `sessionInfo` for reproducibility!
 sessionInfo()
 ```
 
-    ## R version 3.4.4 (2018-03-15)
+    ## R version 3.6.1 (2019-07-05)
     ## Platform: x86_64-pc-linux-gnu (64-bit)
-    ## Running under: Ubuntu 18.04.2 LTS
+    ## Running under: Ubuntu 18.04.3 LTS
     ## 
     ## Matrix products: default
-    ## BLAS: /usr/lib/x86_64-linux-gnu/blas/libblas.so.3.7.1
+    ## BLAS:   /usr/lib/x86_64-linux-gnu/blas/libblas.so.3.7.1
     ## LAPACK: /usr/lib/x86_64-linux-gnu/lapack/liblapack.so.3.7.1
     ## 
     ## locale:
@@ -1412,12 +1496,14 @@ sessionInfo()
     ## [1] stats     graphics  grDevices utils     datasets  methods   base     
     ## 
     ## other attached packages:
-    ## [1] fs_1.2.7    readr_1.3.1
+    ## [1] R.utils_2.9.0     R.oo_1.22.0       R.methodsS3_1.7.1 fs_1.3.1         
+    ## [5] readr_1.3.1      
     ## 
     ## loaded via a namespace (and not attached):
-    ##  [1] Rcpp_1.0.1       fansi_0.4.0      assertthat_0.2.0 utf8_1.1.3      
-    ##  [5] crayon_1.3.4     digest_0.6.15    R6_2.2.2         magrittr_1.5    
-    ##  [9] evaluate_0.13    pillar_1.3.1     cli_1.1.0        rlang_0.3.2     
-    ## [13] stringi_1.1.6    rmarkdown_1.12   tools_3.4.4      stringr_1.3.0   
-    ## [17] hms_0.4.2        xfun_0.5         yaml_2.2.0       compiler_3.4.4  
-    ## [21] pkgconfig_2.0.2  htmltools_0.3.6  knitr_1.22       tibble_2.1.1
+    ##  [1] Rcpp_1.0.2       knitr_1.24       magrittr_1.5     hms_0.5.1       
+    ##  [5] R6_2.4.0         rlang_0.4.0      fansi_0.4.0      stringr_1.4.0   
+    ##  [9] tools_3.6.1      xfun_0.9         utf8_1.1.4       cli_1.1.0       
+    ## [13] htmltools_0.3.6  assertthat_0.2.1 yaml_2.2.0       digest_0.6.20   
+    ## [17] tibble_2.1.3     crayon_1.3.4     vctrs_0.2.0      zeallot_0.1.0   
+    ## [21] evaluate_0.14    rmarkdown_1.15   stringi_1.4.3    compiler_3.6.1  
+    ## [25] pillar_1.4.2     backports_1.1.4  pkgconfig_2.0.2
