@@ -682,69 +682,69 @@ ls -lSrh $DEMUX_DIR/split_4
 ```
 
     ## total 44M
-    ## -rw-r--r-- 1 guest users  427 Sep 19 18:12 YUN1242.2.fastq
-    ## -rw-r--r-- 1 guest users  428 Sep 19 18:12 YUN3184.2.fastq
-    ## -rw-r--r-- 1 guest users  428 Sep 19 18:12 YUN3008.3.fastq
-    ## -rw-r--r-- 1 guest users  428 Sep 19 18:12 YUN2029.3.fastq
-    ## -rw-r--r-- 1 guest users  429 Sep 19 18:12 BAQ1370.1.3.fastq
-    ## -rw-r--r-- 1 guest users  430 Sep 19 18:12 YUN3008.1.3.fastq
-    ## -rw-r--r-- 1 guest users  430 Sep 19 18:12 BAQ1552.1.1.fastq
-    ## -rw-r--r-- 1 guest users 2.6K Sep 19 18:12 YUN2029.1.fastq
-    ## -rw-r--r-- 1 guest users  24K Sep 19 18:12 YUN3259.1.1.fastq
-    ## -rw-r--r-- 1 guest users  72K Sep 19 18:12 YUN3346.2.fastq
-    ## -rw-r--r-- 1 guest users 115K Sep 19 18:12 YUN3259.1.3.fastq
-    ## -rw-r--r-- 1 guest users 155K Sep 19 18:12 BAQ2838.3.fastq
-    ## -rw-r--r-- 1 guest users 169K Sep 19 18:12 YUN1005.3.fastq
-    ## -rw-r--r-- 1 guest users 186K Sep 19 18:12 YUN3153.2.fastq
-    ## -rw-r--r-- 1 guest users 195K Sep 19 18:12 BAQ2462.3.fastq
-    ## -rw-r--r-- 1 guest users 205K Sep 19 18:12 BAQ2838.2.fastq
-    ## -rw-r--r-- 1 guest users 224K Sep 19 18:12 YUN1242.1.fastq
-    ## -rw-r--r-- 1 guest users 238K Sep 19 18:12 YUN3153.3.fastq
-    ## -rw-r--r-- 1 guest users 246K Sep 19 18:12 BAQ2838.1.fastq
-    ## -rw-r--r-- 1 guest users 250K Sep 19 18:12 BAQ2462.2.fastq
-    ## -rw-r--r-- 1 guest users 256K Sep 19 18:12 BAQ2420.2.fastq
-    ## -rw-r--r-- 1 guest users 269K Sep 19 18:12 BAQ2420.1.2.fastq
-    ## -rw-r--r-- 1 guest users 271K Sep 19 18:12 BAQ2420.3.fastq
-    ## -rw-r--r-- 1 guest users 273K Sep 19 18:12 YUN3346.1.fastq
-    ## -rw-r--r-- 1 guest users 273K Sep 19 18:12 YUN3856.1.3.fastq
-    ## -rw-r--r-- 1 guest users 276K Sep 19 18:12 BAQ2687.2.fastq
-    ## -rw-r--r-- 1 guest users 276K Sep 19 18:12 BAQ2420.1.3.fastq
-    ## -rw-r--r-- 1 guest users 287K Sep 19 18:12 YUN3259.1.2.fastq
-    ## -rw-r--r-- 1 guest users 303K Sep 19 18:12 BAQ2420.1.1.fastq
-    ## -rw-r--r-- 1 guest users 305K Sep 19 18:12 YUN1609.1.fastq
-    ## -rw-r--r-- 1 guest users 307K Sep 19 18:12 YUN1242.3.fastq
-    ## -rw-r--r-- 1 guest users 318K Sep 19 18:12 BAQ4697.2.fastq
-    ## -rw-r--r-- 1 guest users 321K Sep 19 18:12 YUN3533.1.3.fastq
-    ## -rw-r--r-- 1 guest users 332K Sep 19 18:12 YUN3346.3.fastq
-    ## -rw-r--r-- 1 guest users 343K Sep 19 18:12 BAQ4697.1.fastq
-    ## -rw-r--r-- 1 guest users 344K Sep 19 18:12 BAQ3473.2.fastq
-    ## -rw-r--r-- 1 guest users 349K Sep 19 18:12 YUN2029.2.fastq
-    ## -rw-r--r-- 1 guest users 363K Sep 19 18:12 BAQ2462.1.fastq
-    ## -rw-r--r-- 1 guest users 363K Sep 19 18:12 BAQ2687.1.fastq
-    ## -rw-r--r-- 1 guest users 367K Sep 19 18:12 YUN1005.1.1.fastq
-    ## -rw-r--r-- 1 guest users 368K Sep 19 18:12 BAQ2687.3.fastq
-    ## -rw-r--r-- 1 guest users 372K Sep 19 18:12 YUN3533.1.2.fastq
-    ## -rw-r--r-- 1 guest users 393K Sep 19 18:12 YUN3533.1.1.fastq
-    ## -rw-r--r-- 1 guest users 400K Sep 19 18:12 YUN3856.1.1.fastq
-    ## -rw-r--r-- 1 guest users 408K Sep 19 18:12 YUN3856.1.2.fastq
-    ## -rw-r--r-- 1 guest users 411K Sep 19 18:12 YUN3856.2.fastq
-    ## -rw-r--r-- 1 guest users 423K Sep 19 18:12 YUN3259.2.fastq
-    ## -rw-r--r-- 1 guest users 424K Sep 19 18:12 YUN3428.3.fastq
-    ## -rw-r--r-- 1 guest users 436K Sep 19 18:12 BAQ4166.1.1.fastq
-    ## -rw-r--r-- 1 guest users 442K Sep 19 18:12 BAQ4166.1.3.fastq
-    ## -rw-r--r-- 1 guest users 445K Sep 19 18:12 YUN3428.1.fastq
-    ## -rw-r--r-- 1 guest users 452K Sep 19 18:12 YUN3259.3.fastq
-    ## -rw-r--r-- 1 guest users 453K Sep 19 18:12 BAQ4697.3.fastq
-    ## -rw-r--r-- 1 guest users 458K Sep 19 18:12 BAQ3473.1.fastq
-    ## -rw-r--r-- 1 guest users 484K Sep 19 18:12 YUN3533.2.fastq
-    ## -rw-r--r-- 1 guest users 490K Sep 19 18:12 BAQ3473.3.fastq
-    ## -rw-r--r-- 1 guest users 515K Sep 19 18:12 YUN3856.3.fastq
-    ## -rw-r--r-- 1 guest users 516K Sep 19 18:12 BAQ4166.3.fastq
-    ## -rw-r--r-- 1 guest users 524K Sep 19 18:12 YUN3533.3.fastq
-    ## -rw-r--r-- 1 guest users 528K Sep 19 18:12 BAQ4166.2.fastq
-    ## -rw-r--r-- 1 guest users 547K Sep 19 18:12 BAQ4166.1.2.fastq
-    ## -rw-r--r-- 1 guest users 576K Sep 19 18:12 YUN3428.2.fastq
-    ## -rw-r--r-- 1 guest users  26M Sep 19 18:12 Unassigned.fastq
+    ## -rw-r--r-- 1 guest users  427 Sep 19 18:18 YUN1242.2.fastq
+    ## -rw-r--r-- 1 guest users  428 Sep 19 18:18 YUN3184.2.fastq
+    ## -rw-r--r-- 1 guest users  428 Sep 19 18:18 YUN3008.3.fastq
+    ## -rw-r--r-- 1 guest users  428 Sep 19 18:18 YUN2029.3.fastq
+    ## -rw-r--r-- 1 guest users  429 Sep 19 18:18 BAQ1370.1.3.fastq
+    ## -rw-r--r-- 1 guest users  430 Sep 19 18:18 YUN3008.1.3.fastq
+    ## -rw-r--r-- 1 guest users  430 Sep 19 18:18 BAQ1552.1.1.fastq
+    ## -rw-r--r-- 1 guest users 2.6K Sep 19 18:18 YUN2029.1.fastq
+    ## -rw-r--r-- 1 guest users  24K Sep 19 18:18 YUN3259.1.1.fastq
+    ## -rw-r--r-- 1 guest users  72K Sep 19 18:18 YUN3346.2.fastq
+    ## -rw-r--r-- 1 guest users 115K Sep 19 18:18 YUN3259.1.3.fastq
+    ## -rw-r--r-- 1 guest users 155K Sep 19 18:18 BAQ2838.3.fastq
+    ## -rw-r--r-- 1 guest users 169K Sep 19 18:18 YUN1005.3.fastq
+    ## -rw-r--r-- 1 guest users 186K Sep 19 18:18 YUN3153.2.fastq
+    ## -rw-r--r-- 1 guest users 195K Sep 19 18:18 BAQ2462.3.fastq
+    ## -rw-r--r-- 1 guest users 205K Sep 19 18:18 BAQ2838.2.fastq
+    ## -rw-r--r-- 1 guest users 224K Sep 19 18:18 YUN1242.1.fastq
+    ## -rw-r--r-- 1 guest users 238K Sep 19 18:18 YUN3153.3.fastq
+    ## -rw-r--r-- 1 guest users 246K Sep 19 18:18 BAQ2838.1.fastq
+    ## -rw-r--r-- 1 guest users 250K Sep 19 18:18 BAQ2462.2.fastq
+    ## -rw-r--r-- 1 guest users 256K Sep 19 18:18 BAQ2420.2.fastq
+    ## -rw-r--r-- 1 guest users 269K Sep 19 18:18 BAQ2420.1.2.fastq
+    ## -rw-r--r-- 1 guest users 271K Sep 19 18:18 BAQ2420.3.fastq
+    ## -rw-r--r-- 1 guest users 273K Sep 19 18:18 YUN3346.1.fastq
+    ## -rw-r--r-- 1 guest users 273K Sep 19 18:18 YUN3856.1.3.fastq
+    ## -rw-r--r-- 1 guest users 276K Sep 19 18:18 BAQ2687.2.fastq
+    ## -rw-r--r-- 1 guest users 276K Sep 19 18:18 BAQ2420.1.3.fastq
+    ## -rw-r--r-- 1 guest users 287K Sep 19 18:18 YUN3259.1.2.fastq
+    ## -rw-r--r-- 1 guest users 303K Sep 19 18:18 BAQ2420.1.1.fastq
+    ## -rw-r--r-- 1 guest users 305K Sep 19 18:18 YUN1609.1.fastq
+    ## -rw-r--r-- 1 guest users 307K Sep 19 18:18 YUN1242.3.fastq
+    ## -rw-r--r-- 1 guest users 318K Sep 19 18:18 BAQ4697.2.fastq
+    ## -rw-r--r-- 1 guest users 321K Sep 19 18:18 YUN3533.1.3.fastq
+    ## -rw-r--r-- 1 guest users 332K Sep 19 18:18 YUN3346.3.fastq
+    ## -rw-r--r-- 1 guest users 343K Sep 19 18:18 BAQ4697.1.fastq
+    ## -rw-r--r-- 1 guest users 344K Sep 19 18:18 BAQ3473.2.fastq
+    ## -rw-r--r-- 1 guest users 349K Sep 19 18:18 YUN2029.2.fastq
+    ## -rw-r--r-- 1 guest users 363K Sep 19 18:18 BAQ2462.1.fastq
+    ## -rw-r--r-- 1 guest users 363K Sep 19 18:18 BAQ2687.1.fastq
+    ## -rw-r--r-- 1 guest users 367K Sep 19 18:18 YUN1005.1.1.fastq
+    ## -rw-r--r-- 1 guest users 368K Sep 19 18:18 BAQ2687.3.fastq
+    ## -rw-r--r-- 1 guest users 372K Sep 19 18:18 YUN3533.1.2.fastq
+    ## -rw-r--r-- 1 guest users 393K Sep 19 18:18 YUN3533.1.1.fastq
+    ## -rw-r--r-- 1 guest users 400K Sep 19 18:18 YUN3856.1.1.fastq
+    ## -rw-r--r-- 1 guest users 408K Sep 19 18:18 YUN3856.1.2.fastq
+    ## -rw-r--r-- 1 guest users 411K Sep 19 18:18 YUN3856.2.fastq
+    ## -rw-r--r-- 1 guest users 423K Sep 19 18:18 YUN3259.2.fastq
+    ## -rw-r--r-- 1 guest users 424K Sep 19 18:18 YUN3428.3.fastq
+    ## -rw-r--r-- 1 guest users 436K Sep 19 18:18 BAQ4166.1.1.fastq
+    ## -rw-r--r-- 1 guest users 442K Sep 19 18:18 BAQ4166.1.3.fastq
+    ## -rw-r--r-- 1 guest users 445K Sep 19 18:18 YUN3428.1.fastq
+    ## -rw-r--r-- 1 guest users 452K Sep 19 18:18 YUN3259.3.fastq
+    ## -rw-r--r-- 1 guest users 453K Sep 19 18:18 BAQ4697.3.fastq
+    ## -rw-r--r-- 1 guest users 458K Sep 19 18:18 BAQ3473.1.fastq
+    ## -rw-r--r-- 1 guest users 484K Sep 19 18:18 YUN3533.2.fastq
+    ## -rw-r--r-- 1 guest users 490K Sep 19 18:18 BAQ3473.3.fastq
+    ## -rw-r--r-- 1 guest users 515K Sep 19 18:18 YUN3856.3.fastq
+    ## -rw-r--r-- 1 guest users 516K Sep 19 18:18 BAQ4166.3.fastq
+    ## -rw-r--r-- 1 guest users 524K Sep 19 18:18 YUN3533.3.fastq
+    ## -rw-r--r-- 1 guest users 528K Sep 19 18:18 BAQ4166.2.fastq
+    ## -rw-r--r-- 1 guest users 547K Sep 19 18:18 BAQ4166.1.2.fastq
+    ## -rw-r--r-- 1 guest users 576K Sep 19 18:18 YUN3428.2.fastq
+    ## -rw-r--r-- 1 guest users  26M Sep 19 18:18 Unassigned.fastq
 
 Looks good like we generated a demultiplexed FASTQ for each sample!
 
@@ -930,24 +930,6 @@ DADA2!
 
 Bonus: Rename and move split FASTQs
 -----------------------------------
-
-``` r
-for (curread in c("R1","R2")) {
-  curpath = file.path(demux.dir,curread)
-  print(curpath)
-  for (fastq_path in list.files(curpath, full.names = TRUE,pattern = ".fastq")){
-    fastq_path %>%
-      path_ext_remove %>%
-      path_file %>%
-      path(demux.dir, ., ext=paste0(curread,".fastq.gz")) ->
-      new_path
-    gzip(fastq_path, new_path)
-  }
-}
-```
-
-    ## [1] "/home/guest/scratch/atacama_1pct/demux/R1"
-    ## [1] "/home/guest/scratch/atacama_1pct/demux/R2"
 
 ``` r
 for (curread in c("forward","reverse")) {
