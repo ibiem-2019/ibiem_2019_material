@@ -21,3 +21,7 @@
 | 30-Aug     |       10-11 | [Bash: Shell Scripts](http://swcarpentry.github.io/shell-novice/06-script/index.html)                      |
 |            |             | Bash: Finding Things                                                                                       |
 |            |             | Bash: Shell Extras                                                                                         |
+
+
+
+| 8-Nov                   |      10-11 | [Git: Collaborating](lessons/bootcamp/040_git_overview.md#collaborating)                                   |                                                              |       | Duke     |
