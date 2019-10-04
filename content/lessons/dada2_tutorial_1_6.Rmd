@@ -81,9 +81,12 @@ fnRs <- sort(list.files(demux.dir, pattern="reverse.fastq", full.names = TRUE))
 
 # Extract sample names, assuming filenames have format: SAMPLENAME.X.fastq, where X is reverse or forward
 # sample.names <- sapply(strsplit(basename(fnFs), "_"), `[`, 1)
+
+forward_fastq_suffix = ".forward.fastq.gz"
+
 sample.names = fnFs %>% 
   basename %>%
-  str_replace(".forward.fastq.gz","") 
+  str_replace(forward_fastq_suffix,"") 
 ```
 <div style="border: 1px solid red;padding: 5px;background-color: #fff6f6;">**<span style="color:red">If using this workflow on your own data:</span>** The string manipulations may have to be modified if using a different filename format.</div>
 
@@ -331,44 +334,30 @@ The fraction of chimeras varies based on factors including experimental procedur
 As a final check of our progress, we'll look at the number of reads that made it through each step in the pipeline:
 ```{r track}
 getN <- function(x) sum(getUniques(x))
-track = filt.out %>%
-  as.data.frame %>%
-  rownames_to_column %>%
-  mutate(rowname=str_replace(rowname, ".forward.fastq","")) %>%
-  rename(sample=rowname, input=reads.in, filtered=reads.out)
+filt.out %>%
+  as_tibble(rownames = "filename") %>%
+  mutate(sample=str_replace(filename, forward_fastq_suffix,"")) %>%
+  select(sample, input=reads.in, filtered=reads.out) ->
+  track
 
 sapply(dadaFs, getN) %>%
-  as.tibble %>%
-  rownames_to_column() %>%
-  rename(sample=rowname, denoised=value) ->
+  enframe(name="sample", value="denoised") ->
   denoised
-  
 track %<>% full_join(denoised, by=c("sample"))
 
 sapply(mergers, getN) %>%
-  as.tibble %>%
-  rownames_to_column() %>%
-  rename(sample=rowname, merged=value) ->
+  enframe(name="sample", value="merged") ->
   merged
-
 track %<>% full_join(merged, by=c("sample"))
 
-
 rowSums(seqtab) %>%
-  as.tibble %>%
-  rownames_to_column() %>%
-  rename(sample=rowname, tabled=value) -> 
+  enframe(name="sample", value="tabled") ->
   tabled
-#   denoised
-
 track %<>% full_join(tabled, by=c("sample"))
 
 rowSums(seqtab.nochim) %>%
-  as.tibble %>%
-  rownames_to_column() %>%
-  rename(sample=rowname, nonchim=value) -> 
+  enframe(name="sample", value="nonchim") ->
   nonchim
-
 track %<>% full_join(nonchim, by=c("sample"))
 
 track
