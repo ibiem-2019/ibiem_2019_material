@@ -1,4 +1,14 @@
-Here we walk through version 1.6 of the DADA2 pipeline on a small multi-sample dataset. Our starting point is a set of Illumina-sequenced paired-end fastq files that have been split (or "demultiplexed") by sample and from which the barcodes/adapters have already been removed. The end product is an **amplicon sequence variant (ASV) table**, a higher-resolution analogue of the traditional "OTU table", which records the number of times each amplicon sequence variant was observed in each sample. We also assign taxonomy to the output sequences, and demonstrate how the data can be imported into the popular [phyloseq](https://joey711.github.io/phyloseq/) R package for the analysis of microbiome data.
+Here we walk through version 1.6 of the DADA2 pipeline on a small
+multi-sample dataset. Our starting point is a set of Illumina-sequenced
+paired-end fastq files that have been split (or “demultiplexed”) by
+sample and from which the barcodes/adapters have already been removed.
+The end product is an **amplicon sequence variant (ASV) table**, a
+higher-resolution analogue of the traditional “OTU table”, which records
+the number of times each amplicon sequence variant was observed in each
+sample. We also assign taxonomy to the output sequences, and demonstrate
+how the data can be imported into the popular
+[phyloseq](https://joey711.github.io/phyloseq/) R package for the
+analysis of microbiome data.
 
 ------------------------------------------------------------------------
 
@@ -7,11 +17,17 @@ Starting point
 
 This workflow assumes that your sequencing data meets certain criteria:
 
--   Samples have been demultiplexed, i.e. split into individual per-sample fastq files.
--   Non-biological nucleotides have been removed, e.g. primers, adapters, linkers, etc.
--   If paired-end sequencing data, the forward and reverse fastq files contain reads in matched order.
+-   Samples have been demultiplexed, i.e. split into individual
+    per-sample fastq files.
+-   Non-biological nucleotides have been removed, e.g. primers,
+    adapters, linkers, etc.
+-   If paired-end sequencing data, the forward and reverse fastq files
+    contain reads in matched order.
 
-If these criteria are not true for your data (**are you sure there aren't any primers hanging around?**) you need to remedy those issues before beginning this workflow. See [the FAQ](faq.html) for some recommendations for common issues.
+If these criteria are not true for your data (**are you sure there
+aren’t any primers hanging around?**) you need to remedy those issues
+before beginning this workflow. See DADA2 FAQ for some recommendations
+for common issues.
 
 Getting ready
 =============
@@ -33,9 +49,10 @@ library(ggplot2)
 library(fs)
 ```
 
-*Older versions of this workflow associated with previous release versions or the dada2 R package are also available: [version 1.2](tutorial_1_2.html), [version 1.4](tutorial_1_4.html).*
-
-We will work with are the [Atacama data (1% subsampled)](https://docs.qiime2.org/2018.11/tutorials/atacama-soils/#subsample-data). This Notebook assumes that you have followed the [Demultiplexing Tutorial](demultiplex_tutorial.md) to generate demultiplexed FASTQs.
+We will work with are the [Atacama data (1%
+subsampled)](https://docs.qiime2.org/2018.11/tutorials/atacama-soils/#subsample-data).
+This Notebook assumes that you have followed the [Demultiplexing
+Tutorial](demultiplex_tutorial.md) to generate demultiplexed FASTQs.
 
 ``` r
 output.dir = path.expand("~/scratch/atacama_1pct")
@@ -43,79 +60,81 @@ demux.dir = file.path(output.dir, "demux")
 list.files(demux.dir)
 ```
 
-    ##   [1] "BAQ1370.1.3.forward.fastq" "BAQ1370.1.3.reverse.fastq"
-    ##   [3] "BAQ1552.1.1.forward.fastq" "BAQ1552.1.1.reverse.fastq"
-    ##   [5] "BAQ2420.1.1.forward.fastq" "BAQ2420.1.1.reverse.fastq"
-    ##   [7] "BAQ2420.1.2.forward.fastq" "BAQ2420.1.2.reverse.fastq"
-    ##   [9] "BAQ2420.1.3.forward.fastq" "BAQ2420.1.3.reverse.fastq"
-    ##  [11] "BAQ2420.2.forward.fastq"   "BAQ2420.2.reverse.fastq"  
-    ##  [13] "BAQ2420.3.forward.fastq"   "BAQ2420.3.reverse.fastq"  
-    ##  [15] "BAQ2462.1.forward.fastq"   "BAQ2462.1.reverse.fastq"  
-    ##  [17] "BAQ2462.2.forward.fastq"   "BAQ2462.2.reverse.fastq"  
-    ##  [19] "BAQ2462.3.forward.fastq"   "BAQ2462.3.reverse.fastq"  
-    ##  [21] "BAQ2687.1.forward.fastq"   "BAQ2687.1.reverse.fastq"  
-    ##  [23] "BAQ2687.2.forward.fastq"   "BAQ2687.2.reverse.fastq"  
-    ##  [25] "BAQ2687.3.forward.fastq"   "BAQ2687.3.reverse.fastq"  
-    ##  [27] "BAQ2838.1.forward.fastq"   "BAQ2838.1.reverse.fastq"  
-    ##  [29] "BAQ2838.2.forward.fastq"   "BAQ2838.2.reverse.fastq"  
-    ##  [31] "BAQ2838.3.forward.fastq"   "BAQ2838.3.reverse.fastq"  
-    ##  [33] "BAQ3473.1.forward.fastq"   "BAQ3473.1.reverse.fastq"  
-    ##  [35] "BAQ3473.2.forward.fastq"   "BAQ3473.2.reverse.fastq"  
-    ##  [37] "BAQ3473.3.forward.fastq"   "BAQ3473.3.reverse.fastq"  
-    ##  [39] "BAQ4166.1.1.forward.fastq" "BAQ4166.1.1.reverse.fastq"
-    ##  [41] "BAQ4166.1.2.forward.fastq" "BAQ4166.1.2.reverse.fastq"
-    ##  [43] "BAQ4166.1.3.forward.fastq" "BAQ4166.1.3.reverse.fastq"
-    ##  [45] "BAQ4166.2.forward.fastq"   "BAQ4166.2.reverse.fastq"  
-    ##  [47] "BAQ4166.3.forward.fastq"   "BAQ4166.3.reverse.fastq"  
-    ##  [49] "BAQ4697.1.forward.fastq"   "BAQ4697.1.reverse.fastq"  
-    ##  [51] "BAQ4697.2.forward.fastq"   "BAQ4697.2.reverse.fastq"  
-    ##  [53] "BAQ4697.3.forward.fastq"   "BAQ4697.3.reverse.fastq"  
-    ##  [55] "forward"                   "reverse"                  
-    ##  [57] "split_4"                   "tagged_1"                 
-    ##  [59] "tagged_2"                  "tagged_3"                 
-    ##  [61] "tagged_4"                  "YUN1005.1.1.forward.fastq"
-    ##  [63] "YUN1005.1.1.reverse.fastq" "YUN1005.3.forward.fastq"  
-    ##  [65] "YUN1005.3.reverse.fastq"   "YUN1242.1.forward.fastq"  
-    ##  [67] "YUN1242.1.reverse.fastq"   "YUN1242.2.forward.fastq"  
-    ##  [69] "YUN1242.2.reverse.fastq"   "YUN1242.3.forward.fastq"  
-    ##  [71] "YUN1242.3.reverse.fastq"   "YUN1609.1.forward.fastq"  
-    ##  [73] "YUN1609.1.reverse.fastq"   "YUN2029.1.forward.fastq"  
-    ##  [75] "YUN2029.1.reverse.fastq"   "YUN2029.2.forward.fastq"  
-    ##  [77] "YUN2029.2.reverse.fastq"   "YUN2029.3.forward.fastq"  
-    ##  [79] "YUN2029.3.reverse.fastq"   "YUN3008.1.3.forward.fastq"
-    ##  [81] "YUN3008.1.3.reverse.fastq" "YUN3008.3.forward.fastq"  
-    ##  [83] "YUN3008.3.reverse.fastq"   "YUN3153.2.forward.fastq"  
-    ##  [85] "YUN3153.2.reverse.fastq"   "YUN3153.3.forward.fastq"  
-    ##  [87] "YUN3153.3.reverse.fastq"   "YUN3184.2.forward.fastq"  
-    ##  [89] "YUN3184.2.reverse.fastq"   "YUN3259.1.1.forward.fastq"
-    ##  [91] "YUN3259.1.1.reverse.fastq" "YUN3259.1.2.forward.fastq"
-    ##  [93] "YUN3259.1.2.reverse.fastq" "YUN3259.1.3.forward.fastq"
-    ##  [95] "YUN3259.1.3.reverse.fastq" "YUN3259.2.forward.fastq"  
-    ##  [97] "YUN3259.2.reverse.fastq"   "YUN3259.3.forward.fastq"  
-    ##  [99] "YUN3259.3.reverse.fastq"   "YUN3346.1.forward.fastq"  
-    ## [101] "YUN3346.1.reverse.fastq"   "YUN3346.2.forward.fastq"  
-    ## [103] "YUN3346.2.reverse.fastq"   "YUN3346.3.forward.fastq"  
-    ## [105] "YUN3346.3.reverse.fastq"   "YUN3428.1.forward.fastq"  
-    ## [107] "YUN3428.1.reverse.fastq"   "YUN3428.2.forward.fastq"  
-    ## [109] "YUN3428.2.reverse.fastq"   "YUN3428.3.forward.fastq"  
-    ## [111] "YUN3428.3.reverse.fastq"   "YUN3533.1.1.forward.fastq"
-    ## [113] "YUN3533.1.1.reverse.fastq" "YUN3533.1.2.forward.fastq"
-    ## [115] "YUN3533.1.2.reverse.fastq" "YUN3533.1.3.forward.fastq"
-    ## [117] "YUN3533.1.3.reverse.fastq" "YUN3533.2.forward.fastq"  
-    ## [119] "YUN3533.2.reverse.fastq"   "YUN3533.3.forward.fastq"  
-    ## [121] "YUN3533.3.reverse.fastq"   "YUN3856.1.1.forward.fastq"
-    ## [123] "YUN3856.1.1.reverse.fastq" "YUN3856.1.2.forward.fastq"
-    ## [125] "YUN3856.1.2.reverse.fastq" "YUN3856.1.3.forward.fastq"
-    ## [127] "YUN3856.1.3.reverse.fastq" "YUN3856.2.forward.fastq"  
-    ## [129] "YUN3856.2.reverse.fastq"   "YUN3856.3.forward.fastq"  
-    ## [131] "YUN3856.3.reverse.fastq"
+    ##   [1] "BAQ1370.1.3.forward.fastq.gz" "BAQ1370.1.3.reverse.fastq.gz"
+    ##   [3] "BAQ1552.1.1.forward.fastq.gz" "BAQ1552.1.1.reverse.fastq.gz"
+    ##   [5] "BAQ2420.1.1.forward.fastq.gz" "BAQ2420.1.1.reverse.fastq.gz"
+    ##   [7] "BAQ2420.1.2.forward.fastq.gz" "BAQ2420.1.2.reverse.fastq.gz"
+    ##   [9] "BAQ2420.1.3.forward.fastq.gz" "BAQ2420.1.3.reverse.fastq.gz"
+    ##  [11] "BAQ2420.2.forward.fastq.gz"   "BAQ2420.2.reverse.fastq.gz"  
+    ##  [13] "BAQ2420.3.forward.fastq.gz"   "BAQ2420.3.reverse.fastq.gz"  
+    ##  [15] "BAQ2462.1.forward.fastq.gz"   "BAQ2462.1.reverse.fastq.gz"  
+    ##  [17] "BAQ2462.2.forward.fastq.gz"   "BAQ2462.2.reverse.fastq.gz"  
+    ##  [19] "BAQ2462.3.forward.fastq.gz"   "BAQ2462.3.reverse.fastq.gz"  
+    ##  [21] "BAQ2687.1.forward.fastq.gz"   "BAQ2687.1.reverse.fastq.gz"  
+    ##  [23] "BAQ2687.2.forward.fastq.gz"   "BAQ2687.2.reverse.fastq.gz"  
+    ##  [25] "BAQ2687.3.forward.fastq.gz"   "BAQ2687.3.reverse.fastq.gz"  
+    ##  [27] "BAQ2838.1.forward.fastq.gz"   "BAQ2838.1.reverse.fastq.gz"  
+    ##  [29] "BAQ2838.2.forward.fastq.gz"   "BAQ2838.2.reverse.fastq.gz"  
+    ##  [31] "BAQ2838.3.forward.fastq.gz"   "BAQ2838.3.reverse.fastq.gz"  
+    ##  [33] "BAQ3473.1.forward.fastq.gz"   "BAQ3473.1.reverse.fastq.gz"  
+    ##  [35] "BAQ3473.2.forward.fastq.gz"   "BAQ3473.2.reverse.fastq.gz"  
+    ##  [37] "BAQ3473.3.forward.fastq.gz"   "BAQ3473.3.reverse.fastq.gz"  
+    ##  [39] "BAQ4166.1.1.forward.fastq.gz" "BAQ4166.1.1.reverse.fastq.gz"
+    ##  [41] "BAQ4166.1.2.forward.fastq.gz" "BAQ4166.1.2.reverse.fastq.gz"
+    ##  [43] "BAQ4166.1.3.forward.fastq.gz" "BAQ4166.1.3.reverse.fastq.gz"
+    ##  [45] "BAQ4166.2.forward.fastq.gz"   "BAQ4166.2.reverse.fastq.gz"  
+    ##  [47] "BAQ4166.3.forward.fastq.gz"   "BAQ4166.3.reverse.fastq.gz"  
+    ##  [49] "BAQ4697.1.forward.fastq.gz"   "BAQ4697.1.reverse.fastq.gz"  
+    ##  [51] "BAQ4697.2.forward.fastq.gz"   "BAQ4697.2.reverse.fastq.gz"  
+    ##  [53] "BAQ4697.3.forward.fastq.gz"   "BAQ4697.3.reverse.fastq.gz"  
+    ##  [55] "forward"                      "reverse"                     
+    ##  [57] "split_4"                      "tagged_1"                    
+    ##  [59] "tagged_2"                     "tagged_3"                    
+    ##  [61] "tagged_4"                     "YUN1005.1.1.forward.fastq.gz"
+    ##  [63] "YUN1005.1.1.reverse.fastq.gz" "YUN1005.3.forward.fastq.gz"  
+    ##  [65] "YUN1005.3.reverse.fastq.gz"   "YUN1242.1.forward.fastq.gz"  
+    ##  [67] "YUN1242.1.reverse.fastq.gz"   "YUN1242.2.forward.fastq.gz"  
+    ##  [69] "YUN1242.2.reverse.fastq.gz"   "YUN1242.3.forward.fastq.gz"  
+    ##  [71] "YUN1242.3.reverse.fastq.gz"   "YUN1609.1.forward.fastq.gz"  
+    ##  [73] "YUN1609.1.reverse.fastq.gz"   "YUN2029.1.forward.fastq.gz"  
+    ##  [75] "YUN2029.1.reverse.fastq.gz"   "YUN2029.2.forward.fastq.gz"  
+    ##  [77] "YUN2029.2.reverse.fastq.gz"   "YUN2029.3.forward.fastq.gz"  
+    ##  [79] "YUN2029.3.reverse.fastq.gz"   "YUN3008.1.3.forward.fastq.gz"
+    ##  [81] "YUN3008.1.3.reverse.fastq.gz" "YUN3008.3.forward.fastq.gz"  
+    ##  [83] "YUN3008.3.reverse.fastq.gz"   "YUN3153.2.forward.fastq.gz"  
+    ##  [85] "YUN3153.2.reverse.fastq.gz"   "YUN3153.3.forward.fastq.gz"  
+    ##  [87] "YUN3153.3.reverse.fastq.gz"   "YUN3184.2.forward.fastq.gz"  
+    ##  [89] "YUN3184.2.reverse.fastq.gz"   "YUN3259.1.1.forward.fastq.gz"
+    ##  [91] "YUN3259.1.1.reverse.fastq.gz" "YUN3259.1.2.forward.fastq.gz"
+    ##  [93] "YUN3259.1.2.reverse.fastq.gz" "YUN3259.1.3.forward.fastq.gz"
+    ##  [95] "YUN3259.1.3.reverse.fastq.gz" "YUN3259.2.forward.fastq.gz"  
+    ##  [97] "YUN3259.2.reverse.fastq.gz"   "YUN3259.3.forward.fastq.gz"  
+    ##  [99] "YUN3259.3.reverse.fastq.gz"   "YUN3346.1.forward.fastq.gz"  
+    ## [101] "YUN3346.1.reverse.fastq.gz"   "YUN3346.2.forward.fastq.gz"  
+    ## [103] "YUN3346.2.reverse.fastq.gz"   "YUN3346.3.forward.fastq.gz"  
+    ## [105] "YUN3346.3.reverse.fastq.gz"   "YUN3428.1.forward.fastq.gz"  
+    ## [107] "YUN3428.1.reverse.fastq.gz"   "YUN3428.2.forward.fastq.gz"  
+    ## [109] "YUN3428.2.reverse.fastq.gz"   "YUN3428.3.forward.fastq.gz"  
+    ## [111] "YUN3428.3.reverse.fastq.gz"   "YUN3533.1.1.forward.fastq.gz"
+    ## [113] "YUN3533.1.1.reverse.fastq.gz" "YUN3533.1.2.forward.fastq.gz"
+    ## [115] "YUN3533.1.2.reverse.fastq.gz" "YUN3533.1.3.forward.fastq.gz"
+    ## [117] "YUN3533.1.3.reverse.fastq.gz" "YUN3533.2.forward.fastq.gz"  
+    ## [119] "YUN3533.2.reverse.fastq.gz"   "YUN3533.3.forward.fastq.gz"  
+    ## [121] "YUN3533.3.reverse.fastq.gz"   "YUN3856.1.1.forward.fastq.gz"
+    ## [123] "YUN3856.1.1.reverse.fastq.gz" "YUN3856.1.2.forward.fastq.gz"
+    ## [125] "YUN3856.1.2.reverse.fastq.gz" "YUN3856.1.3.forward.fastq.gz"
+    ## [127] "YUN3856.1.3.reverse.fastq.gz" "YUN3856.2.forward.fastq.gz"  
+    ## [129] "YUN3856.2.reverse.fastq.gz"   "YUN3856.3.forward.fastq.gz"  
+    ## [131] "YUN3856.3.reverse.fastq.gz"
 
-If the package successfully loaded and your listed files match those here, you are ready to go through the DADA2 pipeline.
+If the package successfully loaded and your listed files match those
+here, you are ready to go through the DADA2 pipeline.
 
 Set Up Paths
 ------------
 
-We need to set up a "scratch" directory for saving files that we generate while running dada2, but don't need to save long term.
+We need to set up a “scratch” directory for saving files that we
+generate while running dada2, but don’t need to save long term.
 
 ``` r
 scratch.dir = file.path(output.dir, "dada2")
@@ -132,8 +151,8 @@ dir_create(scratch.dir)
 
 ps.rds = file.path(scratch.dir, "atacama_1pct.rds")
 
-silva.ref = "/data/references/dada/silva_nr_v128_train_set.fa.gz"
-silva.species.ref = "/data/references/dada/silva_species_assignment_v128.fa.gz"
+silva.ref = "/data/references/dada/silva_nr_v132_train_set.fa.gz"
+silva.species.ref = "/data/references/dada/silva_species_assignment_v132.fa.gz"
 ```
 
  
@@ -141,21 +160,30 @@ silva.species.ref = "/data/references/dada/silva_species_assignment_v128.fa.gz"
 Filter and Trim
 ===============
 
-First we read in the names of the fastq files, and perform some string manipulation to get lists of the forward and reverse fastq files in matched order:
+First we read in the names of the fastq files, and perform some string
+manipulation to get lists of the forward and reverse fastq files in
+matched order:
 
 ``` r
-# Forward and reverse fastq filenames have format: SAMPLENAME_R1_001.fastq and SAMPLENAME_R2_001.fastq
+# Forward and reverse fastq filenames have format: 
+# SAMPLENAME.forward.fastq.gz
+# SAMPLENAME.reverse.fastq.gz
 fnFs <- sort(list.files(demux.dir, pattern="forward.fastq", full.names = TRUE))
 fnRs <- sort(list.files(demux.dir, pattern="reverse.fastq", full.names = TRUE))
 
 # Extract sample names, assuming filenames have format: SAMPLENAME.X.fastq, where X is reverse or forward
 # sample.names <- sapply(strsplit(basename(fnFs), "_"), `[`, 1)
+
+forward_fastq_suffix = ".forward.fastq.gz"
+
 sample.names = fnFs %>% 
   basename %>%
-  str_replace(".forward.fastq","") 
+  str_replace(forward_fastq_suffix,"") 
 ```
 
-**<span style="color:red">If using this workflow on your own data:</span>** The string manipulations may have to be modified if using a different filename format.
+**<span style="color:red">If using this workflow on your own
+data:</span>** The string manipulations may have to be modified if using
+a different filename format.
 
 Sanity Check on Lists
 ---------------------
@@ -166,68 +194,68 @@ Sanity Check on Lists
 print(fnFs)
 ```
 
-    ##  [1] "/home/guest/scratch/atacama_1pct/demux/BAQ1370.1.3.forward.fastq"
-    ##  [2] "/home/guest/scratch/atacama_1pct/demux/BAQ1552.1.1.forward.fastq"
-    ##  [3] "/home/guest/scratch/atacama_1pct/demux/BAQ2420.1.1.forward.fastq"
-    ##  [4] "/home/guest/scratch/atacama_1pct/demux/BAQ2420.1.2.forward.fastq"
-    ##  [5] "/home/guest/scratch/atacama_1pct/demux/BAQ2420.1.3.forward.fastq"
-    ##  [6] "/home/guest/scratch/atacama_1pct/demux/BAQ2420.2.forward.fastq"  
-    ##  [7] "/home/guest/scratch/atacama_1pct/demux/BAQ2420.3.forward.fastq"  
-    ##  [8] "/home/guest/scratch/atacama_1pct/demux/BAQ2462.1.forward.fastq"  
-    ##  [9] "/home/guest/scratch/atacama_1pct/demux/BAQ2462.2.forward.fastq"  
-    ## [10] "/home/guest/scratch/atacama_1pct/demux/BAQ2462.3.forward.fastq"  
-    ## [11] "/home/guest/scratch/atacama_1pct/demux/BAQ2687.1.forward.fastq"  
-    ## [12] "/home/guest/scratch/atacama_1pct/demux/BAQ2687.2.forward.fastq"  
-    ## [13] "/home/guest/scratch/atacama_1pct/demux/BAQ2687.3.forward.fastq"  
-    ## [14] "/home/guest/scratch/atacama_1pct/demux/BAQ2838.1.forward.fastq"  
-    ## [15] "/home/guest/scratch/atacama_1pct/demux/BAQ2838.2.forward.fastq"  
-    ## [16] "/home/guest/scratch/atacama_1pct/demux/BAQ2838.3.forward.fastq"  
-    ## [17] "/home/guest/scratch/atacama_1pct/demux/BAQ3473.1.forward.fastq"  
-    ## [18] "/home/guest/scratch/atacama_1pct/demux/BAQ3473.2.forward.fastq"  
-    ## [19] "/home/guest/scratch/atacama_1pct/demux/BAQ3473.3.forward.fastq"  
-    ## [20] "/home/guest/scratch/atacama_1pct/demux/BAQ4166.1.1.forward.fastq"
-    ## [21] "/home/guest/scratch/atacama_1pct/demux/BAQ4166.1.2.forward.fastq"
-    ## [22] "/home/guest/scratch/atacama_1pct/demux/BAQ4166.1.3.forward.fastq"
-    ## [23] "/home/guest/scratch/atacama_1pct/demux/BAQ4166.2.forward.fastq"  
-    ## [24] "/home/guest/scratch/atacama_1pct/demux/BAQ4166.3.forward.fastq"  
-    ## [25] "/home/guest/scratch/atacama_1pct/demux/BAQ4697.1.forward.fastq"  
-    ## [26] "/home/guest/scratch/atacama_1pct/demux/BAQ4697.2.forward.fastq"  
-    ## [27] "/home/guest/scratch/atacama_1pct/demux/BAQ4697.3.forward.fastq"  
-    ## [28] "/home/guest/scratch/atacama_1pct/demux/YUN1005.1.1.forward.fastq"
-    ## [29] "/home/guest/scratch/atacama_1pct/demux/YUN1005.3.forward.fastq"  
-    ## [30] "/home/guest/scratch/atacama_1pct/demux/YUN1242.1.forward.fastq"  
-    ## [31] "/home/guest/scratch/atacama_1pct/demux/YUN1242.2.forward.fastq"  
-    ## [32] "/home/guest/scratch/atacama_1pct/demux/YUN1242.3.forward.fastq"  
-    ## [33] "/home/guest/scratch/atacama_1pct/demux/YUN1609.1.forward.fastq"  
-    ## [34] "/home/guest/scratch/atacama_1pct/demux/YUN2029.1.forward.fastq"  
-    ## [35] "/home/guest/scratch/atacama_1pct/demux/YUN2029.2.forward.fastq"  
-    ## [36] "/home/guest/scratch/atacama_1pct/demux/YUN2029.3.forward.fastq"  
-    ## [37] "/home/guest/scratch/atacama_1pct/demux/YUN3008.1.3.forward.fastq"
-    ## [38] "/home/guest/scratch/atacama_1pct/demux/YUN3008.3.forward.fastq"  
-    ## [39] "/home/guest/scratch/atacama_1pct/demux/YUN3153.2.forward.fastq"  
-    ## [40] "/home/guest/scratch/atacama_1pct/demux/YUN3153.3.forward.fastq"  
-    ## [41] "/home/guest/scratch/atacama_1pct/demux/YUN3184.2.forward.fastq"  
-    ## [42] "/home/guest/scratch/atacama_1pct/demux/YUN3259.1.1.forward.fastq"
-    ## [43] "/home/guest/scratch/atacama_1pct/demux/YUN3259.1.2.forward.fastq"
-    ## [44] "/home/guest/scratch/atacama_1pct/demux/YUN3259.1.3.forward.fastq"
-    ## [45] "/home/guest/scratch/atacama_1pct/demux/YUN3259.2.forward.fastq"  
-    ## [46] "/home/guest/scratch/atacama_1pct/demux/YUN3259.3.forward.fastq"  
-    ## [47] "/home/guest/scratch/atacama_1pct/demux/YUN3346.1.forward.fastq"  
-    ## [48] "/home/guest/scratch/atacama_1pct/demux/YUN3346.2.forward.fastq"  
-    ## [49] "/home/guest/scratch/atacama_1pct/demux/YUN3346.3.forward.fastq"  
-    ## [50] "/home/guest/scratch/atacama_1pct/demux/YUN3428.1.forward.fastq"  
-    ## [51] "/home/guest/scratch/atacama_1pct/demux/YUN3428.2.forward.fastq"  
-    ## [52] "/home/guest/scratch/atacama_1pct/demux/YUN3428.3.forward.fastq"  
-    ## [53] "/home/guest/scratch/atacama_1pct/demux/YUN3533.1.1.forward.fastq"
-    ## [54] "/home/guest/scratch/atacama_1pct/demux/YUN3533.1.2.forward.fastq"
-    ## [55] "/home/guest/scratch/atacama_1pct/demux/YUN3533.1.3.forward.fastq"
-    ## [56] "/home/guest/scratch/atacama_1pct/demux/YUN3533.2.forward.fastq"  
-    ## [57] "/home/guest/scratch/atacama_1pct/demux/YUN3533.3.forward.fastq"  
-    ## [58] "/home/guest/scratch/atacama_1pct/demux/YUN3856.1.1.forward.fastq"
-    ## [59] "/home/guest/scratch/atacama_1pct/demux/YUN3856.1.2.forward.fastq"
-    ## [60] "/home/guest/scratch/atacama_1pct/demux/YUN3856.1.3.forward.fastq"
-    ## [61] "/home/guest/scratch/atacama_1pct/demux/YUN3856.2.forward.fastq"  
-    ## [62] "/home/guest/scratch/atacama_1pct/demux/YUN3856.3.forward.fastq"
+    ##  [1] "/home/guest/scratch/atacama_1pct/demux/BAQ1370.1.3.forward.fastq.gz"
+    ##  [2] "/home/guest/scratch/atacama_1pct/demux/BAQ1552.1.1.forward.fastq.gz"
+    ##  [3] "/home/guest/scratch/atacama_1pct/demux/BAQ2420.1.1.forward.fastq.gz"
+    ##  [4] "/home/guest/scratch/atacama_1pct/demux/BAQ2420.1.2.forward.fastq.gz"
+    ##  [5] "/home/guest/scratch/atacama_1pct/demux/BAQ2420.1.3.forward.fastq.gz"
+    ##  [6] "/home/guest/scratch/atacama_1pct/demux/BAQ2420.2.forward.fastq.gz"  
+    ##  [7] "/home/guest/scratch/atacama_1pct/demux/BAQ2420.3.forward.fastq.gz"  
+    ##  [8] "/home/guest/scratch/atacama_1pct/demux/BAQ2462.1.forward.fastq.gz"  
+    ##  [9] "/home/guest/scratch/atacama_1pct/demux/BAQ2462.2.forward.fastq.gz"  
+    ## [10] "/home/guest/scratch/atacama_1pct/demux/BAQ2462.3.forward.fastq.gz"  
+    ## [11] "/home/guest/scratch/atacama_1pct/demux/BAQ2687.1.forward.fastq.gz"  
+    ## [12] "/home/guest/scratch/atacama_1pct/demux/BAQ2687.2.forward.fastq.gz"  
+    ## [13] "/home/guest/scratch/atacama_1pct/demux/BAQ2687.3.forward.fastq.gz"  
+    ## [14] "/home/guest/scratch/atacama_1pct/demux/BAQ2838.1.forward.fastq.gz"  
+    ## [15] "/home/guest/scratch/atacama_1pct/demux/BAQ2838.2.forward.fastq.gz"  
+    ## [16] "/home/guest/scratch/atacama_1pct/demux/BAQ2838.3.forward.fastq.gz"  
+    ## [17] "/home/guest/scratch/atacama_1pct/demux/BAQ3473.1.forward.fastq.gz"  
+    ## [18] "/home/guest/scratch/atacama_1pct/demux/BAQ3473.2.forward.fastq.gz"  
+    ## [19] "/home/guest/scratch/atacama_1pct/demux/BAQ3473.3.forward.fastq.gz"  
+    ## [20] "/home/guest/scratch/atacama_1pct/demux/BAQ4166.1.1.forward.fastq.gz"
+    ## [21] "/home/guest/scratch/atacama_1pct/demux/BAQ4166.1.2.forward.fastq.gz"
+    ## [22] "/home/guest/scratch/atacama_1pct/demux/BAQ4166.1.3.forward.fastq.gz"
+    ## [23] "/home/guest/scratch/atacama_1pct/demux/BAQ4166.2.forward.fastq.gz"  
+    ## [24] "/home/guest/scratch/atacama_1pct/demux/BAQ4166.3.forward.fastq.gz"  
+    ## [25] "/home/guest/scratch/atacama_1pct/demux/BAQ4697.1.forward.fastq.gz"  
+    ## [26] "/home/guest/scratch/atacama_1pct/demux/BAQ4697.2.forward.fastq.gz"  
+    ## [27] "/home/guest/scratch/atacama_1pct/demux/BAQ4697.3.forward.fastq.gz"  
+    ## [28] "/home/guest/scratch/atacama_1pct/demux/YUN1005.1.1.forward.fastq.gz"
+    ## [29] "/home/guest/scratch/atacama_1pct/demux/YUN1005.3.forward.fastq.gz"  
+    ## [30] "/home/guest/scratch/atacama_1pct/demux/YUN1242.1.forward.fastq.gz"  
+    ## [31] "/home/guest/scratch/atacama_1pct/demux/YUN1242.2.forward.fastq.gz"  
+    ## [32] "/home/guest/scratch/atacama_1pct/demux/YUN1242.3.forward.fastq.gz"  
+    ## [33] "/home/guest/scratch/atacama_1pct/demux/YUN1609.1.forward.fastq.gz"  
+    ## [34] "/home/guest/scratch/atacama_1pct/demux/YUN2029.1.forward.fastq.gz"  
+    ## [35] "/home/guest/scratch/atacama_1pct/demux/YUN2029.2.forward.fastq.gz"  
+    ## [36] "/home/guest/scratch/atacama_1pct/demux/YUN2029.3.forward.fastq.gz"  
+    ## [37] "/home/guest/scratch/atacama_1pct/demux/YUN3008.1.3.forward.fastq.gz"
+    ## [38] "/home/guest/scratch/atacama_1pct/demux/YUN3008.3.forward.fastq.gz"  
+    ## [39] "/home/guest/scratch/atacama_1pct/demux/YUN3153.2.forward.fastq.gz"  
+    ## [40] "/home/guest/scratch/atacama_1pct/demux/YUN3153.3.forward.fastq.gz"  
+    ## [41] "/home/guest/scratch/atacama_1pct/demux/YUN3184.2.forward.fastq.gz"  
+    ## [42] "/home/guest/scratch/atacama_1pct/demux/YUN3259.1.1.forward.fastq.gz"
+    ## [43] "/home/guest/scratch/atacama_1pct/demux/YUN3259.1.2.forward.fastq.gz"
+    ## [44] "/home/guest/scratch/atacama_1pct/demux/YUN3259.1.3.forward.fastq.gz"
+    ## [45] "/home/guest/scratch/atacama_1pct/demux/YUN3259.2.forward.fastq.gz"  
+    ## [46] "/home/guest/scratch/atacama_1pct/demux/YUN3259.3.forward.fastq.gz"  
+    ## [47] "/home/guest/scratch/atacama_1pct/demux/YUN3346.1.forward.fastq.gz"  
+    ## [48] "/home/guest/scratch/atacama_1pct/demux/YUN3346.2.forward.fastq.gz"  
+    ## [49] "/home/guest/scratch/atacama_1pct/demux/YUN3346.3.forward.fastq.gz"  
+    ## [50] "/home/guest/scratch/atacama_1pct/demux/YUN3428.1.forward.fastq.gz"  
+    ## [51] "/home/guest/scratch/atacama_1pct/demux/YUN3428.2.forward.fastq.gz"  
+    ## [52] "/home/guest/scratch/atacama_1pct/demux/YUN3428.3.forward.fastq.gz"  
+    ## [53] "/home/guest/scratch/atacama_1pct/demux/YUN3533.1.1.forward.fastq.gz"
+    ## [54] "/home/guest/scratch/atacama_1pct/demux/YUN3533.1.2.forward.fastq.gz"
+    ## [55] "/home/guest/scratch/atacama_1pct/demux/YUN3533.1.3.forward.fastq.gz"
+    ## [56] "/home/guest/scratch/atacama_1pct/demux/YUN3533.2.forward.fastq.gz"  
+    ## [57] "/home/guest/scratch/atacama_1pct/demux/YUN3533.3.forward.fastq.gz"  
+    ## [58] "/home/guest/scratch/atacama_1pct/demux/YUN3856.1.1.forward.fastq.gz"
+    ## [59] "/home/guest/scratch/atacama_1pct/demux/YUN3856.1.2.forward.fastq.gz"
+    ## [60] "/home/guest/scratch/atacama_1pct/demux/YUN3856.1.3.forward.fastq.gz"
+    ## [61] "/home/guest/scratch/atacama_1pct/demux/YUN3856.2.forward.fastq.gz"  
+    ## [62] "/home/guest/scratch/atacama_1pct/demux/YUN3856.3.forward.fastq.gz"
 
 ### Reverse FASTQs
 
@@ -235,68 +263,68 @@ print(fnFs)
 print(fnRs)
 ```
 
-    ##  [1] "/home/guest/scratch/atacama_1pct/demux/BAQ1370.1.3.reverse.fastq"
-    ##  [2] "/home/guest/scratch/atacama_1pct/demux/BAQ1552.1.1.reverse.fastq"
-    ##  [3] "/home/guest/scratch/atacama_1pct/demux/BAQ2420.1.1.reverse.fastq"
-    ##  [4] "/home/guest/scratch/atacama_1pct/demux/BAQ2420.1.2.reverse.fastq"
-    ##  [5] "/home/guest/scratch/atacama_1pct/demux/BAQ2420.1.3.reverse.fastq"
-    ##  [6] "/home/guest/scratch/atacama_1pct/demux/BAQ2420.2.reverse.fastq"  
-    ##  [7] "/home/guest/scratch/atacama_1pct/demux/BAQ2420.3.reverse.fastq"  
-    ##  [8] "/home/guest/scratch/atacama_1pct/demux/BAQ2462.1.reverse.fastq"  
-    ##  [9] "/home/guest/scratch/atacama_1pct/demux/BAQ2462.2.reverse.fastq"  
-    ## [10] "/home/guest/scratch/atacama_1pct/demux/BAQ2462.3.reverse.fastq"  
-    ## [11] "/home/guest/scratch/atacama_1pct/demux/BAQ2687.1.reverse.fastq"  
-    ## [12] "/home/guest/scratch/atacama_1pct/demux/BAQ2687.2.reverse.fastq"  
-    ## [13] "/home/guest/scratch/atacama_1pct/demux/BAQ2687.3.reverse.fastq"  
-    ## [14] "/home/guest/scratch/atacama_1pct/demux/BAQ2838.1.reverse.fastq"  
-    ## [15] "/home/guest/scratch/atacama_1pct/demux/BAQ2838.2.reverse.fastq"  
-    ## [16] "/home/guest/scratch/atacama_1pct/demux/BAQ2838.3.reverse.fastq"  
-    ## [17] "/home/guest/scratch/atacama_1pct/demux/BAQ3473.1.reverse.fastq"  
-    ## [18] "/home/guest/scratch/atacama_1pct/demux/BAQ3473.2.reverse.fastq"  
-    ## [19] "/home/guest/scratch/atacama_1pct/demux/BAQ3473.3.reverse.fastq"  
-    ## [20] "/home/guest/scratch/atacama_1pct/demux/BAQ4166.1.1.reverse.fastq"
-    ## [21] "/home/guest/scratch/atacama_1pct/demux/BAQ4166.1.2.reverse.fastq"
-    ## [22] "/home/guest/scratch/atacama_1pct/demux/BAQ4166.1.3.reverse.fastq"
-    ## [23] "/home/guest/scratch/atacama_1pct/demux/BAQ4166.2.reverse.fastq"  
-    ## [24] "/home/guest/scratch/atacama_1pct/demux/BAQ4166.3.reverse.fastq"  
-    ## [25] "/home/guest/scratch/atacama_1pct/demux/BAQ4697.1.reverse.fastq"  
-    ## [26] "/home/guest/scratch/atacama_1pct/demux/BAQ4697.2.reverse.fastq"  
-    ## [27] "/home/guest/scratch/atacama_1pct/demux/BAQ4697.3.reverse.fastq"  
-    ## [28] "/home/guest/scratch/atacama_1pct/demux/YUN1005.1.1.reverse.fastq"
-    ## [29] "/home/guest/scratch/atacama_1pct/demux/YUN1005.3.reverse.fastq"  
-    ## [30] "/home/guest/scratch/atacama_1pct/demux/YUN1242.1.reverse.fastq"  
-    ## [31] "/home/guest/scratch/atacama_1pct/demux/YUN1242.2.reverse.fastq"  
-    ## [32] "/home/guest/scratch/atacama_1pct/demux/YUN1242.3.reverse.fastq"  
-    ## [33] "/home/guest/scratch/atacama_1pct/demux/YUN1609.1.reverse.fastq"  
-    ## [34] "/home/guest/scratch/atacama_1pct/demux/YUN2029.1.reverse.fastq"  
-    ## [35] "/home/guest/scratch/atacama_1pct/demux/YUN2029.2.reverse.fastq"  
-    ## [36] "/home/guest/scratch/atacama_1pct/demux/YUN2029.3.reverse.fastq"  
-    ## [37] "/home/guest/scratch/atacama_1pct/demux/YUN3008.1.3.reverse.fastq"
-    ## [38] "/home/guest/scratch/atacama_1pct/demux/YUN3008.3.reverse.fastq"  
-    ## [39] "/home/guest/scratch/atacama_1pct/demux/YUN3153.2.reverse.fastq"  
-    ## [40] "/home/guest/scratch/atacama_1pct/demux/YUN3153.3.reverse.fastq"  
-    ## [41] "/home/guest/scratch/atacama_1pct/demux/YUN3184.2.reverse.fastq"  
-    ## [42] "/home/guest/scratch/atacama_1pct/demux/YUN3259.1.1.reverse.fastq"
-    ## [43] "/home/guest/scratch/atacama_1pct/demux/YUN3259.1.2.reverse.fastq"
-    ## [44] "/home/guest/scratch/atacama_1pct/demux/YUN3259.1.3.reverse.fastq"
-    ## [45] "/home/guest/scratch/atacama_1pct/demux/YUN3259.2.reverse.fastq"  
-    ## [46] "/home/guest/scratch/atacama_1pct/demux/YUN3259.3.reverse.fastq"  
-    ## [47] "/home/guest/scratch/atacama_1pct/demux/YUN3346.1.reverse.fastq"  
-    ## [48] "/home/guest/scratch/atacama_1pct/demux/YUN3346.2.reverse.fastq"  
-    ## [49] "/home/guest/scratch/atacama_1pct/demux/YUN3346.3.reverse.fastq"  
-    ## [50] "/home/guest/scratch/atacama_1pct/demux/YUN3428.1.reverse.fastq"  
-    ## [51] "/home/guest/scratch/atacama_1pct/demux/YUN3428.2.reverse.fastq"  
-    ## [52] "/home/guest/scratch/atacama_1pct/demux/YUN3428.3.reverse.fastq"  
-    ## [53] "/home/guest/scratch/atacama_1pct/demux/YUN3533.1.1.reverse.fastq"
-    ## [54] "/home/guest/scratch/atacama_1pct/demux/YUN3533.1.2.reverse.fastq"
-    ## [55] "/home/guest/scratch/atacama_1pct/demux/YUN3533.1.3.reverse.fastq"
-    ## [56] "/home/guest/scratch/atacama_1pct/demux/YUN3533.2.reverse.fastq"  
-    ## [57] "/home/guest/scratch/atacama_1pct/demux/YUN3533.3.reverse.fastq"  
-    ## [58] "/home/guest/scratch/atacama_1pct/demux/YUN3856.1.1.reverse.fastq"
-    ## [59] "/home/guest/scratch/atacama_1pct/demux/YUN3856.1.2.reverse.fastq"
-    ## [60] "/home/guest/scratch/atacama_1pct/demux/YUN3856.1.3.reverse.fastq"
-    ## [61] "/home/guest/scratch/atacama_1pct/demux/YUN3856.2.reverse.fastq"  
-    ## [62] "/home/guest/scratch/atacama_1pct/demux/YUN3856.3.reverse.fastq"
+    ##  [1] "/home/guest/scratch/atacama_1pct/demux/BAQ1370.1.3.reverse.fastq.gz"
+    ##  [2] "/home/guest/scratch/atacama_1pct/demux/BAQ1552.1.1.reverse.fastq.gz"
+    ##  [3] "/home/guest/scratch/atacama_1pct/demux/BAQ2420.1.1.reverse.fastq.gz"
+    ##  [4] "/home/guest/scratch/atacama_1pct/demux/BAQ2420.1.2.reverse.fastq.gz"
+    ##  [5] "/home/guest/scratch/atacama_1pct/demux/BAQ2420.1.3.reverse.fastq.gz"
+    ##  [6] "/home/guest/scratch/atacama_1pct/demux/BAQ2420.2.reverse.fastq.gz"  
+    ##  [7] "/home/guest/scratch/atacama_1pct/demux/BAQ2420.3.reverse.fastq.gz"  
+    ##  [8] "/home/guest/scratch/atacama_1pct/demux/BAQ2462.1.reverse.fastq.gz"  
+    ##  [9] "/home/guest/scratch/atacama_1pct/demux/BAQ2462.2.reverse.fastq.gz"  
+    ## [10] "/home/guest/scratch/atacama_1pct/demux/BAQ2462.3.reverse.fastq.gz"  
+    ## [11] "/home/guest/scratch/atacama_1pct/demux/BAQ2687.1.reverse.fastq.gz"  
+    ## [12] "/home/guest/scratch/atacama_1pct/demux/BAQ2687.2.reverse.fastq.gz"  
+    ## [13] "/home/guest/scratch/atacama_1pct/demux/BAQ2687.3.reverse.fastq.gz"  
+    ## [14] "/home/guest/scratch/atacama_1pct/demux/BAQ2838.1.reverse.fastq.gz"  
+    ## [15] "/home/guest/scratch/atacama_1pct/demux/BAQ2838.2.reverse.fastq.gz"  
+    ## [16] "/home/guest/scratch/atacama_1pct/demux/BAQ2838.3.reverse.fastq.gz"  
+    ## [17] "/home/guest/scratch/atacama_1pct/demux/BAQ3473.1.reverse.fastq.gz"  
+    ## [18] "/home/guest/scratch/atacama_1pct/demux/BAQ3473.2.reverse.fastq.gz"  
+    ## [19] "/home/guest/scratch/atacama_1pct/demux/BAQ3473.3.reverse.fastq.gz"  
+    ## [20] "/home/guest/scratch/atacama_1pct/demux/BAQ4166.1.1.reverse.fastq.gz"
+    ## [21] "/home/guest/scratch/atacama_1pct/demux/BAQ4166.1.2.reverse.fastq.gz"
+    ## [22] "/home/guest/scratch/atacama_1pct/demux/BAQ4166.1.3.reverse.fastq.gz"
+    ## [23] "/home/guest/scratch/atacama_1pct/demux/BAQ4166.2.reverse.fastq.gz"  
+    ## [24] "/home/guest/scratch/atacama_1pct/demux/BAQ4166.3.reverse.fastq.gz"  
+    ## [25] "/home/guest/scratch/atacama_1pct/demux/BAQ4697.1.reverse.fastq.gz"  
+    ## [26] "/home/guest/scratch/atacama_1pct/demux/BAQ4697.2.reverse.fastq.gz"  
+    ## [27] "/home/guest/scratch/atacama_1pct/demux/BAQ4697.3.reverse.fastq.gz"  
+    ## [28] "/home/guest/scratch/atacama_1pct/demux/YUN1005.1.1.reverse.fastq.gz"
+    ## [29] "/home/guest/scratch/atacama_1pct/demux/YUN1005.3.reverse.fastq.gz"  
+    ## [30] "/home/guest/scratch/atacama_1pct/demux/YUN1242.1.reverse.fastq.gz"  
+    ## [31] "/home/guest/scratch/atacama_1pct/demux/YUN1242.2.reverse.fastq.gz"  
+    ## [32] "/home/guest/scratch/atacama_1pct/demux/YUN1242.3.reverse.fastq.gz"  
+    ## [33] "/home/guest/scratch/atacama_1pct/demux/YUN1609.1.reverse.fastq.gz"  
+    ## [34] "/home/guest/scratch/atacama_1pct/demux/YUN2029.1.reverse.fastq.gz"  
+    ## [35] "/home/guest/scratch/atacama_1pct/demux/YUN2029.2.reverse.fastq.gz"  
+    ## [36] "/home/guest/scratch/atacama_1pct/demux/YUN2029.3.reverse.fastq.gz"  
+    ## [37] "/home/guest/scratch/atacama_1pct/demux/YUN3008.1.3.reverse.fastq.gz"
+    ## [38] "/home/guest/scratch/atacama_1pct/demux/YUN3008.3.reverse.fastq.gz"  
+    ## [39] "/home/guest/scratch/atacama_1pct/demux/YUN3153.2.reverse.fastq.gz"  
+    ## [40] "/home/guest/scratch/atacama_1pct/demux/YUN3153.3.reverse.fastq.gz"  
+    ## [41] "/home/guest/scratch/atacama_1pct/demux/YUN3184.2.reverse.fastq.gz"  
+    ## [42] "/home/guest/scratch/atacama_1pct/demux/YUN3259.1.1.reverse.fastq.gz"
+    ## [43] "/home/guest/scratch/atacama_1pct/demux/YUN3259.1.2.reverse.fastq.gz"
+    ## [44] "/home/guest/scratch/atacama_1pct/demux/YUN3259.1.3.reverse.fastq.gz"
+    ## [45] "/home/guest/scratch/atacama_1pct/demux/YUN3259.2.reverse.fastq.gz"  
+    ## [46] "/home/guest/scratch/atacama_1pct/demux/YUN3259.3.reverse.fastq.gz"  
+    ## [47] "/home/guest/scratch/atacama_1pct/demux/YUN3346.1.reverse.fastq.gz"  
+    ## [48] "/home/guest/scratch/atacama_1pct/demux/YUN3346.2.reverse.fastq.gz"  
+    ## [49] "/home/guest/scratch/atacama_1pct/demux/YUN3346.3.reverse.fastq.gz"  
+    ## [50] "/home/guest/scratch/atacama_1pct/demux/YUN3428.1.reverse.fastq.gz"  
+    ## [51] "/home/guest/scratch/atacama_1pct/demux/YUN3428.2.reverse.fastq.gz"  
+    ## [52] "/home/guest/scratch/atacama_1pct/demux/YUN3428.3.reverse.fastq.gz"  
+    ## [53] "/home/guest/scratch/atacama_1pct/demux/YUN3533.1.1.reverse.fastq.gz"
+    ## [54] "/home/guest/scratch/atacama_1pct/demux/YUN3533.1.2.reverse.fastq.gz"
+    ## [55] "/home/guest/scratch/atacama_1pct/demux/YUN3533.1.3.reverse.fastq.gz"
+    ## [56] "/home/guest/scratch/atacama_1pct/demux/YUN3533.2.reverse.fastq.gz"  
+    ## [57] "/home/guest/scratch/atacama_1pct/demux/YUN3533.3.reverse.fastq.gz"  
+    ## [58] "/home/guest/scratch/atacama_1pct/demux/YUN3856.1.1.reverse.fastq.gz"
+    ## [59] "/home/guest/scratch/atacama_1pct/demux/YUN3856.1.2.reverse.fastq.gz"
+    ## [60] "/home/guest/scratch/atacama_1pct/demux/YUN3856.1.3.reverse.fastq.gz"
+    ## [61] "/home/guest/scratch/atacama_1pct/demux/YUN3856.2.reverse.fastq.gz"  
+    ## [62] "/home/guest/scratch/atacama_1pct/demux/YUN3856.3.reverse.fastq.gz"
 
 ### Sample Names
 
@@ -338,7 +366,8 @@ plotQualityProfile(fnFs[1:2])
 
 ![](dada2_tutorial_1_6_files/figure-markdown_github/see-quality-F-1.png)
 
-These samples only have one read each, so let's look at the full dataset (before demultiplexing)
+These samples only have one read each, so let’s look at the full dataset
+(before demultiplexing)
 
 ``` r
 plotQualityProfile(file.path(data.dir, "forward.fastq.gz"))
@@ -346,7 +375,11 @@ plotQualityProfile(file.path(data.dir, "forward.fastq.gz"))
 
 ![](dada2_tutorial_1_6_files/figure-markdown_github/see-quality-F-all-1.png)
 
-The forward reads are good quality. We generally advise trimming the last few nucleotides to avoid less well-controlled errors that can arise there. These quality profiles do not suggest that any additional trimming is needed, so we will truncate the forward reads at position 145 (trimming the last 5 nucleotides).
+The forward reads are good quality. We generally advise trimming the
+last few nucleotides to avoid less well-controlled errors that can arise
+there. These quality profiles do not suggest that any additional
+trimming is needed, so we will truncate the forward reads at position
+145 (trimming the last 5 nucleotides).
 
 Now we visualize the quality profile of the reverse reads:
 
@@ -356,7 +389,8 @@ plotQualityProfile(fnRs[1:2])
 
 ![](dada2_tutorial_1_6_files/figure-markdown_github/see-quality-R-1.png)
 
-These samples only have one read each, so let's look at the full dataset (before demultiplexing)
+These samples only have one read each, so let’s look at the full dataset
+(before demultiplexing)
 
 ``` r
 plotQualityProfile(file.path(data.dir, "reverse.fastq.gz"))
@@ -364,11 +398,28 @@ plotQualityProfile(file.path(data.dir, "reverse.fastq.gz"))
 
 ![](dada2_tutorial_1_6_files/figure-markdown_github/see-quality-R-all-1.png)
 
-The reverse reads are of significantly worse quality, and it drops off a little at the end, which is common in Illumina sequencing. This isn't too worrisome, as DADA2 incorporates quality information into its error model which makes the algorithm [robust to lower quality sequence](https://twitter.com/bejcal/status/771010634074820608), but trimming as the average qualities drop off will improve the algorithm's sensitivity to rare sequence variants. Based on these profiles, we will truncate the reverse reads at position 140 where the quality distribution crashes. As with the forward reads, the first ~10bp are somewhat lower quality so we will trim 10bp from the left also.
+The reverse reads are of significantly worse quality, and it drops off a
+little at the end, which is common in Illumina sequencing. This isn’t
+too worrisome, as DADA2 incorporates quality information into its error
+model which makes the algorithm [robust to lower quality
+sequence](https://twitter.com/bejcal/status/771010634074820608), but
+trimming as the average qualities drop off will improve the algorithm’s
+sensitivity to rare sequence variants. Based on these profiles, we will
+truncate the reverse reads at position 140 where the quality
+distribution dips down. As with the forward reads, the first \~10bp are
+somewhat lower quality so we will trim 10bp from the left also.
 
-**<span style="color:red">If using this workflow on your own data:</span>** **Your reads must still overlap after truncation in order to merge them later!** The tutorial is using 150bp PE V4 sequence data, so the forward and reverse reads overlap by about 50bp. When using data with limited overlap `truncLen` must be large enough to maintain `20 + biological.length.variation` nucleotides of overlap between them. When using data that overlap more (e.g. 250 PE V4) trimming can be completely guided by the quality scores.
+**<span style="color:red">If using this workflow on your own
+data:</span>** **Your reads must still overlap after truncation in order
+to merge them later!** The tutorial is using 150bp PE V4 sequence data,
+so the forward and reverse reads overlap by about 50bp. When using data
+with limited overlap `truncLen` must be large enough to maintain
+`20 + biological.length.variation` nucleotides of overlap between them.
+When using data that overlap more (e.g. 250 PE V4) trimming can be
+completely guided by the quality scores.
 
-Non-overlapping primer sets are supported as well with `mergePairs(..., justConcatenate=TRUE)` when performing merging.
+Non-overlapping primer sets are supported as well with
+`mergePairs(..., justConcatenate=TRUE)` when performing merging.
 
  
 
@@ -383,13 +434,24 @@ filtFs <- file.path(filt_path, paste0(sample.names, "_F_filt.fastq.gz"))
 filtRs <- file.path(filt_path, paste0(sample.names, "_R_filt.fastq.gz"))
 ```
 
-We'll use standard filtering parameters: `maxN=0` (DADA2 requires no Ns), `truncQ=2`, `rm.phix=TRUE` and `maxEE=2`. The `maxEE` parameter sets the maximum number of "expected errors" allowed in a read, which is [a better filter than simply averaging quality scores](http://www.drive5.com/usearch/manual/expected_errors.html).
+We’ll use standard filtering parameters: `maxN=0` (DADA2 requires no
+Ns), `truncQ=2`, `rm.phix=TRUE` and `maxEE=2`. The `maxEE` parameter
+sets the maximum number of “expected errors” allowed in a read, which is
+[a better filter than simply averaging quality
+scores](http://www.drive5.com/usearch/manual/expected_errors.html).
 
 ### Filter the forward and reverse reads
 
-Filtering (e.g. removing a read because it has overall bad quality) must be done in such a way that forward and reverse reads are kept in sync: if a reverse read is filtered out because of low quality, its partner forward read must *also* be removed, even if it passes. `filterAndTrim` does this if you pass it the forward and reverse FASTQs.
+Filtering (e.g. removing a read because it has overall bad quality) must
+be done in such a way that forward and reverse reads are kept in sync:
+if a reverse read is filtered out because of low quality, its partner
+forward read must *also* be removed, even if it passes. `filterAndTrim`
+does this if you pass it the forward and reverse FASTQs.
 
-The first ~10bp of R1 and R2 are somewhat lower quality, which is very common for Illumina data. Let's trim this with `trimLeft=10` (note: this will result in shorter amplicons, where trimming on right end of a read should not change amplicon length after it is filtered).
+The first \~10bp of R1 and R2 are somewhat lower quality, which is very
+common for Illumina data. Let’s trim this with `trimLeft=10` (note: this
+will result in shorter amplicons, where trimming on right end of a read
+should not change amplicon length after it is filtered).
 
 ``` r
 filt.out <- filterAndTrim(fnFs, filtFs, fnRs, filtRs, trimLeft=10, truncLen=c(145,140),
@@ -398,46 +460,60 @@ filt.out <- filterAndTrim(fnFs, filtFs, fnRs, filtRs, trimLeft=10, truncLen=c(14
 head(filt.out)
 ```
 
-    ##                           reads.in reads.out
-    ## BAQ1370.1.3.forward.fastq        1         0
-    ## BAQ1552.1.1.forward.fastq        1         1
-    ## BAQ2420.1.1.forward.fastq      721       672
-    ## BAQ2420.1.2.forward.fastq      640       601
-    ## BAQ2420.1.3.forward.fastq      656       633
-    ## BAQ2420.2.forward.fastq        611       567
+    ##                              reads.in reads.out
+    ## BAQ1370.1.3.forward.fastq.gz        1         0
+    ## BAQ1552.1.1.forward.fastq.gz        1         1
+    ## BAQ2420.1.1.forward.fastq.gz      721       672
+    ## BAQ2420.1.2.forward.fastq.gz      640       601
+    ## BAQ2420.1.3.forward.fastq.gz      656       633
+    ## BAQ2420.2.forward.fastq.gz        611       567
 
-**<span style="color:red">If using this workflow on your own data:</span>** The standard filtering parameters are starting points, not set in stone. For example, if too few reads are passing the filter, considering relaxing `maxEE`, perhaps especially on the reverse reads (eg. `maxEE=c(2,5)`). If you want to speed up downstream computation, consider tightening `maxEE`. For paired-end reads consider the length of your amplicon when choosing `truncLen` as your reads must overlap after truncation in order to merge them later.
+**<span style="color:red">If using this workflow on your own
+data:</span>** The standard filtering parameters are starting points,
+not set in stone. For example, if too few reads are passing the filter,
+considering relaxing `maxEE`, perhaps especially on the reverse reads
+(eg. `maxEE=c(2,5)`). If you want to speed up downstream computation,
+consider tightening `maxEE`. For paired-end reads consider the length of
+your amplicon when choosing `truncLen` as your reads must overlap after
+truncation in order to merge them later.
 
-**<span style="color:red">If using this workflow on your own data:</span>** For common ITS amplicon strategies, it is undesirable to truncate reads to a fixed length due to the large amount of length variation at that locus. That is OK, just leave out `truncLen`. Make sure you removed the forward and reverse primers from both the forward and reverse reads though!
+**<span style="color:red">If using this workflow on your own
+data:</span>** For common ITS amplicon strategies, it is undesirable to
+truncate reads to a fixed length due to the large amount of length
+variation at that locus. That is OK, just leave out `truncLen`. Make
+sure you removed the forward and reverse primers from both the forward
+and reverse reads though!
 
  
 
 Learn the Error Rates
 =====================
 
-The DADA2 algorithm depends on a parametric error model (`err`) and every amplicon dataset has a different set of error rates. The `learnErrors` method learns the error model from the data, by alternating estimation of the error rates and inference of sample composition until they converge on a jointly consistent solution. As in many optimization problems, the algorithm must begin with an initial guess, for which the maximum possible error rates in this data are used (the error rates if only the most abundant sequence is correct and all the rest are errors).
+The DADA2 algorithm depends on a parametric error model (`err`) and
+every amplicon dataset has a different set of error rates. The
+`learnErrors` method learns the error model from the data, by
+alternating estimation of the error rates and inference of sample
+composition until they converge on a jointly consistent solution. As in
+many optimization problems, the algorithm must begin with an initial
+guess, for which the maximum possible error rates in this data are used
+(the error rates if only the most abundant sequence is correct and all
+the rest are errors).
 
 ``` r
 errF <- learnErrors(filtFs, multithread=TRUE)
 ```
 
-    ## Warning in open.connection(con, "rb"): cannot open file '/home/guest/
-    ## scratch/atacama_1pct/dada2/filtered/BAQ1370.1.3_F_filt.fastq.gz': No such
-    ## file or directory
-
-    ## Error in open.connection(con, "rb"): cannot open the connection
+    ## Error in derepFastq(fls[[i]], qualityType = qualityType): Not all provided files exist.
 
 ``` r
 errR <- learnErrors(filtRs, multithread=TRUE)
 ```
 
-    ## Warning in open.connection(con, "rb"): cannot open file '/home/guest/
-    ## scratch/atacama_1pct/dada2/filtered/BAQ1370.1.3_R_filt.fastq.gz': No such
-    ## file or directory
+    ## Error in derepFastq(fls[[i]], qualityType = qualityType): Not all provided files exist.
 
-    ## Error in open.connection(con, "rb"): cannot open the connection
-
-Oops! learnErrors can't find some of the files! Probably because some samples ended up with zero reads, so `filterAndTrim` didn't create empty filtered FASTQs. Let's check:
+Oops! learnErrors can’t find some of the files! Probably because some
+samples ended up with zero reads, so `filterAndTrim` didn’t create empty
+filtered FASTQs. Let’s check:
 
 ``` r
 file_exists(filtFs)
@@ -568,162 +644,31 @@ file_exists(filtFs)
     ##   /home/guest/scratch/atacama_1pct/dada2/filtered/YUN3856.3_F_filt.fastq.gz 
     ##                                                                        TRUE
 
-Yep, `BAQ1370.1.3_F_filt.fastq.gz` doesn't exist, that's the one with zero reads after filtering. Let's clean up filtFs and filtRs to remove missing files.
+Yep, `BAQ1370.1.3_F_filt.fastq.gz` doesn’t exist, that’s the one with
+zero reads after filtering. Let’s clean up filtFs and filtRs to remove
+missing files.
 
 ``` r
 filtFs = filtFs[file_exists(filtFs)]
 filtRs = filtRs[file_exists(filtRs)]
 ```
 
-Now let's try it again
+Now let’s try it again
 
 ``` r
 errF <- learnErrors(filtFs, multithread=TRUE)
 ```
 
-    ## Initializing error rates to maximum possible estimate.
-    ## Sample 1 - 1 reads in 1 unique sequences.
-    ## Sample 2 - 672 reads in 566 unique sequences.
-    ## Sample 3 - 601 reads in 469 unique sequences.
-    ## Sample 4 - 633 reads in 468 unique sequences.
-    ## Sample 5 - 567 reads in 394 unique sequences.
-    ## Sample 6 - 607 reads in 397 unique sequences.
-    ## Sample 7 - 805 reads in 519 unique sequences.
-    ## Sample 8 - 547 reads in 360 unique sequences.
-    ## Sample 9 - 434 reads in 280 unique sequences.
-    ## Sample 10 - 820 reads in 662 unique sequences.
-    ## Sample 11 - 607 reads in 365 unique sequences.
-    ## Sample 12 - 785 reads in 555 unique sequences.
-    ## Sample 13 - 542 reads in 432 unique sequences.
-    ## Sample 14 - 449 reads in 380 unique sequences.
-    ## Sample 15 - 331 reads in 254 unique sequences.
-    ## Sample 16 - 1020 reads in 785 unique sequences.
-    ## Sample 17 - 790 reads in 655 unique sequences.
-    ## Sample 18 - 1121 reads in 740 unique sequences.
-    ## Sample 19 - 965 reads in 744 unique sequences.
-    ## Sample 20 - 1203 reads in 905 unique sequences.
-    ## Sample 21 - 990 reads in 718 unique sequences.
-    ## Sample 22 - 1195 reads in 877 unique sequences.
-    ## Sample 23 - 1144 reads in 888 unique sequences.
-    ## Sample 24 - 783 reads in 413 unique sequences.
-    ## Sample 25 - 723 reads in 428 unique sequences.
-    ## Sample 26 - 1018 reads in 552 unique sequences.
-    ## Sample 27 - 819 reads in 397 unique sequences.
-    ## Sample 28 - 387 reads in 169 unique sequences.
-    ## Sample 29 - 503 reads in 229 unique sequences.
-    ## Sample 30 - 1 reads in 1 unique sequences.
-    ## Sample 31 - 688 reads in 306 unique sequences.
-    ## Sample 32 - 656 reads in 277 unique sequences.
-    ## Sample 33 - 6 reads in 6 unique sequences.
-    ## Sample 34 - 792 reads in 394 unique sequences.
-    ## Sample 35 - 1 reads in 1 unique sequences.
-    ## Sample 36 - 1 reads in 1 unique sequences.
-    ## Sample 37 - 1 reads in 1 unique sequences.
-    ## Sample 38 - 415 reads in 270 unique sequences.
-    ## Sample 39 - 533 reads in 290 unique sequences.
-    ## Sample 40 - 1 reads in 1 unique sequences.
-    ## Sample 41 - 53 reads in 52 unique sequences.
-    ## Sample 42 - 645 reads in 434 unique sequences.
-    ## Sample 43 - 251 reads in 180 unique sequences.
-    ## Sample 44 - 901 reads in 751 unique sequences.
-    ## Sample 45 - 986 reads in 714 unique sequences.
-    ## Sample 46 - 606 reads in 379 unique sequences.
-    ## Sample 47 - 166 reads in 136 unique sequences.
-    ## Sample 48 - 720 reads in 495 unique sequences.
-    ## Sample 49 - 970 reads in 723 unique sequences.
-    ## Sample 50 - 1278 reads in 934 unique sequences.
-    ## Sample 51 - 951 reads in 739 unique sequences.
-    ## Sample 52 - 892 reads in 645 unique sequences.
-    ## Sample 53 - 846 reads in 681 unique sequences.
-    ## Sample 54 - 732 reads in 548 unique sequences.
-    ## Sample 55 - 1093 reads in 674 unique sequences.
-    ## Sample 56 - 1190 reads in 839 unique sequences.
-    ## Sample 57 - 872 reads in 665 unique sequences.
-    ## Sample 58 - 917 reads in 598 unique sequences.
-    ## Sample 59 - 612 reads in 404 unique sequences.
-    ## Sample 60 - 921 reads in 657 unique sequences.
-    ## Sample 61 - 1166 reads in 829 unique sequences.
-    ##    selfConsist step 2 
-    ##    selfConsist step 3 
-    ##    selfConsist step 4 
-    ##    selfConsist step 5 
-    ## Convergence after  5  rounds.
-    ## Total reads used:  40925
+    ## 5524875 total bases in 40925 reads from 61 samples will be used for learning the error rates.
 
 ``` r
 errR <- learnErrors(filtRs, multithread=TRUE)
 ```
 
-    ## Initializing error rates to maximum possible estimate.
-    ## Sample 1 - 1 reads in 1 unique sequences.
-    ## Sample 2 - 672 reads in 592 unique sequences.
-    ## Sample 3 - 601 reads in 519 unique sequences.
-    ## Sample 4 - 633 reads in 527 unique sequences.
-    ## Sample 5 - 567 reads in 444 unique sequences.
-    ## Sample 6 - 607 reads in 473 unique sequences.
-    ## Sample 7 - 805 reads in 624 unique sequences.
-    ## Sample 8 - 547 reads in 441 unique sequences.
-    ## Sample 9 - 434 reads in 359 unique sequences.
-    ## Sample 10 - 820 reads in 715 unique sequences.
-    ## Sample 11 - 607 reads in 463 unique sequences.
-    ## Sample 12 - 785 reads in 657 unique sequences.
-    ## Sample 13 - 542 reads in 473 unique sequences.
-    ## Sample 14 - 449 reads in 404 unique sequences.
-    ## Sample 15 - 331 reads in 284 unique sequences.
-    ## Sample 16 - 1020 reads in 893 unique sequences.
-    ## Sample 17 - 790 reads in 711 unique sequences.
-    ## Sample 18 - 1121 reads in 905 unique sequences.
-    ## Sample 19 - 965 reads in 839 unique sequences.
-    ## Sample 20 - 1203 reads in 1066 unique sequences.
-    ## Sample 21 - 990 reads in 818 unique sequences.
-    ## Sample 22 - 1195 reads in 1021 unique sequences.
-    ## Sample 23 - 1144 reads in 985 unique sequences.
-    ## Sample 24 - 783 reads in 526 unique sequences.
-    ## Sample 25 - 723 reads in 528 unique sequences.
-    ## Sample 26 - 1018 reads in 708 unique sequences.
-    ## Sample 27 - 819 reads in 552 unique sequences.
-    ## Sample 28 - 387 reads in 244 unique sequences.
-    ## Sample 29 - 503 reads in 319 unique sequences.
-    ## Sample 30 - 1 reads in 1 unique sequences.
-    ## Sample 31 - 688 reads in 436 unique sequences.
-    ## Sample 32 - 656 reads in 432 unique sequences.
-    ## Sample 33 - 6 reads in 6 unique sequences.
-    ## Sample 34 - 792 reads in 536 unique sequences.
-    ## Sample 35 - 1 reads in 1 unique sequences.
-    ## Sample 36 - 1 reads in 1 unique sequences.
-    ## Sample 37 - 1 reads in 1 unique sequences.
-    ## Sample 38 - 415 reads in 322 unique sequences.
-    ## Sample 39 - 533 reads in 377 unique sequences.
-    ## Sample 40 - 1 reads in 1 unique sequences.
-    ## Sample 41 - 53 reads in 52 unique sequences.
-    ## Sample 42 - 645 reads in 505 unique sequences.
-    ## Sample 43 - 251 reads in 214 unique sequences.
-    ## Sample 44 - 901 reads in 816 unique sequences.
-    ## Sample 45 - 986 reads in 801 unique sequences.
-    ## Sample 46 - 606 reads in 446 unique sequences.
-    ## Sample 47 - 166 reads in 154 unique sequences.
-    ## Sample 48 - 720 reads in 572 unique sequences.
-    ## Sample 49 - 970 reads in 811 unique sequences.
-    ## Sample 50 - 1278 reads in 1048 unique sequences.
-    ## Sample 51 - 951 reads in 809 unique sequences.
-    ## Sample 52 - 892 reads in 737 unique sequences.
-    ## Sample 53 - 846 reads in 751 unique sequences.
-    ## Sample 54 - 732 reads in 609 unique sequences.
-    ## Sample 55 - 1093 reads in 762 unique sequences.
-    ## Sample 56 - 1190 reads in 946 unique sequences.
-    ## Sample 57 - 872 reads in 755 unique sequences.
-    ## Sample 58 - 917 reads in 683 unique sequences.
-    ## Sample 59 - 612 reads in 512 unique sequences.
-    ## Sample 60 - 921 reads in 781 unique sequences.
-    ## Sample 61 - 1166 reads in 948 unique sequences.
-    ##    selfConsist step 2 
-    ##    selfConsist step 3 
-    ##    selfConsist step 4 
-    ##    selfConsist step 5 
-    ## Convergence after  5  rounds.
-    ## Total reads used:  40925
+    ## 5320250 total bases in 40925 reads from 61 samples will be used for learning the error rates.
 
-It is always worthwhile, as a sanity check if nothing else, to visualize the estimated error rates:
+It is always worthwhile, as a sanity check if nothing else, to visualize
+the estimated error rates:
 
 ``` r
 plotErrors(errF, nominalQ=TRUE)
@@ -731,18 +676,37 @@ plotErrors(errF, nominalQ=TRUE)
 
 ![](dada2_tutorial_1_6_files/figure-markdown_github/plot-errors-1.png)
 
-The error rates for each possible transition (eg. A-&gt;C, A-&gt;G, ...) are shown. Points are the observed error rates for each consensus quality score. The black line shows the estimated error rates after convergence. The red line shows the error rates expected under the nominal definition of the Q-value. Here the black line (the estimated rates) fits the observed rates well, and the error rates drop with increased quality as expected. Everything looks reasonable and we proceed with confidence.
+The error rates for each possible transition (eg. A-&gt;C, A-&gt;G, …)
+are shown. Points are the observed error rates for each consensus
+quality score. The black line shows the estimated error rates after
+convergence. The red line shows the error rates expected under the
+nominal definition of the Q-value. Here the black line (the estimated
+rates) fits the observed rates well, and the error rates drop with
+increased quality as expected. Everything looks reasonable and we
+proceed with confidence.
 
-**<span style="color:red">If using this workflow on your own data:</span>** Parameter learning is computationally intensive, so by default the `learnErrors` function uses only a subset of the data (the first 1M reads). If the plotted error model does not look like a good fit, try increasing the `nreads` parameter to see if the fit improves.
+**<span style="color:red">If using this workflow on your own
+data:</span>** Parameter learning is computationally intensive, so by
+default the `learnErrors` function uses only a subset of the data (the
+first 1M reads). If the plotted error model does not look like a good
+fit, try increasing the `nreads` parameter to see if the fit improves.
 
  
 
 Dereplication
 =============
 
-Dereplication combines all identical sequencing reads into into "unique sequences" with a corresponding "abundance": the number of reads with that unique sequence. Dereplication substantially reduces computation time by eliminating redundant comparisons.
+Dereplication combines all identical sequencing reads into into “unique
+sequences” with a corresponding “abundance”: the number of reads with
+that unique sequence. Dereplication substantially reduces computation
+time by eliminating redundant comparisons.
 
-Dereplication in the DADA2 pipeline has one crucial addition from other pipelines: **DADA2 retains a summary of the quality information associated with each unique sequence**. The consensus quality profile of a unique sequence is the average of the positional qualities from the dereplicated reads. These quality profiles inform the error model of the subsequent denoising step, significantly increasing DADA2's accuracy.
+Dereplication in the DADA2 pipeline has one crucial addition from other
+pipelines: **DADA2 retains a summary of the quality information
+associated with each unique sequence**. The consensus quality profile of
+a unique sequence is the average of the positional qualities from the
+dereplicated reads. These quality profiles inform the error model of the
+subsequent denoising step, significantly increasing DADA2’s accuracy.
 
 **Dereplicate the filtered fastq files**
 
@@ -761,7 +725,9 @@ names(derepRs) <- sample.names
 
     ## Error in names(derepRs) <- sample.names: 'names' attribute [62] must be the same length as the vector [61]
 
-Oops, we generated our "sample.names" from the original list of FASTQs, but we dropped one out. We need to do it again based on the list of filtered FASTQs
+Oops, we generated our “sample.names” from the original list of FASTQs,
+but we dropped one out. We need to do it again based on the list of
+filtered FASTQs
 
 ``` r
 filtFs %>% 
@@ -770,7 +736,7 @@ filtFs %>%
   sample.names
 ```
 
-Now let's try the dereplication again
+Now let’s try the dereplication again
 
 ``` r
 derepFs <- derepFastq(filtFs, verbose=TRUE)
@@ -780,14 +746,19 @@ names(derepFs) <- sample.names
 names(derepRs) <- sample.names
 ```
 
-**<span style="color:red">If using this workflow on your own data:</span>** The tutorial dataset is small enough to easily load into memory. If your dataset exceeds available RAM, it is preferable to process samples one-by-one in a streaming fashion: see the [DADA2 Workflow on Big Data](bigdata.html) for an example.
+**<span style="color:red">If using this workflow on your own
+data:</span>** The tutorial dataset is small enough to easily load into
+memory. If your dataset exceeds available RAM, it is preferable to
+process samples one-by-one in a streaming fashion: see the [DADA2
+Workflow on Big Data](bigdata.html) for an example.
 
  
 
 Sample Inference
 ================
 
-We are now ready to apply the core sequence-variant inference algorithm to the dereplicated data.
+We are now ready to apply the core sequence-variant inference algorithm
+to the dereplicated data.
 
 **Infer the sequence variants in each sample**
 
@@ -930,23 +901,46 @@ dadaFs[[1]]
 ```
 
     ## dada-class: object describing DADA2 denoising results
-    ## 1 sample sequences were inferred from 1 input unique sequences.
-    ## Key parameters: OMEGA_A = 1e-40, BAND_SIZE = 16, USE_QUALS = TRUE
+    ## 1 sequence variants were inferred from 1 input unique sequences.
+    ## Key parameters: OMEGA_A = 1e-40, OMEGA_C = 1e-40, BAND_SIZE = 16
 
-The DADA2 algorithm inferred 1 real sequence variants from the 1 unique sequences in the first sample. There is much more to the `dada-class` return object than this (see `help("dada-class")` for some info), including multiple diagnostics about the quality of each inferred sequence variant, but that is beyond the scope of an introductory tutorial.
+The DADA2 algorithm inferred 1 real sequence variants from the 1 unique
+sequences in the first sample. There is much more to the `dada-class`
+return object than this (see `help("dada-class")` for some info),
+including multiple diagnostics about the quality of each inferred
+sequence variant, but that is beyond the scope of an introductory
+tutorial.
 
-**<span style="color:red">If using this workflow on your own data:</span>** All samples are simultaneously loaded into memory in the tutorial. If you are dealing with datasets that approach or exceed available RAM, it is preferable to process samples one-by-one in a streaming fashion: see the **[DADA2 Workflow on Big Data](bigdata.html)** for an example.
+**<span style="color:red">If using this workflow on your own
+data:</span>** All samples are simultaneously loaded into memory in the
+tutorial. If you are dealing with datasets that approach or exceed
+available RAM, it is preferable to process samples one-by-one in a
+streaming fashion: see the **[DADA2 Workflow on Big
+Data](bigdata.html)** for an example.
 
-**<span style="color:red">If using this workflow on your own data:</span>** By default, the `dada` function processes each sample independently, but pooled processing is available with `pool=TRUE` and that may give better results for low sampling depths at the cost of increased computation time. See our [discussion about pooling samples for sample inference](pool.html).
+**<span style="color:red">If using this workflow on your own
+data:</span>** By default, the `dada` function processes each sample
+independently, but pooled processing is available with `pool=TRUE` and
+that may give better results for low sampling depths at the cost of
+increased computation time. See our [discussion about pooling samples
+for sample inference](pool.html).
 
-**<span style="color:red">If using this workflow on your own data:</span>** DADA2 also supports 454 and Ion Torrent data, but [we recommend some minor parameter changes](faq.html#can-i-use-dada2-with-my-454-or-ion-torrent-data) for those sequencing technologies. The adventurous can explore `?setDadaOpt` for other adjustable algorithm parameters.
+**<span style="color:red">If using this workflow on your own
+data:</span>** DADA2 also supports 454 and Ion Torrent data, but [we
+recommend some minor parameter
+changes](faq.html#can-i-use-dada2-with-my-454-or-ion-torrent-data) for
+those sequencing technologies. The adventurous can explore `?setDadaOpt`
+for other adjustable algorithm parameters.
 
  
 
 Merge paired reads
 ==================
 
-Spurious sequence variants are further reduced by merging overlapping reads. The core function here is `mergePairs`, which depends on the forward and reverse reads being in matching order at the time they were dereplicated.
+Spurious sequence variants are further reduced by merging overlapping
+reads. The core function here is `mergePairs`, which depends on the
+forward and reverse reads being in matching order at the time they were
+dereplicated.
 
 **Merge the denoised forward and reverse reads**:
 
@@ -957,42 +951,45 @@ head(mergers[[2]])
 ```
 
     ##                                                                                                                                                                                                                                     sequence
-    ## 2  GCGAGCGTTGTCCGGAATTATTGGGCGTAAAGAGCGTGTAGGCGGTTCGGTAAGTCTGCCGTGAAAACCTGGGGCTCAACCCCGGGCGTGCGGTGGATACTGCCGGGCTAGAGGATGGTAGAGGCGAGTGGAATTCCCGGTGTAGCGGTGAAATGCGCAGATATCGGGAGGAACACCAGTAGCGAAGGCGGCTCGCTGGGCCATTCCTGACGCTGAGACGCGAAAGCTAGGGG
-    ## 5  GCAAGCGTTGTCCGGAATCATTGGGCGTAAAGAGCGCGTAGGCGGCCCGACAAGTCCGCTGTGAAAGTCAGGGGCTTAACCCTTGAATGCCGGTGGATACTGTCGGGCTAGAGTCCGGAAGAGGCGAGTGGAATTCCTGGTGTAGCGGTGAAATGCGCAGATATCAGGAGGAACACCGATGGCGAAGGCAGCTCGCTGGGACGGTACTGACGCTGAGGCGCGAAAGCGTGGGG
-    ## 6  GCTAGCGTTGTTCGGAATCACTGGGCGTAAAGGGCGCGTAGGCGGCTTTGTAAGTCGGGGGTGAAAGCCTGTGGCTCAACCACAGAATTGCCTTCGATACTGCATGGCTTGAGACCGGAAGAGGTAAGTGGAACTGCGAGTGTAGAGGTGAAATGCGTAGATATTCGCAAGAACACCAGTGGCGAAGGCGGCTTACTGGTCCGGATCTGACGCTGAGGCGCGAAAGCGTGGGG
-    ## 11 GCAAGCGTTGTCCGGAATTATTGGGCGTAAAGCGCGCGCAGGCGGTTTCTTAAGTCTGATGTGAAAGCCCACGGCTCAACCGTGGAGGGTCATTGGAAACTGGGAAACTTGAGTGCAGAAGAGGAGAGTGGAATTCCACGTGTAGCGGTGAAATGCGTAGAGATGTGGAGGAACACCAGTGGCGAAGGCGACTCTCTGGTCTGTAACTGACGCTGAGGCGCGAAAGCGTGGGG
-    ## 13 GCAAGCGTTGTCCGGAATTATTGGGCGTAAAGCGCGCGCAGGCGGCCTATTAAGTCTGATGTGAAAGCCCACGGCTCAACCGTGGAGGGCCATTGGAAACTGGTAGGCTTGAGTGCAGGAGAGGAGAGCGGAATTCCCGGTGTAGCGGTGAAATGCGTAGATATCGGGAGGAACACCCGTGGCGAAGGCGGCTCTCTGGCCTGTAACTGACGCTGAGGCGCGAAAGCGTGGGG
-    ## 16 GCGAGCGTTGTCCGGAATCACTGGGCGTAAAGGGCGCGTAGGCGGCCTGATAAGTAGGGGGTGAAATCCTGCGGCTTAACCGCAGGGCTGCCTTCTAAACTGTCAGGCTCGAGCACAGTAGAGGCAGGTGGAATTCCCGGTGTAGCGGTGGAATGCGTAGAGATCGGGAAGAACATCAGTGGCGAAGGCGGCCTGCTGGGCTGTTGCTGACGCTGAGGCGCGACAGCGTGGGG
+    ## 1  GCGAGCGTTGTCCGGAATTATTGGGCGTAAAGAGCGTGTAGGCGGTTCGGTAAGTCTGCCGTGAAAACCTGGGGCTCAACCCCGGGCGTGCGGTGGATACTGCCGGGCTAGAGGATGGTAGAGGCGAGTGGAATTCCCGGTGTAGCGGTGAAATGCGCAGATATCGGGAGGAACACCAGTAGCGAAGGCGGCTCGCTGGGCCATTCCTGACGCTGAGACGCGAAAGCTAGGGG
+    ## 2  GCAAGCGTTGTCCGGAATCATTGGGCGTAAAGAGCGCGTAGGCGGCCCGACAAGTCCGCTGTGAAAGTCAGGGGCTTAACCCTTGAATGCCGGTGGATACTGTCGGGCTAGAGTCCGGAAGAGGCGAGTGGAATTCCTGGTGTAGCGGTGAAATGCGCAGATATCAGGAGGAACACCGATGGCGAAGGCAGCTCGCTGGGACGGTACTGACGCTGAGGCGCGAAAGCGTGGGG
+    ## 3  GCTAGCGTTGTTCGGAATCACTGGGCGTAAAGGGCGCGTAGGCGGCTTTGTAAGTCGGGGGTGAAAGCCTGTGGCTCAACCACAGAATTGCCTTCGATACTGCATGGCTTGAGACCGGAAGAGGTAAGTGGAACTGCGAGTGTAGAGGTGAAATGCGTAGATATTCGCAAGAACACCAGTGGCGAAGGCGGCTTACTGGTCCGGATCTGACGCTGAGGCGCGAAAGCGTGGGG
+    ## 6  GCAAGCGTTGTCCGGAATTATTGGGCGTAAAGCGCGCGCAGGCGGTTTCTTAAGTCTGATGTGAAAGCCCACGGCTCAACCGTGGAGGGTCATTGGAAACTGGGAAACTTGAGTGCAGAAGAGGAGAGTGGAATTCCACGTGTAGCGGTGAAATGCGTAGAGATGTGGAGGAACACCAGTGGCGAAGGCGACTCTCTGGTCTGTAACTGACGCTGAGGCGCGAAAGCGTGGGG
+    ## 9  GCAAGCGTTGTCCGGAATTATTGGGCGTAAAGCGCGCGCAGGCGGCCTATTAAGTCTGATGTGAAAGCCCACGGCTCAACCGTGGAGGGCCATTGGAAACTGGTAGGCTTGAGTGCAGGAGAGGAGAGCGGAATTCCCGGTGTAGCGGTGAAATGCGTAGATATCGGGAGGAACACCCGTGGCGAAGGCGGCTCTCTGGCCTGTAACTGACGCTGAGGCGCGAAAGCGTGGGG
+    ## 10 GCGAGCGTTGTCCGGAATCACTGGGCGTAAAGGGCGCGTAGGCGGCCTGATAAGTAGGGGGTGAAATCCTGCGGCTTAACCGCAGGGCTGCCTTCTAAACTGTCAGGCTCGAGCACAGTAGAGGCAGGTGGAATTCCCGGTGTAGCGGTGGAATGCGTAGAGATCGGGAAGAACATCAGTGGCGAAGGCGGCCTGCTGGGCTGTTGCTGACGCTGAGGCGCGACAGCGTGGGG
     ##    abundance forward reverse nmatch nmismatch nindel prefer accept
-    ## 2         58       2       1     32         0      0      2   TRUE
-    ## 5         28      12       6     32         0      0      2   TRUE
-    ## 6         26       4      10     32         0      0      1   TRUE
-    ## 11        20       1       2     32         0      0      2   TRUE
-    ## 13        16      16       5     32         0      0      2   TRUE
-    ## 16        15       3       3     32         0      0      1   TRUE
+    ## 1         55       2       1     32         0      0      2   TRUE
+    ## 2         26      12       6     32         0      0      2   TRUE
+    ## 3         26       4      10     32         0      0      1   TRUE
+    ## 6         18       1       2     32         0      0      2   TRUE
+    ## 9         16      17       5     32         0      0      2   TRUE
+    ## 10        15       3       3     32         0      0      1   TRUE
 
-We now have a `data.frame` for each sample with the merged `$sequence`, its `$abundance`, and the indices of the merged `$forward` and `$reverse` denoised sequences. Paired reads that did not exactly overlap were removed by `mergePairs`.
+We now have a `data.frame` for each sample with the merged `$sequence`,
+its `$abundance`, and the indices of the merged `$forward` and
+`$reverse` denoised sequences. Paired reads that did not exactly overlap
+were removed by `mergePairs`.
 
-**<span style="color:red">If using this workflow on your own data:</span>** Most of your **reads** should successfully merge. If that is not the case upstream parameters may need to be revisited: Did you trim away the overlap between your reads?
+**<span style="color:red">If using this workflow on your own
+data:</span>** Most of your **reads** should successfully merge. If that
+is not the case upstream parameters may need to be revisited: Did you
+trim away the overlap between your reads?
 
  
 
 Construct sequence table
 ========================
 
-We can now construct a sequence table of our mouse samples, a higher-resolution version of the OTU table produced by traditional methods.
+We can now construct a sequence table of our mouse samples, a
+higher-resolution version of the OTU table produced by traditional
+methods.
 
 ``` r
 seqtab <- makeSequenceTable(mergers)
-```
-
-    ## The sequences being tabled vary in length.
-
-``` r
 dim(seqtab)
 ```
 
-    ## [1]  61 461
+    ## [1]  61 470
 
 ``` r
 # Inspect distribution of sequence lengths
@@ -1000,19 +997,31 @@ table(nchar(getSequences(seqtab)))
 ```
 
     ## 
-    ## 232 233 234 235 236 
-    ##   8 419  32   1   1
+    ## 232 233 234 235 236 253 
+    ##   8 426  32   1   1   2
 
-The sequence table is a `matrix` with rows corresponding to (and named by) the samples, and columns corresponding to (and named by) the sequence variants. The lengths of our merged sequences all fall within the expected range for this V4 amplicon.
+The sequence table is a `matrix` with rows corresponding to (and named
+by) the samples, and columns corresponding to (and named by) the
+sequence variants. The lengths of our merged sequences all fall within
+the expected range for this V4 amplicon.
 
-**<span style="color:red">If using this workflow on your own data:</span>** Sequences that are much longer or shorter than expected may be the result of non-specific priming, and may be worth removing (eg. `seqtab2 <- seqtab[,nchar(colnames(seqtab)) %in% seq(250,256)]`). This is analogous to "cutting a band" in-silico to get amplicons of the targeted length.
+**<span style="color:red">If using this workflow on your own
+data:</span>** Sequences that are much longer or shorter than expected
+may be the result of non-specific priming, and may be worth removing
+(eg. `seqtab2 <- seqtab[,nchar(colnames(seqtab)) %in% seq(250,256)]`).
+This is analogous to “cutting a band” in-silico to get amplicons of the
+targeted length.
 
  
 
 Remove chimeras
 ===============
 
-The core `dada` method removes substitution and indel errors, but chimeras remain. Fortunately, the accuracy of the sequences after denoising makes identifying chimeras simpler than it is when dealing with fuzzy OTUs: all sequences which can be exactly reconstructed as a bimera (two-parent chimera) from more abundant sequences.
+The core `dada` method removes substitution and indel errors, but
+chimeras remain. Fortunately, the accuracy of the sequences after
+denoising makes identifying chimeras simpler than it is when dealing
+with fuzzy OTUs: all sequences which can be exactly reconstructed as a
+bimera (two-parent chimera) from more abundant sequences.
 
 **Remove chimeric sequences**:
 
@@ -1021,224 +1030,133 @@ seqtab.nochim <- removeBimeraDenovo(seqtab, method="consensus", multithread=TRUE
 dim(seqtab.nochim)
 ```
 
-    ## [1]  61 450
+    ## [1]  61 459
 
 ``` r
 sum(seqtab.nochim)/sum(seqtab)
 ```
 
-    ## [1] 0.9936737
+    ## [1] 0.9932172
 
-The fraction of chimeras varies based on factors including experimental procedures and sample complexity, but can be substantial. Here chimeras make up about 2% of the inferred sequence variants, but those variants account for only about 1% of the total sequence reads.
+The fraction of chimeras varies based on factors including experimental
+procedures and sample complexity, but can be substantial. Here chimeras
+make up about 2% of the inferred sequence variants, but those variants
+account for only about 1% of the total sequence reads.
 
-**<span style="color:red">If using this workflow on your own data:</span>** Most of your **reads** should remain after chimera removal (it is not uncommon for a majority of **sequence variants** to be removed though). If most of your reads were removed as chimeric, upstream processing may need to be revisited. In almost all cases this is caused by primer sequences with ambiguous nucleotides that were not removed prior to beginning the DADA2 pipeline.
+**<span style="color:red">If using this workflow on your own
+data:</span>** Most of your **reads** should remain after chimera
+removal (it is not uncommon for a majority of **sequence variants** to
+be removed though). If most of your reads were removed as chimeric,
+upstream processing may need to be revisited. In almost all cases this
+is caused by primer sequences with ambiguous nucleotides that were not
+removed prior to beginning the DADA2 pipeline.
 
  
 
 Track reads through the pipeline
 ================================
 
-As a final check of our progress, we'll look at the number of reads that made it through each step in the pipeline:
+As a final check of our progress, we’ll look at the number of reads that
+made it through each step in the pipeline:
 
 ``` r
 getN <- function(x) sum(getUniques(x))
-track = filt.out %>%
-  as.data.frame %>%
-  rownames_to_column %>%
-  mutate(rowname=str_replace(rowname, ".forward.fastq","")) %>%
-  rename(sample=rowname, input=reads.in, filtered=reads.out)
+filt.out %>%
+  as_tibble(rownames = "filename") %>%
+  mutate(sample=str_replace(filename, forward_fastq_suffix,"")) %>%
+  select(sample, input=reads.in, filtered=reads.out) ->
+  track
 
 sapply(dadaFs, getN) %>%
-  as.tibble %>%
-  rownames_to_column() %>%
-  rename(sample=rowname, denoised=value) ->
+  enframe(name="sample", value="denoised") ->
   denoised
-```
-
-    ## Warning: `as.tibble()` is deprecated, use `as_tibble()` (but mind the new semantics).
-    ## This warning is displayed once per session.
-
-``` r
 track %<>% full_join(denoised, by=c("sample"))
 
 sapply(mergers, getN) %>%
-  as.tibble %>%
-  rownames_to_column() %>%
-  rename(sample=rowname, merged=value) ->
+  enframe(name="sample", value="merged") ->
   merged
-
 track %<>% full_join(merged, by=c("sample"))
 
-
 rowSums(seqtab) %>%
-  as.tibble %>%
-  rownames_to_column() %>%
-  rename(sample=rowname, tabled=value) -> 
+  enframe(name="sample", value="tabled") ->
   tabled
-#   denoised
-
 track %<>% full_join(tabled, by=c("sample"))
 
 rowSums(seqtab.nochim) %>%
-  as.tibble %>%
-  rownames_to_column() %>%
-  rename(sample=rowname, nonchim=value) -> 
+  enframe(name="sample", value="nonchim") ->
   nonchim
-
 track %<>% full_join(nonchim, by=c("sample"))
 
 track
 ```
 
-    ##          sample input filtered denoised merged tabled nonchim
-    ## 1   BAQ1370.1.3     1        0       NA     NA     NA      NA
-    ## 2   BAQ1552.1.1     1        1       NA     NA     NA      NA
-    ## 3   BAQ2420.1.1   721      672       NA     NA     NA      NA
-    ## 4   BAQ2420.1.2   640      601       NA     NA     NA      NA
-    ## 5   BAQ2420.1.3   656      633       NA     NA     NA      NA
-    ## 6     BAQ2420.2   611      567       NA     NA     NA      NA
-    ## 7     BAQ2420.3   647      607       NA     NA     NA      NA
-    ## 8     BAQ2462.1   869      805       NA     NA     NA      NA
-    ## 9     BAQ2462.2   598      547       NA     NA     NA      NA
-    ## 10    BAQ2462.3   467      434       NA     NA     NA      NA
-    ## 11    BAQ2687.1   869      820       NA     NA     NA      NA
-    ## 12    BAQ2687.2   659      607       NA     NA     NA      NA
-    ## 13    BAQ2687.3   880      785       NA     NA     NA      NA
-    ## 14    BAQ2838.1   588      542       NA     NA     NA      NA
-    ## 15    BAQ2838.2   489      449       NA     NA     NA      NA
-    ## 16    BAQ2838.3   369      331       NA     NA     NA      NA
-    ## 17    BAQ3473.1  1097     1020       NA     NA     NA      NA
-    ## 18    BAQ3473.2   824      790       NA     NA     NA      NA
-    ## 19    BAQ3473.3  1173     1121       NA     NA     NA      NA
-    ## 20  BAQ4166.1.1  1038      965       NA     NA     NA      NA
-    ## 21  BAQ4166.1.2  1304     1203       NA     NA     NA      NA
-    ## 22  BAQ4166.1.3  1052      990       NA     NA     NA      NA
-    ## 23    BAQ4166.2  1264     1195       NA     NA     NA      NA
-    ## 24    BAQ4166.3  1236     1144       NA     NA     NA      NA
-    ## 25    BAQ4697.1   820      783       NA     NA     NA      NA
-    ## 26    BAQ4697.2   761      723       NA     NA     NA      NA
-    ## 27    BAQ4697.3  1084     1018       NA     NA     NA      NA
-    ## 28  YUN1005.1.1   873      819       NA     NA     NA      NA
-    ## 29    YUN1005.3   404      387       NA     NA     NA      NA
-    ## 30    YUN1242.1   536      503       NA     NA     NA      NA
-    ## 31    YUN1242.2     1        1       NA     NA     NA      NA
-    ## 32    YUN1242.3   735      688       NA     NA     NA      NA
-    ## 33    YUN1609.1   729      656       NA     NA     NA      NA
-    ## 34    YUN2029.1     6        6       NA     NA     NA      NA
-    ## 35    YUN2029.2   834      792       NA     NA     NA      NA
-    ## 36    YUN2029.3     1        1       NA     NA     NA      NA
-    ## 37  YUN3008.1.3     1        1       NA     NA     NA      NA
-    ## 38    YUN3008.3     1        1       NA     NA     NA      NA
-    ## 39    YUN3153.2   444      415       NA     NA     NA      NA
-    ## 40    YUN3153.3   570      533       NA     NA     NA      NA
-    ## 41    YUN3184.2     1        1       NA     NA     NA      NA
-    ## 42  YUN3259.1.1    56       53       NA     NA     NA      NA
-    ## 43  YUN3259.1.2   683      645       NA     NA     NA      NA
-    ## 44  YUN3259.1.3   272      251       NA     NA     NA      NA
-    ## 45    YUN3259.2  1011      901       NA     NA     NA      NA
-    ## 46    YUN3259.3  1081      986       NA     NA     NA      NA
-    ## 47    YUN3346.1   652      606       NA     NA     NA      NA
-    ## 48    YUN3346.2   171      166       NA     NA     NA      NA
-    ## 49    YUN3346.3   793      720       NA     NA     NA      NA
-    ## 50    YUN3428.1  1066      970       NA     NA     NA      NA
-    ## 51    YUN3428.2  1379     1278       NA     NA     NA      NA
-    ## 52    YUN3428.3  1014      951       NA     NA     NA      NA
-    ## 53  YUN3533.1.1   937      892       NA     NA     NA      NA
-    ## 54  YUN3533.1.2   886      846       NA     NA     NA      NA
-    ## 55  YUN3533.1.3   765      732       NA     NA     NA      NA
-    ## 56    YUN3533.2  1159     1093       NA     NA     NA      NA
-    ## 57    YUN3533.3  1253     1190       NA     NA     NA      NA
-    ## 58  YUN3856.1.1   952      872       NA     NA     NA      NA
-    ## 59  YUN3856.1.2   971      917       NA     NA     NA      NA
-    ## 60  YUN3856.1.3   650      612       NA     NA     NA      NA
-    ## 61    YUN3856.2   983      921       NA     NA     NA      NA
-    ## 62    YUN3856.3  1233     1166       NA     NA     NA      NA
-    ## 63            1    NA       NA        1      1      1       1
-    ## 64            2    NA       NA      672    185    185     185
-    ## 65            3    NA       NA      601    310    310     310
-    ## 66            4    NA       NA      633    322    322     322
-    ## 67            5    NA       NA      567    207    207     207
-    ## 68            6    NA       NA      607    264    264     264
-    ## 69            7    NA       NA      805    458    458     458
-    ## 70            8    NA       NA      547    382    382     382
-    ## 71            9    NA       NA      434    184    184     184
-    ## 72           10    NA       NA      820    286    286     244
-    ## 73           11    NA       NA      607    394    394     394
-    ## 74           12    NA       NA      785    314    314     314
-    ## 75           13    NA       NA      542    105    105     105
-    ## 76           14    NA       NA      449     87     87      87
-    ## 77           15    NA       NA      331    105    105     105
-    ## 78           16    NA       NA     1020    520    520     520
-    ## 79           17    NA       NA      790    261    261     261
-    ## 80           18    NA       NA     1121    424    424     424
-    ## 81           19    NA       NA      965    252    252     252
-    ## 82           20    NA       NA     1203    515    515     515
-    ## 83           21    NA       NA      990    434    434     434
-    ## 84           22    NA       NA     1195    391    391     391
-    ## 85           23    NA       NA     1144    556    556     556
-    ## 86           24    NA       NA      783    545    545     542
-    ## 87           25    NA       NA      723    420    420     416
-    ## 88           26    NA       NA     1018    755    755     731
-    ## 89           27    NA       NA      819    613    613     613
-    ## 90           28    NA       NA      387    302    302     302
-    ## 91           29    NA       NA      503    410    410     399
-    ## 92           30    NA       NA        1      1      1       1
-    ## 93           31    NA       NA      688    551    551     548
-    ## 94           32    NA       NA      656    493    493     493
-    ## 95           33    NA       NA        6      0      0       0
-    ## 96           34    NA       NA      792    578    578     572
-    ## 97           35    NA       NA        1      1      1       1
-    ## 98           36    NA       NA        1      0      0       0
-    ## 99           37    NA       NA        1      1      1       1
-    ## 100          38    NA       NA      415    265    265     258
-    ## 101          39    NA       NA      533    341    341     341
-    ## 102          40    NA       NA        1      0      0       0
-    ## 103          41    NA       NA       53      0      0       0
-    ## 104          42    NA       NA      645    344    344     344
-    ## 105          43    NA       NA      251     89     89      89
-    ## 106          44    NA       NA      901    207    207     207
-    ## 107          45    NA       NA      986    446    446     446
-    ## 108          46    NA       NA      606    427    427     399
-    ## 109          47    NA       NA      166     79     79      79
-    ## 110          48    NA       NA      720    455    455     455
-    ## 111          49    NA       NA      970    350    350     350
-    ## 112          50    NA       NA     1278    603    603     603
-    ## 113          51    NA       NA      951    263    263     263
-    ## 114          52    NA       NA      892    522    522     522
-    ## 115          53    NA       NA      846    369    369     369
-    ## 116          54    NA       NA      732    335    335     335
-    ## 117          55    NA       NA     1093    730    730     730
-    ## 118          56    NA       NA     1190    625    625     625
-    ## 119          57    NA       NA      872    451    451     451
-    ## 120          58    NA       NA      917    547    547     547
-    ## 121          59    NA       NA      612    314    314     314
-    ## 122          60    NA       NA      921    545    545     543
-    ## 123          61    NA       NA     1166    615    615     615
+    ## # A tibble: 62 x 7
+    ##    sample      input filtered denoised merged tabled nonchim
+    ##    <chr>       <dbl>    <dbl>    <int>  <int>  <dbl>   <dbl>
+    ##  1 BAQ1370.1.3     1        0       NA     NA     NA      NA
+    ##  2 BAQ1552.1.1     1        1        1      1      1       1
+    ##  3 BAQ2420.1.1   721      672      414    178    178     178
+    ##  4 BAQ2420.1.2   640      601      428    184    184     184
+    ##  5 BAQ2420.1.3   656      633      478    223    223     223
+    ##  6 BAQ2420.2     611      567      466    176    176     176
+    ##  7 BAQ2420.3     647      607      518    258    258     258
+    ##  8 BAQ2462.1     869      805      719    396    396     396
+    ##  9 BAQ2462.2     598      547      464    323    323     323
+    ## 10 BAQ2462.3     467      434      349    159    159     159
+    ## # … with 52 more rows
 
-**<span style="color:red">If using this workflow on your own data:</span>** This is a great place to do a last **sanity check**. Outside of filtering (depending on how stringent you want to be) there should no step in which a majority of reads are lost. If a majority of reads failed to merge, you may need to revisit the `truncLen` parameter used in the filtering step and make sure that the truncated reads span your amplicon. If a majority of reads failed to pass the chimera check, you may need to revisit the removal of primers, as the ambiguous nucleotides in unremoved primers interfere with chimera identification.
+**<span style="color:red">If using this workflow on your own
+data:</span>** This is a great place to do a last **sanity check**.
+Outside of filtering (depending on how stringent you want to be) there
+should no step in which a majority of reads are lost. If a majority of
+reads failed to merge, you may need to revisit the `truncLen` parameter
+used in the filtering step and make sure that the truncated reads span
+your amplicon. If a majority of reads failed to pass the chimera check,
+you may need to revisit the removal of primers, as the ambiguous
+nucleotides in unremoved primers interfere with chimera identification.
 
  
 
 Assign taxonomy
 ===============
 
-It is common at this point, especially in 16S/18S/ITS amplicon sequencing, to classify sequence variants taxonomically. The DADA2 package provides a native implementation of [the RDP's naive Bayesian classifier](http://www.ncbi.nlm.nih.gov/pubmed/17586664) for this purpose. The `assignTaxonomy` function takes a set of sequences and a training set of taxonomically classified sequences, and outputs the taxonomic assignments with at least `minBoot` bootstrap confidence.
+It is common at this point, especially in 16S/18S/ITS amplicon
+sequencing, to classify sequence variants taxonomically. The DADA2
+package provides a native implementation of [the RDP’s naive Bayesian
+classifier](http://www.ncbi.nlm.nih.gov/pubmed/17586664) for this
+purpose. The `assignTaxonomy` function takes a set of sequences and a
+training set of taxonomically classified sequences, and outputs the
+taxonomic assignments with at least `minBoot` bootstrap confidence.
 
-The DADA2 developers maintain [formatted training fastas for the RDP training set, GreenGenes clustered at 97% identity, and the Silva reference database](training.html). For fungal taxonomy, the General Fasta release files from the [UNITE ITS database](https://unite.ut.ee/repository.php) can be used as is.
+The DADA2 developers maintain [formatted training fastas for the RDP
+training set, GreenGenes clustered at 97% identity, and the Silva
+reference database](training.html). For fungal taxonomy, the General
+Fasta release files from the [UNITE ITS
+database](https://unite.ut.ee/repository.php) can be used as is.
 
-We have downloaded a shared IBIEM copy of of the DADA2 formated Silva database and assigned its path to the `silva.ref` variable in the [Set Up Paths](#set-up-paths) section above, so you don't need to download it!
+We have downloaded a shared IBIEM copy of of the DADA2 formated Silva
+database and assigned its path to the `silva.ref` variable in the [Set
+Up Paths](#set-up-paths) section above, so you don’t need to download
+it!
 
 ``` r
 taxa <- assignTaxonomy(seqtab.nochim, silva.ref, multithread=TRUE)
 ```
 
-**Optional:** The dada2 package also implements a method to make [species level assignments based on **exact matching**](assign.html#species-assignment) between ASVs and sequenced reference strains. Currently species-assignment training fastas are available for the Silva and RDP 16S databases. To follow the optional species addition step, download the `silva_species_assignment_v128.fa.gz` file, and place it in the directory with the fastq files.
+**Optional:** The dada2 package also implements a method to make
+[species level assignments based on **exact
+matching**](assign.html#species-assignment) between ASVs and sequenced
+reference strains. Currently species-assignment training fastas are
+available for the Silva and RDP 16S databases. To follow the optional
+species addition step, download the
+`silva_species_assignment_v132.fa.gz` file, and place it in the
+directory with the fastq files.
 
 ``` r
 taxa <- addSpecies(taxa, silva.species.ref)
 ```
 
-Let's inspect the taxonomic assignments:
+Let’s inspect the taxonomic assignments:
 
 ``` r
 taxa.print <- taxa # Removing sequence rownames for display only
@@ -1249,21 +1167,25 @@ head(taxa.print)
     ##      Kingdom    Phylum             Class                
     ## [1,] "Bacteria" "Proteobacteria"   "Gammaproteobacteria"
     ## [2,] "Bacteria" "Proteobacteria"   "Gammaproteobacteria"
-    ## [3,] "Bacteria" "Actinobacteria"   "Actinobacteria"     
-    ## [4,] "Bacteria" "Proteobacteria"   "Gammaproteobacteria"
+    ## [3,] "Bacteria" "Proteobacteria"   "Gammaproteobacteria"
+    ## [4,] "Bacteria" "Actinobacteria"   "Rubrobacteria"      
     ## [5,] "Bacteria" "Gemmatimonadetes" "Gemmatimonadetes"   
-    ## [6,] "Bacteria" "Actinobacteria"   "Thermoleophilia"    
-    ##      Order                 Family                   Genus        Species
-    ## [1,] NA                    NA                       NA           NA     
-    ## [2,] NA                    NA                       NA           NA     
-    ## [3,] "Pseudonocardiales"   "Pseudonocardiaceae"     "Crossiella" NA     
-    ## [4,] "Chromatiales"        "Ectothiorhodospiraceae" NA           NA     
-    ## [5,] "Gemmatimonadales"    "Gemmatimonadaceae"      NA           NA     
-    ## [6,] "Solirubrobacterales" "288-2"                  NA           NA
+    ## [6,] "Bacteria" "Actinobacteria"   "Nitriliruptoria"    
+    ##      Order               Family               Genus         Species
+    ## [1,] "Nitrosococcales"   "Nitrosococcaceae"   "wb1-P19"     NA     
+    ## [2,] "Nitrosococcales"   "Nitrosococcaceae"   "wb1-P19"     NA     
+    ## [3,] "Nitrosococcales"   "Nitrosococcaceae"   "wb1-P19"     NA     
+    ## [4,] "Rubrobacterales"   "Rubrobacteriaceae"  "Rubrobacter" NA     
+    ## [5,] "Gemmatimonadales"  "Gemmatimonadaceae"  NA            NA     
+    ## [6,] "Nitriliruptorales" "Nitriliruptoraceae" NA            NA
 
-Unsurprisingly, the Bacteroidetes are well represented among the most abundant taxa in these fecal samples. Few species assignments were made, both because it is often not possible to make unambiguous species assignments from segments of the 16S gene, and because there is surprisingly little coverage of the indigenous mouse gut microbiota in reference databases.
-
-**<span style="color:red">If using this workflow on your own data:</span>** If your reads do not seem to be appropriately assigned, for example lots of your bacterial 16S sequences are being assigned as `Eukaryota NA NA NA NA NA`, your reads may be in the opposite orientation as the reference database. Tell dada2 to try the reverse-complement orientation with `assignTaxonomy(..., tryRC=TRUE)` and see if this fixes the assignments.
+**<span style="color:red">If using this workflow on your own
+data:</span>** If your reads do not seem to be appropriately assigned,
+for example lots of your bacterial 16S sequences are being assigned as
+`Eukaryota NA NA NA NA NA`, your reads may be in the opposite
+orientation as the reference database. Tell dada2 to try the
+reverse-complement orientation with `assignTaxonomy(..., tryRC=TRUE)`
+and see if this fixes the assignments.
 
  
 
@@ -1272,12 +1194,20 @@ Unsurprisingly, the Bacteroidetes are well represented among the most abundant t
 Bonus: Handoff to phyloseq
 ==========================
 
-The [phyloseq R package is a powerful framework for further analysis of microbiome data](https://joey711.github.io/phyloseq/). We now demosntrate how to straightforwardly import the tables produced by the DADA2 pipeline into phyloseq. We'll also add the small amount of metadata we have -- the samples are named by the gender (G), mouse subject number (X) and the day post-weaning (Y) it was sampled (eg. GXDY).
+The [phyloseq R package is a powerful framework for further analysis of
+microbiome data](https://joey711.github.io/phyloseq/). We now
+demosntrate how to straightforwardly import the tables produced by the
+DADA2 pipeline into phyloseq. We’ll also add the small amount of
+metadata we have – the samples are named by the gender (G), mouse
+subject number (X) and the day post-weaning (Y) it was sampled (eg.
+GXDY).
 
 Make Phyloseq Object
 --------------------
 
-We can construct a simple sample data.frame based on the filenames. Usually this step would instead involve reading the sample data in from a file.
+We can construct a simple sample data.frame based on the filenames.
+Usually this step would instead involve reading the sample data in from
+a file.
 
 ``` r
 meta.df = read_tsv(map.file, comment= "#q2") %>%
@@ -1851,16 +1781,23 @@ ps
 ```
 
     ## phyloseq-class experiment-level object
-    ## otu_table()   OTU Table:         [ 450 taxa and 61 samples ]
+    ## otu_table()   OTU Table:         [ 459 taxa and 61 samples ]
     ## sample_data() Sample Data:       [ 61 samples by 22 sample variables ]
-    ## tax_table()   Taxonomy Table:    [ 450 taxa by 7 taxonomic ranks ]
+    ## tax_table()   Taxonomy Table:    [ 459 taxa by 7 taxonomic ranks ]
 
 Save Phyloseq as RDS
 --------------------
 
-Any R object can be saved to an RDS file. It is a good idea to do this for any object that is time consuming to generate and is reasonably small in size. Even when the object was generated reproducibly, it can be frustrating to wait minutes or hours to regenerate when you are ready to perform downstream analyses.
+Any R object can be saved to an RDS file. It is a good idea to do this
+for any object that is time consuming to generate and is reasonably
+small in size. Even when the object was generated reproducibly, it can
+be frustrating to wait minutes or hours to regenerate when you are ready
+to perform downstream analyses.
 
-We will do this for out phyloseq object to a file since it is quite small (especially compared to the size of the input FASTQ files), and there were several time consuming computational steps required to generate it.
+We will do this for out phyloseq object to a file since it is quite
+small (especially compared to the size of the input FASTQ files), and
+there were several time consuming computational steps required to
+generate it.
 
 ``` r
 write_rds(ps, ps.rds)
@@ -1874,9 +1811,9 @@ print(loaded.ps)
 ```
 
     ## phyloseq-class experiment-level object
-    ## otu_table()   OTU Table:         [ 450 taxa and 61 samples ]
+    ## otu_table()   OTU Table:         [ 459 taxa and 61 samples ]
     ## sample_data() Sample Data:       [ 61 samples by 22 sample variables ]
-    ## tax_table()   Taxonomy Table:    [ 450 taxa by 7 taxonomic ranks ]
+    ## tax_table()   Taxonomy Table:    [ 459 taxa by 7 taxonomic ranks ]
 
 We are now ready to use phyloseq!
 
@@ -1907,7 +1844,10 @@ plot_bar(ps.top20, x="Description", fill="Family") +
 
 ![](dada2_tutorial_1_6_files/figure-markdown_github/bar-plot-1.png)
 
-This was just a bare bones demonstration of how the data from DADA2 can be easily imported into phyloseq and interrogated. For further examples on the many analyses possible with phyloseq, see [the phyloseq web site](https://joey711.github.io/phyloseq/)!
+This was just a bare bones demonstration of how the data from DADA2 can
+be easily imported into phyloseq and interrogated. For further examples
+on the many analyses possible with phyloseq, see [the phyloseq web
+site](https://joey711.github.io/phyloseq/)!
 
 Session Info
 ============
@@ -1918,12 +1858,12 @@ Always print `sessionInfo` for reproducibility!
 sessionInfo()
 ```
 
-    ## R version 3.4.4 (2018-03-15)
+    ## R version 3.6.1 (2019-07-05)
     ## Platform: x86_64-pc-linux-gnu (64-bit)
-    ## Running under: Ubuntu 18.04.2 LTS
+    ## Running under: Ubuntu 18.04.3 LTS
     ## 
     ## Matrix products: default
-    ## BLAS: /usr/lib/x86_64-linux-gnu/blas/libblas.so.3.7.1
+    ## BLAS:   /usr/lib/x86_64-linux-gnu/blas/libblas.so.3.7.1
     ## LAPACK: /usr/lib/x86_64-linux-gnu/lapack/liblapack.so.3.7.1
     ## 
     ## locale:
@@ -1938,50 +1878,55 @@ sessionInfo()
     ## [1] stats     graphics  grDevices utils     datasets  methods   base     
     ## 
     ## other attached packages:
-    ##  [1] fs_1.2.7        ggplot2_2.2.1   phyloseq_1.22.3 magrittr_1.5   
-    ##  [5] tibble_2.1.1    dplyr_0.8.0.1   stringr_1.3.0   readr_1.3.1    
-    ##  [9] dada2_1.6.0     Rcpp_1.0.1     
+    ##  [1] fs_1.3.1        ggplot2_3.2.1   phyloseq_1.28.0 magrittr_1.5   
+    ##  [5] tibble_2.1.3    dplyr_0.8.3     stringr_1.4.0   readr_1.3.1    
+    ##  [9] dada2_1.12.1    Rcpp_1.0.2     
     ## 
     ## loaded via a namespace (and not attached):
-    ##  [1] Biobase_2.38.0             splines_3.4.4             
-    ##  [3] jsonlite_1.5               foreach_1.4.4             
-    ##  [5] RcppParallel_4.4.2         assertthat_0.2.0          
-    ##  [7] stats4_3.4.4               latticeExtra_0.6-28       
-    ##  [9] GenomeInfoDbData_1.0.0     Rsamtools_1.30.0          
-    ## [11] yaml_2.2.0                 pillar_1.3.1              
-    ## [13] lattice_0.20-35            glue_1.3.1                
-    ## [15] digest_0.6.15              GenomicRanges_1.30.3      
-    ## [17] RColorBrewer_1.1-2         XVector_0.18.0            
-    ## [19] colorspace_1.3-2           htmltools_0.3.6           
-    ## [21] Matrix_1.2-12              plyr_1.8.4                
-    ## [23] pkgconfig_2.0.2            ShortRead_1.36.1          
-    ## [25] zlibbioc_1.24.0            purrr_0.3.2               
-    ## [27] scales_1.0.0               BiocParallel_1.12.0       
-    ## [29] mgcv_1.8-23                IRanges_2.12.0            
-    ## [31] SummarizedExperiment_1.8.1 BiocGenerics_0.24.0       
-    ## [33] lazyeval_0.2.1             survival_2.41-3           
-    ## [35] crayon_1.3.4               evaluate_0.13             
-    ## [37] nlme_3.1-131               MASS_7.3-49               
-    ## [39] hwriter_1.3.2              vegan_2.5-4               
-    ## [41] tools_3.4.4                data.table_1.10.4-3       
-    ## [43] hms_0.4.2                  matrixStats_0.54.0        
-    ## [45] S4Vectors_0.16.0           munsell_0.5.0             
-    ## [47] cluster_2.0.6              DelayedArray_0.4.1        
-    ## [49] Biostrings_2.46.0          ade4_1.7-13               
-    ## [51] compiler_3.4.4             GenomeInfoDb_1.14.0       
-    ## [53] rlang_0.3.2                rhdf5_2.22.0              
-    ## [55] grid_3.4.4                 RCurl_1.95-4.12           
-    ## [57] iterators_1.0.10           biomformat_1.6.0          
-    ## [59] igraph_1.2.4               labeling_0.3              
-    ## [61] bitops_1.0-6               rmarkdown_1.12            
-    ## [63] gtable_0.2.0               codetools_0.2-15          
-    ## [65] multtest_2.34.0            reshape2_1.4.2            
-    ## [67] R6_2.2.2                   GenomicAlignments_1.14.2  
-    ## [69] knitr_1.22                 permute_0.9-5             
-    ## [71] ape_5.3                    stringi_1.1.6             
-    ## [73] parallel_3.4.4             tidyselect_0.2.5          
-    ## [75] xfun_0.5
+    ##  [1] Biobase_2.44.0              splines_3.6.1              
+    ##  [3] jsonlite_1.6                foreach_1.4.7              
+    ##  [5] RcppParallel_4.4.3          assertthat_0.2.1           
+    ##  [7] stats4_3.6.1                latticeExtra_0.6-28        
+    ##  [9] GenomeInfoDbData_1.2.1      Rsamtools_2.0.0            
+    ## [11] yaml_2.2.0                  pillar_1.4.2               
+    ## [13] backports_1.1.4             lattice_0.20-38            
+    ## [15] glue_1.3.1                  digest_0.6.20              
+    ## [17] GenomicRanges_1.36.1        RColorBrewer_1.1-2         
+    ## [19] XVector_0.24.0              colorspace_1.4-1           
+    ## [21] htmltools_0.3.6             Matrix_1.2-17              
+    ## [23] plyr_1.8.4                  pkgconfig_2.0.2            
+    ## [25] ShortRead_1.42.0            zlibbioc_1.30.0            
+    ## [27] purrr_0.3.2                 scales_1.0.0               
+    ## [29] BiocParallel_1.18.1         mgcv_1.8-28                
+    ## [31] IRanges_2.18.2              withr_2.1.2                
+    ## [33] SummarizedExperiment_1.14.1 BiocGenerics_0.30.0        
+    ## [35] lazyeval_0.2.2              cli_1.1.0                  
+    ## [37] survival_2.44-1.1           crayon_1.3.4               
+    ## [39] evaluate_0.14               fansi_0.4.0                
+    ## [41] nlme_3.1-141                MASS_7.3-51.4              
+    ## [43] hwriter_1.3.2               vegan_2.5-6                
+    ## [45] data.table_1.12.2           tools_3.6.1                
+    ## [47] hms_0.5.1                   matrixStats_0.55.0         
+    ## [49] Rhdf5lib_1.6.0              S4Vectors_0.22.0           
+    ## [51] munsell_0.5.0               cluster_2.1.0              
+    ## [53] DelayedArray_0.10.0         Biostrings_2.52.0          
+    ## [55] ade4_1.7-13                 compiler_3.6.1             
+    ## [57] GenomeInfoDb_1.20.0         rlang_0.4.0                
+    ## [59] rhdf5_2.28.0                grid_3.6.1                 
+    ## [61] RCurl_1.95-4.12             iterators_1.0.12           
+    ## [63] biomformat_1.12.0           igraph_1.2.4.1             
+    ## [65] labeling_0.3                bitops_1.0-6               
+    ## [67] rmarkdown_1.15              multtest_2.40.0            
+    ## [69] gtable_0.3.0                codetools_0.2-16           
+    ## [71] reshape2_1.4.3              R6_2.4.0                   
+    ## [73] GenomicAlignments_1.20.1    knitr_1.24                 
+    ## [75] utf8_1.1.4                  zeallot_0.1.0              
+    ## [77] permute_0.9-5               ape_5.3                    
+    ## [79] stringi_1.4.3               parallel_3.6.1             
+    ## [81] vctrs_0.2.0                 tidyselect_0.2.5           
+    ## [83] xfun_0.9
 
 ------------------------------------------------------------------------
 
-This tutorial is based on the [Official DADA2 v1.6 Tutorial](https://raw.githubusercontent.com/benjjneb/dada2/gh-pages/tutorial_1_6.Rmd)
+This tutorial is based on the [Official DADA2 v1.6
+Tutorial](https://raw.githubusercontent.com/benjjneb/dada2/gh-pages/tutorial_1_6.Rmd)
