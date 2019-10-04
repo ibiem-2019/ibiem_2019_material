@@ -117,7 +117,7 @@
 <tr class="odd">
 <td></td>
 <td>11-12</td>
-<td><a href="lectures/dada2_pipeline.pdf">Lecture: Amplicon Bioinformatics Analysis</a></td>
+<td><a href="lectures/dada2_pipeline.pdf">Lecture: Amplicon Bioinformatics Analysis #1</a></td>
 <td></td>
 <td></td>
 <td></td>
@@ -133,15 +133,15 @@
 <tr class="odd">
 <td>20-Sep</td>
 <td>10-11</td>
-<td><a href="lessons/demultiplex_tutorial.md">Hands-on: Demultiplexing</a></td>
+<td><a href="lectures/dada2_pipeline.pdf">Lecture: Amplicon Bioinformatics Analysis #2</a></td>
 <td><a href="https://github.com/ibiem-master/challenge_5">Challenge 5</a></td>
 <td>10/4</td>
-<td></td>
+<td>Duke</td>
 </tr>
 <tr class="even">
 <td></td>
 <td></td>
-<td><a href="lessons/dada2_tutorial_1_6.md">Hands-on: DADA2 #1</a></td>
+<td><a href="lessons/demultiplex_tutorial.md">Hands-on: Demultiplexing #1</a></td>
 <td></td>
 <td></td>
 <td></td>
@@ -165,15 +165,15 @@
 <tr class="odd">
 <td>27-Sep</td>
 <td>10-11</td>
-<td><a href="lessons/dada2_tutorial_1_6.md">Hands-on: DADA2 #2</a></td>
+<td><a href="lessons/demultiplex_tutorial.md">Hands-on: Demultiplexing #2</a></td>
 <td><a href="https://github.com/ibiem-master/challenge_6">Challenge 6</a></td>
-<td>10/11</td>
-<td></td>
+<td>10/18</td>
+<td>Duke</td>
 </tr>
 <tr class="even">
 <td></td>
 <td>11-12</td>
-<td>Guest Speaker #3</td>
+<td><a href="lectures/dada2_pipeline.pdf">Lecture: Amplicon Bioinformatics Analysis #3</a></td>
 <td></td>
 <td></td>
 <td></td>
@@ -181,7 +181,7 @@
 <tr class="odd">
 <td></td>
 <td>12-1</td>
-<td>Office Hours or Lunch</td>
+<td>Office Hours</td>
 <td></td>
 <td></td>
 <td></td>
@@ -189,20 +189,12 @@
 <tr class="even">
 <td>4-Oct</td>
 <td>10-11</td>
-<td><a href="lectures/statistical_analysis_1.pdf">Lecture: Phyloseq, Abundance, and Diversity</a></td>
+<td><a href="lessons/dada2_tutorial_1_6.md">Hands-on: DADA2</a></td>
 <td><a href="https://github.com/ibiem-master/challenge_7">Challenge 7</a></td>
-<td>10/18</td>
+<td>10/25</td>
 <td>Duke</td>
 </tr>
 <tr class="odd">
-<td></td>
-<td></td>
-<td><a href="lessons/absolute_abundance_plots.md">Hands-on: Phyloseq, Abundance, and Diversity</a></td>
-<td></td>
-<td></td>
-<td></td>
-</tr>
-<tr class="even">
 <td></td>
 <td>11-12</td>
 <td>Jessica Maia (BD)</td>
@@ -210,58 +202,66 @@
 <td></td>
 <td></td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td></td>
 <td>12-1</td>
-<td>Office Hours or Lunch</td>
+<td>Lunch with Jessica Maia</td>
 <td></td>
 <td></td>
-<td></td>
-</tr>
-<tr class="even">
-<td>11-Oct</td>
-<td>10-11</td>
-<td><a href="lessons/alpha_diversity.md">Hands-on: Alpha Diversity</a></td>
-<td><a href="https://github.com/ibiem-master/challenge_8">Challenge 8</a></td>
-<td>10/25</td>
 <td></td>
 </tr>
 <tr class="odd">
+<td>11-Oct</td>
+<td>10-11</td>
+<td><a href="lectures/statistical_analysis_1.pdf">Lecture: Phyloseq, Abundance, and Diversity</a></td>
+<td><a href="https://github.com/ibiem-master/challenge_8">Challenge 8</a></td>
+<td>11/1</td>
+<td>Duke</td>
+</tr>
+<tr class="even">
 <td></td>
 <td></td>
-<td><a href="lessons/relative_abundance.md">Hands-on: Relative Abundance</a></td>
+<td><a href="lessons/absolute_abundance_plots.md">Hands-on: Phyloseq, Abundance, and Diversity</a></td>
 <td>Graves readings</td>
 <td>10/25</td>
 <td></td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td></td>
 <td>11-12</td>
-<td>Guest Speaker #5</td>
+<td>David Singleton: Giving a Research Presentation</td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr class="even">
+<td></td>
+<td>12-1</td>
+<td>Office Hours</td>
 <td></td>
 <td></td>
 <td></td>
 </tr>
 <tr class="odd">
-<td></td>
-<td>12-1</td>
-<td>Office Hours or Lunch</td>
-<td></td>
-<td></td>
-<td></td>
-</tr>
-<tr class="even">
 <td>18-Oct</td>
 <td>10-11</td>
-<td><a href="lectures/statistical_analysis_2.pdf">Lecture: Beta Diversity</a></td>
+<td><a href="lessons/alpha_diversity.md">Hands-on: Alpha Diversity</a></td>
 <td><a href="https://github.com/ibiem-master/challenge_9">Challenge 9</a></td>
-<td>11/1</td>
+<td>11/8</td>
+<td>Duke</td>
+</tr>
+<tr class="even">
+<td></td>
+<td></td>
+<td><a href="lessons/relative_abundance.md">Hands-on: Relative Abundance</a></td>
+<td></td>
+<td></td>
 <td></td>
 </tr>
 <tr class="odd">
 <td></td>
 <td>11-12</td>
-<td>Guest Speaker #6</td>
+<td>Matthew Biggs - AgBiome</td>
 <td></td>
 <td></td>
 <td></td>
@@ -269,7 +269,7 @@
 <tr class="even">
 <td></td>
 <td>12-1</td>
-<td>Office Hours or Lunch</td>
+<td>Lunch with Matthew Biggs</td>
 <td></td>
 <td></td>
 <td></td>
@@ -277,9 +277,9 @@
 <tr class="odd">
 <td>25-Oct</td>
 <td>10-11</td>
-<td><a href="lectures/statistical_analysis_3.pdf">Lecture: Beta Diversity &amp; Ordination</a></td>
+<td><a href="lectures/statistical_analysis_2.pdf">Lecture: Beta Diversity</a></td>
 <td><a href="https://github.com/ibiem-master/challenge_10">Challenge 10</a></td>
-<td>11/8</td>
+<td>11/22</td>
 <td>JSNN</td>
 </tr>
 <tr class="even">
@@ -293,7 +293,7 @@
 <tr class="odd">
 <td></td>
 <td>12-1</td>
-<td>Office Hours or Lunch</td>
+<td>Office Hours</td>
 <td></td>
 <td></td>
 <td></td>
@@ -301,7 +301,7 @@
 <tr class="even">
 <td>1-Nov</td>
 <td>10-11</td>
-<td><a href="lessons/ordination.md">Hands-on: Beta Diversity &amp; Ordination</a></td>
+<td><a href="lectures/statistical_analysis_3.pdf">Lecture: Beta Diversity &amp; Ordination</a></td>
 <td></td>
 <td></td>
 <td>Duke</td>
@@ -317,7 +317,7 @@
 <tr class="even">
 <td></td>
 <td>12-1</td>
-<td>Office Hours or Lunch</td>
+<td>Lunch with Benjamin Callahan</td>
 <td></td>
 <td></td>
 <td></td>
@@ -325,10 +325,10 @@
 <tr class="odd">
 <td>8-Nov</td>
 <td>10-11</td>
-<td><a href="lessons/bootcamp/040_git_overview.md#collaborating">Git: Collaborating</a></td>
+<td><a href="lessons/ordination.md">Hands-on: Beta Diversity &amp; Ordination</a></td>
 <td></td>
 <td></td>
-<td>Duke</td>
+<td></td>
 </tr>
 <tr class="even">
 <td></td>
