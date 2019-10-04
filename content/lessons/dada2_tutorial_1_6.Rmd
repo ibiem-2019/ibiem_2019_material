@@ -19,7 +19,7 @@ This workflow assumes that your sequencing data meets certain criteria:
 * Non-biological nucleotides have been removed, e.g. primers, adapters, linkers, etc.
 * If paired-end sequencing data, the forward and reverse fastq files contain reads in matched order.
 
-If these criteria are not true for your data (**are you sure there aren't any primers hanging around?**) you need to remedy those issues before beginning this workflow. See [the FAQ](faq.html) for some recommendations for common issues.
+If these criteria are not true for your data (**are you sure there aren't any primers hanging around?**) you need to remedy those issues before beginning this workflow. See DADA2 FAQ for some recommendations for common issues.
 
 # Getting ready
 ## Load Libraries
@@ -36,9 +36,6 @@ library(phyloseq)
 library(ggplot2)
 library(fs)
 ```
-
-
-*Older versions of this workflow associated with previous release versions or the dada2 R package are also available: [version 1.2](tutorial_1_2.html), [version 1.4](tutorial_1_4.html).*
 
 We will work with are the [Atacama data (1% subsampled)](https://docs.qiime2.org/2018.11/tutorials/atacama-soils/#subsample-data).  This Notebook assumes that you have followed the [Demultiplexing Tutorial](demultiplex_tutorial.md) to generate demultiplexed FASTQs. 
 ```{r data_path}
@@ -141,7 +138,7 @@ These samples only have one read each, so let's look at the full dataset (before
 plotQualityProfile(file.path(data.dir, "reverse.fastq.gz"))
 ```
 
-The reverse reads are of significantly worse quality, and it drops off a little at the end, which is common in Illumina sequencing. This isn't too worrisome, as DADA2 incorporates quality information into its error model which makes the algorithm [robust to lower quality sequence](https://twitter.com/bejcal/status/771010634074820608), but trimming as the average qualities drop off will improve the algorithm's sensitivity to rare sequence variants. Based on these profiles, we will truncate the reverse reads at position 140 where the quality distribution crashes.  As with the forward reads, the first ~10bp are somewhat lower quality so we will trim 10bp from the left also.
+The reverse reads are of significantly worse quality, and it drops off a little at the end, which is common in Illumina sequencing. This isn't too worrisome, as DADA2 incorporates quality information into its error model which makes the algorithm [robust to lower quality sequence](https://twitter.com/bejcal/status/771010634074820608), but trimming as the average qualities drop off will improve the algorithm's sensitivity to rare sequence variants. Based on these profiles, we will truncate the reverse reads at position 140 where the quality distribution dips down.  As with the forward reads, the first ~10bp are somewhat lower quality so we will trim 10bp from the left also.
 
 <div style="border: 1px solid red;padding: 5px;background-color: #fff6f6;">**<span style="color:red">If using this workflow on your own data:</span>** **Your reads must still overlap after truncation in order to merge them later!** The tutorial is using 150bp PE V4 sequence data, so the forward and reverse reads overlap by about 50bp.  When using data with limited overlap `truncLen` must be large enough to maintain `20 + biological.length.variation` nucleotides of overlap between them.  When using data that overlap more (e.g. 250 PE V4) trimming can be completely guided by the quality scores. 
 
@@ -406,7 +403,7 @@ rownames(taxa.print) <- NULL
 head(taxa.print)
 ```
 
-Unsurprisingly, the Bacteroidetes are well represented among the most abundant taxa in these fecal samples. Few species assignments were made, both because it is often not possible to make unambiguous species assignments from segments of the 16S gene, and because there is surprisingly little coverage of the indigenous mouse gut microbiota in reference databases.
+
 
 <div style="border: 1px solid red;padding: 5px;background-color: #fff6f6;">**<span style="color:red">If using this workflow on your own data:</span>** If your reads do not seem to be appropriately assigned, for example lots of your bacterial 16S sequences are being assigned as `Eukaryota NA NA NA NA NA`, your reads may be in the opposite orientation as the reference database. Tell dada2 to try the reverse-complement orientation with `assignTaxonomy(..., tryRC=TRUE)` and see if this fixes the assignments.</div>
 
