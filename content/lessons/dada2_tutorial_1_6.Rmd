@@ -76,7 +76,9 @@ silva.species.ref = "/data/references/dada/silva_species_assignment_v132.fa.gz"
 
 First we read in the names of the fastq files, and perform some string manipulation to get lists of the forward and reverse fastq files in matched order:
 ```{r filenames}
-# Forward and reverse fastq filenames have format: SAMPLENAME_R1_001.fastq and SAMPLENAME_R2_001.fastq
+# Forward and reverse fastq filenames have format: 
+# SAMPLENAME.forward.fastq.gz
+# SAMPLENAME.reverse.fastq.gz
 fnFs <- sort(list.files(demux.dir, pattern="forward.fastq", full.names = TRUE))
 fnRs <- sort(list.files(demux.dir, pattern="reverse.fastq", full.names = TRUE))
 
@@ -84,7 +86,7 @@ fnRs <- sort(list.files(demux.dir, pattern="reverse.fastq", full.names = TRUE))
 # sample.names <- sapply(strsplit(basename(fnFs), "_"), `[`, 1)
 sample.names = fnFs %>% 
   basename %>%
-  str_replace(".forward.fastq","") 
+  str_replace(".forward.fastq.gz","") 
 ```
 <div style="border: 1px solid red;padding: 5px;background-color: #fff6f6;">**<span style="color:red">If using this workflow on your own data:</span>** The string manipulations may have to be modified if using a different filename format.</div>
 
