@@ -189,9 +189,9 @@
 <tr class="even">
 <td>4-Oct</td>
 <td>10-11</td>
-<td><a href="lessons/dada2_tutorial_1_6.md">Hands-on: DADA2</a></td>
-<td><a href="https://github.com/ibiem-master/challenge_7">Challenge 7</a></td>
-<td>10/25</td>
+<td><a href="lessons/dada2_tutorial_1_6.md">Hands-on: DADA2 #1</a></td>
+<td></td>
+<td></td>
 <td>Duke</td>
 </tr>
 <tr class="odd">
@@ -213,20 +213,28 @@
 <tr class="odd">
 <td>11-Oct</td>
 <td>10-11</td>
-<td><a href="lectures/statistical_analysis_1.pdf">Lecture: Phyloseq, Abundance, and Diversity</a></td>
-<td><a href="https://github.com/ibiem-master/challenge_8">Challenge 8</a></td>
+<td><a href="lessons/dada2_tutorial_1_6.md">Hands-on: DADA2 #2</a></td>
+<td><a href="https://github.com/ibiem-master/challenge_7">Challenge 7</a></td>
 <td>11/1</td>
 <td>Duke</td>
 </tr>
 <tr class="even">
 <td></td>
 <td></td>
-<td><a href="lessons/absolute_abundance_plots.md">Hands-on: Phyloseq, Abundance, and Diversity</a></td>
+<td><a href="lectures/statistical_analysis_1.pdf">Lecture: Phyloseq, Abundance, and Diversity</a></td>
 <td>Graves readings</td>
 <td>10/25</td>
 <td></td>
 </tr>
 <tr class="odd">
+<td></td>
+<td></td>
+<td><a href="lessons/absolute_abundance_plots.md">Hands-on: Phyloseq, Abundance, and Diversity</a></td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr class="even">
 <td></td>
 <td>11-12</td>
 <td>David Singleton: Giving a Research Presentation</td>
@@ -234,7 +242,7 @@
 <td></td>
 <td></td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td></td>
 <td>12-1</td>
 <td>Office Hours</td>
@@ -242,15 +250,15 @@
 <td></td>
 <td></td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td>18-Oct</td>
 <td>10-11</td>
 <td><a href="lessons/alpha_diversity.md">Hands-on: Alpha Diversity</a></td>
-<td><a href="https://github.com/ibiem-master/challenge_9">Challenge 9</a></td>
+<td><a href="https://github.com/ibiem-master/challenge_8">Challenge 8</a></td>
 <td>11/8</td>
 <td>Duke</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td></td>
 <td></td>
 <td><a href="lessons/relative_abundance.md">Hands-on: Relative Abundance</a></td>
@@ -258,7 +266,7 @@
 <td></td>
 <td></td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td></td>
 <td>11-12</td>
 <td>Matthew Biggs - AgBiome</td>
@@ -266,7 +274,7 @@
 <td></td>
 <td></td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td></td>
 <td>12-1</td>
 <td>Lunch with Matthew Biggs</td>
@@ -274,15 +282,15 @@
 <td></td>
 <td></td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td>25-Oct</td>
 <td>10-11</td>
 <td><a href="lectures/statistical_analysis_2.pdf">Lecture: Beta Diversity</a></td>
-<td><a href="https://github.com/ibiem-master/challenge_10">Challenge 10</a></td>
+<td><a href="https://github.com/ibiem-master/challenge_9">Challenge 9</a></td>
 <td>11/22</td>
 <td>JSNN</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td></td>
 <td>11-12</td>
 <td>Joe Graves (readings on Google Drive)</td>
@@ -290,7 +298,7 @@
 <td></td>
 <td></td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td></td>
 <td>12-1</td>
 <td>Office Hours</td>
@@ -298,15 +306,15 @@
 <td></td>
 <td></td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td>1-Nov</td>
 <td>10-11</td>
 <td><a href="lectures/statistical_analysis_3.pdf">Lecture: Beta Diversity &amp; Ordination</a></td>
-<td></td>
-<td></td>
+<td><a href="https://github.com/ibiem-master/challenge_10">Challenge 10</a></td>
+<td>11/22</td>
 <td>Duke</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td></td>
 <td>11-12</td>
 <td>Benjamin Callahan (NCSU)</td>
@@ -314,7 +322,7 @@
 <td></td>
 <td></td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td></td>
 <td>12-1</td>
 <td>Lunch with Benjamin Callahan</td>
@@ -322,7 +330,7 @@
 <td></td>
 <td></td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td>8-Nov</td>
 <td>10-11</td>
 <td><a href="lessons/ordination.md">Hands-on: Beta Diversity &amp; Ordination</a></td>
@@ -330,7 +338,7 @@
 <td></td>
 <td></td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td></td>
 <td>11-12</td>
 <td>IBIEM Alums #1</td>
@@ -338,7 +346,7 @@
 <td></td>
 <td></td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td></td>
 <td>12-1</td>
 <td>Office Hours or Lunch</td>
@@ -346,7 +354,7 @@
 <td></td>
 <td></td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td>15-Nov</td>
 <td>10-11</td>
 <td>Class Cancelled for Food Symposium</td>
@@ -354,7 +362,7 @@
 <td></td>
 <td></td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td></td>
 <td>11-12</td>
 <td></td>
@@ -362,7 +370,7 @@
 <td></td>
 <td></td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td></td>
 <td>12-1</td>
 <td></td>
@@ -370,7 +378,7 @@
 <td></td>
 <td></td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td>22-Nov</td>
 <td>10-11</td>
 <td>Project Mentors 1 &amp; 2</td>
@@ -378,7 +386,7 @@
 <td></td>
 <td></td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td></td>
 <td>11-12</td>
 <td>Project Mentors 3 &amp; 4</td>
@@ -386,7 +394,7 @@
 <td></td>
 <td></td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td></td>
 <td>12-1</td>
 <td>Office Hours or Lunch</td>

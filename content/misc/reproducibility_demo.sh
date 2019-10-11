@@ -9,15 +9,18 @@ if ! [[ "$1" =~ ^(LOCAL|REMOTE|COMMAND)$ ]]; then
     printf "This can be a problem if there is not enough memory on the host machine,\n"
     printf "or if Docker is run with a memory cap. Docker Desktop on MacOS and Windows\n"
     printf "seems to default to a value that is too low"
+    printf "\n\nAn optional second argument can be given to specify the base directory\n"
     exit 1
 else
     REMOTE_OR_LOCAL=${1}
 fi
 
 
-DEMO_BASE="/tmp/reproducible_demo_`date +%s`_tmp"
-WORK_DIR="$DEMO_BASE/work"
-DATA_DIR="$DEMO_BASE/data"
+BASE_DIR="/tmp/reproducible_demo_`date +%s`_tmp"
+BASE_DIR=${2:-$BASE_DIR}
+
+WORK_DIR="$BASE_DIR/work"
+DATA_DIR="$BASE_DIR/data"
 DOCKER_IMAGENAME="ibiem/docker_rstudio_ibiem2019:latest"
 SEP_STRING="\n--------------------------------------------------\n"
 
@@ -39,7 +42,7 @@ git clone https://github.com/ibiem-2019/ibiem_2019_material.git ${WORK_DIR}/demo
 
 
 printf "\n${SEP_STRING} Pulling docker image: $DOCKER_IMAGENAME ${SEP_STRING}"
-docker pull $DOCKER_IMAGENAME
+# docker pull $DOCKER_IMAGENAME
 
 
 if [ $REMOTE_OR_LOCAL == "COMMAND" ]; then
@@ -81,7 +84,7 @@ printf "${SEP_STRING}In RStudio:\n1. New Project: https://github.com/ibiem-2019/
 
 
 printf "\n${SEP_STRING} To clean up: \n\n"
-echo "rm -rf $DEMO_BASE"
+echo "rm -rf $BASE_DIR"
 echo "docker rm -f \`docker ps -aq\`"
 echo "docker rmi \`docker images -aq\`"
 printf "${SEP_STRING}\n"
