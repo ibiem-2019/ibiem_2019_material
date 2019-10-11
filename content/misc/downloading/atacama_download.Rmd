@@ -2,6 +2,7 @@
 title: "Download Atacama Data"
 params:
   atacama_data_percent: 1
+  data_dir : /data/tutorial_data
 output:
   md_document:
     variant: markdown_github
@@ -17,14 +18,18 @@ To keep the code readable and portable, it is nice to assign paths to variables.
 if(exists("params") && 
    !is.null(params[["atacama_data_percent"]])){
   atacama.data.percent=params[["atacama_data_percent"]]
-  print("Got params: atacama_data_percent")
 } else {
   atacama.data.percent = "1"
-  }
+}
+if(exists("params") && 
+   !is.null(params[["data_dir"]])){
+  data.dir=params[["data_dir"]]
+} else {
+  data.dir = "/data/tutorial_data"
+}
 
 # Directories
 
-data.dir = "/data/tutorial_data"
 atacama.data.dir = file.path(data.dir, paste0("atacama_", atacama.data.percent, "pct"))
 dir.create(atacama.data.dir, recursive = TRUE)
 
