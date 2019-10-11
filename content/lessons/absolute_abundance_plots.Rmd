@@ -24,6 +24,8 @@ First we load libraries.
 ```{r libraries, message=FALSE, warning=FALSE}
 library(readr)
 library(phyloseq)
+library(ggplot2)
+library(dplyr)
 ```
 
 
