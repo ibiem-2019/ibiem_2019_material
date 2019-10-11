@@ -1,5 +1,8 @@
 ---
 title: "Demultiplex"
+params:
+  atacama_data_percent: 1
+  data_dir : /data/tutorial_data
 output:
   md_document:
     variant: markdown_github
@@ -22,10 +25,29 @@ library(R.utils)
 ## Paths, Directories, and Shell Variables
 To keep the code readable and portable, it is nice to assign paths to variables.  We also need to use the R `Sys.setenv` command to make shell variables that can be used in the bash chunks below.
 
-```{r files_and_directories}
+
+
+```{r files_and_directories, include=FALSE}
+# Params
+
+if(exists("params") && 
+   !is.null(params[["atacama_data_percent"]])){
+  atacama.data.percent=params[["atacama_data_percent"]]
+} else {
+  atacama.data.percent = "1"
+}
+if(exists("params") && 
+   !is.null(params[["data_dir"]])){
+  data.dir=params[["data_dir"]]
+} else {
+  data.dir = "/data/tutorial_data"
+}
+
 # Directories
-data.dir = "/data/tutorial_data/atacama_1pct"
-output.dir = path.expand("~/scratch/atacama_1pct")
+
+data.dir = file.path(data.dir, paste0("atacama_", atacama.data.percent, "pct"))
+output.dir = path.expand(file.path("~/scratch", paste0("atacama_", atacama.data.percent, "pct")))
+
 demux.dir = file.path(output.dir, "demux")
 
 # make directory for output
