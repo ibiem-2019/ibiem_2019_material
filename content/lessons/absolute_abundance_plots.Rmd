@@ -2,6 +2,8 @@
 title: "Abundance and Diversity Plots"
 params:
   atacama_ps_rds: /data/tutorial_data/atacama_10pct.rds
+  atacama_data_percent: 1
+  data_dir : /data/tutorial_data
 output:
   md_document:
      variant: markdown_github
