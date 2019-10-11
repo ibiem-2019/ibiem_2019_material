@@ -1,5 +1,8 @@
 ---
 title: "DADA2 Pipeline Tutorial (1.6)"
+params:
+  atacama_data_percent: 1
+  data_dir : /data/tutorial_data
 output:
   md_document:
     variant: markdown_github
@@ -38,9 +41,32 @@ library(fs)
 ```
 
 We will work with are the [Atacama data (1% subsampled)](https://docs.qiime2.org/2018.11/tutorials/atacama-soils/#subsample-data).  This Notebook assumes that you have followed the [Demultiplexing Tutorial](demultiplex_tutorial.md) to generate demultiplexed FASTQs. 
-```{r data_path}
-output.dir = path.expand("~/scratch/atacama_1pct")
+
+
+
+
+```{r files_and_directories, include=FALSE}
+# Params
+
+if(exists("params") && 
+   !is.null(params[["atacama_data_percent"]])){
+  atacama.data.percent=params[["atacama_data_percent"]]
+} else {
+  atacama.data.percent = "1"
+}
+if(exists("params") && 
+   !is.null(params[["data_dir"]])){
+  data.dir=params[["data_dir"]]
+} else {
+  data.dir = "/data/tutorial_data"
+}
+
+# Directories
+
+data.dir = file.path(data.dir, paste0("atacama_", atacama.data.percent, "pct"))
+output.dir = path.expand(file.path("~/scratch", paste0("atacama_", atacama.data.percent, "pct")))
 demux.dir = file.path(output.dir, "demux")
+
 list.files(demux.dir)
 ```
 
@@ -51,7 +77,7 @@ We need to set up a "scratch" directory for saving files that we generate while 
 ```{r other_paths}
 scratch.dir = file.path(output.dir, "dada2")
 
-data.dir = "/data/tutorial_data/atacama_1pct"
+ps.rds = file.path(scratch.dir, paste0("atacama_", atacama.data.percent, "pct.rds"))
 map.file = file.path(data.dir,"sample_metadata.tsv")
 
 # make directory for output
@@ -61,7 +87,6 @@ if (dir_exists(scratch.dir)) {
 }
 dir_create(scratch.dir)
 
-ps.rds = file.path(scratch.dir, "atacama_1pct.rds")
 
 silva.ref = "/data/references/dada/silva_nr_v132_train_set.fa.gz"
 silva.species.ref = "/data/references/dada/silva_species_assignment_v132.fa.gz"
