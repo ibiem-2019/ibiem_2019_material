@@ -220,26 +220,10 @@
 </tr>
 <tr class="even">
 <td></td>
-<td></td>
-<td><a href="lectures/statistical_analysis_1.pdf">Lecture: Phyloseq, Abundance, and Diversity</a></td>
-<td>Graves readings</td>
-<td>10/25</td>
-<td></td>
-</tr>
-<tr class="odd">
-<td></td>
-<td></td>
-<td><a href="lessons/absolute_abundance_plots.md">Hands-on: Phyloseq, Abundance, and Diversity</a></td>
-<td></td>
-<td></td>
-<td></td>
-</tr>
-<tr class="even">
-<td></td>
 <td>11-12</td>
 <td>David Singleton: Giving a Research Presentation</td>
-<td></td>
-<td></td>
+<td>Graves readings</td>
+<td>10/25</td>
 <td></td>
 </tr>
 <tr class="odd">
@@ -253,10 +237,26 @@
 <tr class="even">
 <td>18-Oct</td>
 <td>10-11</td>
-<td><a href="lessons/alpha_diversity.md">Hands-on: Alpha Diversity</a></td>
+<td><a href="lectures/statistical_analysis_1.pdf">Lecture: Abundance and Diversity</a></td>
 <td><a href="https://github.com/ibiem-master/challenge_8">Challenge 8</a></td>
 <td>11/8</td>
 <td>Duke</td>
+</tr>
+<tr class="odd">
+<td></td>
+<td></td>
+<td><a href="lessons/absolute_abundance_plots.md">Hands-on: Phyloseq, Abundance, and Diversity</a></td>
+<td>Graves readings</td>
+<td>10/25</td>
+<td></td>
+</tr>
+<tr class="even">
+<td></td>
+<td></td>
+<td><a href="lessons/alpha_diversity.md">Hands-on: Alpha Diversity</a></td>
+<td></td>
+<td></td>
+<td></td>
 </tr>
 <tr class="odd">
 <td></td>
