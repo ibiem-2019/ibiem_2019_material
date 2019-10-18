@@ -245,7 +245,7 @@
 <tr class="odd">
 <td></td>
 <td></td>
-<td><a href="lessons/absolute_abundance_plots.md">Hands-on: Phyloseq, Abundance, and Diversity</a></td>
+<td><a href="lessons/absolute_abundance_plots.md">Hands-on: Absolute Abundance</a></td>
 <td>Graves readings</td>
 <td>10/25</td>
 <td></td>
