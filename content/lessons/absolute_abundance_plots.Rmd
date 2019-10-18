@@ -32,7 +32,7 @@ knitr::opts_chunk$set(echo=TRUE, include=TRUE)
 This draws from [phyloseq plot_bar tutorial](https://joey711.github.io/phyloseq/plot_bar-examples.html).
 
 ## Data
-This tutorial uses the 10% Atacama subset data (note that for the demux and dada2 tutorial we used the 1% Atacama subset)
+This tutorial uses the 1% Atacama subset data.
 
 # Getting ready
 

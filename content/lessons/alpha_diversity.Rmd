@@ -10,6 +10,20 @@ output:
 ---
 
 ```{r global_options, include=FALSE}
+start_time = Sys.time()
+library(knitr)
+local({
+  now = Sys.time()
+  knit_hooks$set(timeit = function(before) {
+    if (before) {
+      now <<- Sys.time()
+    } else {
+         paste("\n%", sprintf("Chunk rendering time: %s seconds.\n", 
+                              round(difftime(Sys.time(), now, units="secs"), 2)))
+    }
+  })  
+})
+# knitr::opts_chunk$set(echo=TRUE, include=TRUE, timeit=TRUE)
 knitr::opts_chunk$set(echo=TRUE, include=TRUE)
 ```
 
@@ -26,6 +40,7 @@ First we load libraries.
 ```{r libraries, message=FALSE, warning=FALSE}
 library(readr)
 library(phyloseq)
+library(ggplot2)
 ```
 
 ```{r files_and_directories, include=FALSE}
@@ -84,3 +99,10 @@ Always print `sessionInfo` for reproducibility!
 sessionInfo()
 ```
 
+Start Time: `r start_time`
+
+End Time: `r Sys.time()`
+
+Total Knit Time: `r round(difftime(Sys.time(), start_time, units="secs"), 2)` seconds
+
+Total Knit Time: `r round(difftime(Sys.time(), start_time, units="mins"), 2)` minutes

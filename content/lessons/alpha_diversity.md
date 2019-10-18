@@ -1,12 +1,14 @@
 Resources
 ---------
 
-This draws from [phyloseq plot\_bar tutorial](https://joey711.github.io/phyloseq/plot_bar-examples.html).
+This draws from [phyloseq plot\_bar
+tutorial](https://joey711.github.io/phyloseq/plot_bar-examples.html).
 
 Data
 ----
 
-This tutorial uses the 10% Atacama subset data (note that for the demux and dada2 tutorial we used the 1% Atacama subset)
+This tutorial uses the 10% Atacama subset data (note that for the demux
+and dada2 tutorial we used the 1% Atacama subset)
 
 Getting ready
 =============
@@ -16,17 +18,18 @@ First we load libraries.
 ``` r
 library(readr)
 library(phyloseq)
+library(ggplot2)
 ```
 
 ``` r
-atacama.ps = read_rds(atacama.rds)
+atacama.ps = read_rds(atacama.ps.rds)
 print(atacama.ps)
 ```
 
     ## phyloseq-class experiment-level object
-    ## otu_table()   OTU Table:         [ 3388 taxa and 68 samples ]
+    ## otu_table()   OTU Table:         [ 3508 taxa and 68 samples ]
     ## sample_data() Sample Data:       [ 68 samples by 22 sample variables ]
-    ## tax_table()   Taxonomy Table:    [ 3388 taxa by 7 taxonomic ranks ]
+    ## tax_table()   Taxonomy Table:    [ 3508 taxa by 7 taxonomic ranks ]
 
 Visualize alpha-diversity
 =========================
@@ -36,12 +39,14 @@ plot_richness(atacama.ps, x="TransectName",
               measures=c("Observed", "Shannon", "Chao1"), color="TransectName") + theme_bw()
 ```
 
-![](alpha_diversity_plots_files/figure-markdown_github/unnamed-chunk-2-1.png)
+![](alpha_diversity_files/figure-markdown_github/unnamed-chunk-2-1.png)
 
 Alpha-Diversity Boxplots
 ------------------------
 
-It is a bit hard to compare the two different transects because many points are overlapping, let's add a boxplot layer so we can compare the distribution of alpha-diversity values between the transects.
+It is a bit hard to compare the two different transects because many
+points are overlapping, let’s add a boxplot layer so we can compare the
+distribution of alpha-diversity values between the transects.
 
 ``` r
 plot_richness(atacama.ps, x="TransectName", 
@@ -51,12 +56,13 @@ plot_richness(atacama.ps, x="TransectName",
               theme_bw() 
 ```
 
-![](alpha_diversity_plots_files/figure-markdown_github/unnamed-chunk-3-1.png)
+![](alpha_diversity_files/figure-markdown_github/unnamed-chunk-3-1.png)
 
 Alpha-Diversity as a function of other parameters
 -------------------------------------------------
 
-It also might be interesting to explore whether other parameters have an effect on alpha-diversity
+It also might be interesting to explore whether other parameters have an
+effect on alpha-diversity
 
 ``` r
 sample_variables(atacama.ps)
@@ -81,7 +87,7 @@ plot_richness(atacama.ps, x="Elevation",
               measures=c("Observed", "Shannon", "Chao1"), color="TransectName") + theme_bw()
 ```
 
-![](alpha_diversity_plots_files/figure-markdown_github/unnamed-chunk-5-1.png)
+![](alpha_diversity_files/figure-markdown_github/unnamed-chunk-5-1.png)
 
 ### Depth
 
@@ -90,7 +96,7 @@ plot_richness(atacama.ps, x="Depth",
               measures=c("Observed", "Shannon", "Chao1"), color="TransectName") + theme_bw()
 ```
 
-![](alpha_diversity_plots_files/figure-markdown_github/unnamed-chunk-6-1.png)
+![](alpha_diversity_files/figure-markdown_github/unnamed-chunk-6-1.png)
 
 Session Info
 ============
@@ -101,13 +107,13 @@ Always print `sessionInfo` for reproducibility!
 sessionInfo()
 ```
 
-    ## R version 3.4.1 (2017-06-30)
+    ## R version 3.6.1 (2019-07-05)
     ## Platform: x86_64-pc-linux-gnu (64-bit)
-    ## Running under: Ubuntu 16.04.3 LTS
+    ## Running under: Ubuntu 18.04.3 LTS
     ## 
     ## Matrix products: default
-    ## BLAS: /usr/lib/openblas-base/libblas.so.3
-    ## LAPACK: /usr/lib/libopenblasp-r0.2.18.so
+    ## BLAS:   /usr/lib/x86_64-linux-gnu/blas/libblas.so.3.7.1
+    ## LAPACK: /usr/lib/x86_64-linux-gnu/lapack/liblapack.so.3.7.1
     ## 
     ## locale:
     ##  [1] LC_CTYPE=en_US.UTF-8       LC_NUMERIC=C              
@@ -118,37 +124,40 @@ sessionInfo()
     ## [11] LC_MEASUREMENT=en_US.UTF-8 LC_IDENTIFICATION=C       
     ## 
     ## attached base packages:
-    ## [1] datasets  utils     stats     grDevices graphics  methods   base     
+    ## [1] stats     graphics  grDevices utils     datasets  methods   base     
     ## 
     ## other attached packages:
-    ##  [1] phyloseq_1.22.3    readr_1.1.1        GGally_1.3.2      
-    ##  [4] broom_0.4.3        openintro_1.7.1    rvest_0.3.2       
-    ##  [7] xml2_1.1.1         stringr_1.2.0      lubridate_1.6.0   
-    ## [10] googlesheets_0.2.2 ggplot2_2.2.1      rmarkdown_1.8.6   
-    ## [13] knitr_1.18         downloader_0.4    
+    ## [1] ggplot2_3.2.1   phyloseq_1.28.0 readr_1.3.1     knitr_1.24     
     ## 
     ## loaded via a namespace (and not attached):
-    ##  [1] Biobase_2.38.0      httr_1.3.1          tidyr_0.7.2        
-    ##  [4] jsonlite_1.5        splines_3.4.1       foreach_1.4.3      
-    ##  [7] assertthat_0.2.0    stats4_3.4.1        cellranger_1.1.0   
-    ## [10] yaml_2.1.16         pillar_1.0.1        backports_1.1.2    
-    ## [13] lattice_0.20-35     glue_1.2.0          digest_0.6.13      
-    ## [16] RColorBrewer_1.1-2  XVector_0.18.0      colorspace_1.3-2   
-    ## [19] htmltools_0.3.6     Matrix_1.2-10       plyr_1.8.4         
-    ## [22] psych_1.7.8         pkgconfig_2.0.1     zlibbioc_1.24.0    
-    ## [25] purrr_0.2.4         scales_0.5.0        tibble_1.4.1       
-    ## [28] mgcv_1.8-18         IRanges_2.12.0      BiocGenerics_0.24.0
-    ## [31] lazyeval_0.2.0      mnormt_1.5-5        survival_2.41-3    
-    ## [34] magrittr_1.5        evaluate_0.10.1     nlme_3.1-131       
-    ## [37] MASS_7.3-47         foreign_0.8-69      vegan_2.5-3        
-    ## [40] tools_3.4.1         data.table_1.10.4-2 hms_0.3            
-    ## [43] S4Vectors_0.16.0    munsell_0.4.3       cluster_2.0.6      
-    ## [46] bindrcpp_0.2        Biostrings_2.46.0   ade4_1.7-13        
-    ## [49] compiler_3.4.1      rlang_0.1.6         rhdf5_2.22.0       
-    ## [52] grid_3.4.1          RCurl_1.95-4.8      iterators_1.0.8    
-    ## [55] biomformat_1.6.0    igraph_1.1.2        labeling_0.3       
-    ## [58] bitops_1.0-6        gtable_0.2.0        codetools_0.2-15   
-    ## [61] multtest_2.34.0     reshape_0.8.7       reshape2_1.4.3     
-    ## [64] R6_2.2.2            dplyr_0.7.4         bindr_0.1          
-    ## [67] rprojroot_1.3-2     permute_0.9-4       ape_5.2            
-    ## [70] stringi_1.1.6       parallel_3.4.1      Rcpp_0.12.14
+    ##  [1] tidyselect_0.2.5    xfun_0.9            purrr_0.3.2        
+    ##  [4] reshape2_1.4.3      splines_3.6.1       lattice_0.20-38    
+    ##  [7] rhdf5_2.28.0        colorspace_1.4-1    vctrs_0.2.0        
+    ## [10] htmltools_0.3.6     stats4_3.6.1        mgcv_1.8-28        
+    ## [13] yaml_2.2.0          survival_2.44-1.1   rlang_0.4.0        
+    ## [16] pillar_1.4.2        withr_2.1.2         glue_1.3.1         
+    ## [19] BiocGenerics_0.30.0 foreach_1.4.7       plyr_1.8.4         
+    ## [22] stringr_1.4.0       zlibbioc_1.30.0     Biostrings_2.52.0  
+    ## [25] munsell_0.5.0       gtable_0.3.0        codetools_0.2-16   
+    ## [28] evaluate_0.14       labeling_0.3        Biobase_2.44.0     
+    ## [31] permute_0.9-5       IRanges_2.18.2      biomformat_1.12.0  
+    ## [34] parallel_3.6.1      Rcpp_1.0.2          backports_1.1.4    
+    ## [37] scales_1.0.0        vegan_2.5-6         S4Vectors_0.22.0   
+    ## [40] jsonlite_1.6        XVector_0.24.0      hms_0.5.1          
+    ## [43] digest_0.6.20       stringi_1.4.3       dplyr_0.8.3        
+    ## [46] ade4_1.7-13         grid_3.6.1          tools_3.6.1        
+    ## [49] magrittr_1.5        lazyeval_0.2.2      tibble_2.1.3       
+    ## [52] cluster_2.1.0       crayon_1.3.4        ape_5.3            
+    ## [55] pkgconfig_2.0.2     zeallot_0.1.0       MASS_7.3-51.4      
+    ## [58] Matrix_1.2-17       data.table_1.12.2   assertthat_0.2.1   
+    ## [61] rmarkdown_1.15      iterators_1.0.12    Rhdf5lib_1.6.0     
+    ## [64] R6_2.4.0            multtest_2.40.0     igraph_1.2.4.1     
+    ## [67] nlme_3.1-141        compiler_3.6.1
+
+Start Time: 2019-10-18 04:05:05
+
+End Time: 2019-10-18 04:05:14
+
+Total Knit Time: 9 seconds
+
+Total Knit Time: 0.15 minutes

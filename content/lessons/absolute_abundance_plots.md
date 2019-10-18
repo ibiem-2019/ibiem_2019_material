@@ -7,8 +7,7 @@ tutorial](https://joey711.github.io/phyloseq/plot_bar-examples.html).
 Data
 ----
 
-This tutorial uses the 10% Atacama subset data (note that for the demux
-and dada2 tutorial we used the 1% Atacama subset)
+This tutorial uses the 1% Atacama subset data.
 
 Getting ready
 =============
@@ -247,10 +246,10 @@ sessionInfo()
     ## [64] multtest_2.40.0     igraph_1.2.4.1      nlme_3.1-141       
     ## [67] compiler_3.6.1
 
-Start Time: 2019-10-18 03:56:47
+Start Time: 2019-10-18 04:07:12
 
-End Time: 2019-10-18 03:58:00
+End Time: 2019-10-18 04:08:25
 
-Total Knit Time: 72.34 seconds
+Total Knit Time: 73.05 seconds
 
-Total Knit Time: 1.21 minutes
+Total Knit Time: 1.22 minutes
