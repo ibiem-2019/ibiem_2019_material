@@ -1,7 +1,7 @@
 ---
 title: "Relative Abundance"
 params:
-  atacama_ps_rds: /data/tutorial_data/atacama_10pct.rds
+  atacama_ps_rds: /data/tutorial_data/atacama_1pct.rds
 output:
   md_document:
      variant: markdown_github
@@ -10,11 +10,25 @@ output:
 ---
 
 ```{r global_options, include=FALSE}
+start_time = Sys.time()
+library(knitr)
+local({
+  now = Sys.time()
+  knit_hooks$set(timeit = function(before) {
+    if (before) {
+      now <<- Sys.time()
+    } else {
+         paste("\n%", sprintf("Chunk rendering time: %s seconds.\n", 
+                              round(difftime(Sys.time(), now, units="secs"), 2)))
+    }
+  })  
+})
+# knitr::opts_chunk$set(echo=TRUE, include=TRUE, timeit=TRUE)
 knitr::opts_chunk$set(echo=TRUE, include=TRUE)
 ```
 
 ## Data
-This tutorial uses the 10% Atacama subset data (note that for the demux and dada2 tutorial we used the 1% Atacama subset)
+This tutorial uses the 1% Atacama subset data.
 
 # Getting ready
 
@@ -24,6 +38,7 @@ library(readr)
 library(phyloseq)
 library(tibble)
 library(dplyr)
+library(ggplot2)
 ```
 
 ```{r files_and_directories, include=FALSE}
@@ -347,4 +362,4 @@ Always print `sessionInfo` for reproducibility!
 sessionInfo()
 ```
 
-
+Total Knit Time: `r round(difftime(Sys.time(), start_time, units="secs"), 2)` in seconds; `r round(difftime(Sys.time(), start_time, units="mins"), 2)` in minutes
