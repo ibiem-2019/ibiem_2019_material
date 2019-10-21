@@ -1,7 +1,9 @@
 ---
 title: "Alpha Diversity"
 params:
-  atacama_ps_rds: /data/tutorial_data/atacama_10pct.rds
+  atacama_data_percent: 1
+  data_dir : /data/tutorial_data
+  atacama_ps_rds: /data/tutorial_data/atacama_1pct.rds
 output:
   md_document:
      variant: markdown_github
