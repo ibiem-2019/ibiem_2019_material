@@ -99,6 +99,7 @@ Now do the same as above, but with coloring by phyllum instead of by kingdom.
 plot_bar(atacama.ps, fill="Phylum") +
   geom_bar(aes(color=Phylum, fill=Phylum), stat="identity", position="stack")
 ```
+## Stopped Here 10/18/2019
 
 ## Facet Abundance Plots
 From our plots so far, we see some variation in number of reads per sample.  This is to be expected, but we want to be sure that there are no confounding problems, for example, categories of samples that are outliers.  To this end, we can make facet plots to group samples by different metadata features.  Let's remake the kingdom absolute abundance plot so that samples are grouped by a variable, this will give us an idea if there is a correlation between the variable and abundance. 
