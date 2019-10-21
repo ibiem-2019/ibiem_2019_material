@@ -56,7 +56,7 @@ if [ $REMOTE_OR_LOCAL == "COMMAND" ]; then
 	   $DOCKER_IMAGENAME \
 	   Rscript -e "rmarkdown::render('/home/guest/demo/content/lessons/run_everything.Rmd')"
     printf "\n${SEP_STRING} FINISHED Pipeline ${SEP_STRING}"
-    printf "\n${SEP_STRING} Results output to ${WORK_DIR}/scratch"
+    printf "\n${SEP_STRING} Results output to ${WORK_DIR}/scratch\n\n"
     exit 0
 elif [ $REMOTE_OR_LOCAL == "REMOTE" ]; then
     EXPOSE_PORT="${HOST_PORT}:8787"
