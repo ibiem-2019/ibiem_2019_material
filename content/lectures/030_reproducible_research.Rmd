@@ -186,6 +186,20 @@ rm -rf $RAWDATA_DIR
   - [Singularity](http://singularity.lbl.gov/)
   - Etc
 
+## Singularity vs Docker
+
+|                           | Singularity | Docker |
+|---------------------------+:-------------:+:--------:|
+| Run as user               | +           | ??     |
+| Run on clusters           | +           | -      |
+| Documentation             | +/-         | ++      |
+| Straightforward Recipes   | +          | -      |
+| Straightforward Run Modes | +           | -      |
+| Longterm Existence        | +           | ?      |
+
+
+
+
 ## Docker Demo
 
 
@@ -245,6 +259,7 @@ knitr::include_graphics("./git_diff.png")
   - [Bitbucket](https://bitbucket.org)
   - [Gitlab](https://about.gitlab.com)
     - [Duke Gitlab](https://gitlab.oit.duke.edu)
+
 
 # Organization
 ## My strategy
