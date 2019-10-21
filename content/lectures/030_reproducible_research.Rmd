@@ -151,6 +151,9 @@ chmod -R a+w $RAWDATA_DIR
 rm -rf $RAWDATA_DIR
 ```
 
+## Archiving Data @ Duke
+- [Duke Data Service](https://dataservice.duke.edu/)
+    - [DukeDSClient](https://github.com/Duke-GCB/DukeDSClient)
 
 ## Archiving Raw Sequence Data @ NCBI
   - [GEO: Gene "Expression" Data](https://www.ncbi.nlm.nih.gov/geo/)
