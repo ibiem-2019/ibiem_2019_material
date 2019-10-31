@@ -34,10 +34,11 @@
 | 25-Oct                  |      10-11 | Joe Graves (readings on Google Drive)                                                                      | Challenge 9     | 11/22 | JSNN     |
 |                         |      11-12 | [Hands-on: Absolute Abundance #2](lessons/absolute_abundance_plots.md)                                     |                 |       |          |
 |                         |            | [Hands-on: Alpha Diversity](lessons/alpha_diversity.md)                                                    |                 |       |          |
-|                         |            | [Hands-on: Relative Abundance](lessons/relative_abundance.md)                                              |                 |       |          |
-|                         |            | [Lecture: Beta Diversity](lectures/statistical_analysis_2.pdf)                                             |                 |       |          |
+|                         |            | [Hands-on: Relative Abundance #1](lessons/relative_abundance.md)                                           |                 |       |          |
 |                         |       12-1 | Office Hours                                                                                               |                 |       |          |
-| 1-Nov                   |      10-11 | [Lecture: Beta Diversity & Ordination](lectures/statistical_analysis_3.pdf)                                | Challenge 10    | 11/22 | Duke     |
+| 1-Nov                   |      10-11 | [Hands-on: Relative Abundance #2](lessons/relative_abundance.md)                                           | Challenge 10    | 11/22 | Duke     |
+|                         |            | [Lecture: Beta Diversity: Basics](lectures/statistical_analysis_2.pdf)                                     |                 |       |          |
+|                         |            | [Lecture: Beta Diversity: Ordination and Comparisons](lectures/statistical_analysis_3.pdf)                 |                 |       |          |
 |                         |      11-12 | Benjamin Callahan (NCSU)                                                                                   |                 |       |          |
 |                         |       12-1 | Lunch with Benjamin Callahan                                                                               |                 |       |          |
 | 8-Nov                   |      10-11 | [Hands-on: Beta Diversity & Ordination](lessons/ordination.md)                                             |                 |       |          |

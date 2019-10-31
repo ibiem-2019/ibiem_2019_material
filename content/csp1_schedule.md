@@ -149,7 +149,7 @@
 <tr class="odd">
 <td></td>
 <td>11-12</td>
-<td>Glenda Kelly: Learner Centered Rubrics: A Progression for your IBIEM Goals</td>
+<td>Glenda Kelly: Learner Centered Rubrics</td>
 <td></td>
 <td></td>
 <td></td>
@@ -293,20 +293,12 @@
 <tr class="odd">
 <td></td>
 <td></td>
-<td><a href="lessons/relative_abundance.md">Hands-on: Relative Abundance</a></td>
+<td><a href="lessons/relative_abundance.md">Hands-on: Relative Abundance #1</a></td>
 <td></td>
 <td></td>
 <td></td>
 </tr>
 <tr class="even">
-<td></td>
-<td></td>
-<td><a href="lectures/statistical_analysis_2.pdf">Lecture: Beta Diversity</a></td>
-<td></td>
-<td></td>
-<td></td>
-</tr>
-<tr class="odd">
 <td></td>
 <td>12-1</td>
 <td>Office Hours</td>
@@ -314,15 +306,31 @@
 <td></td>
 <td></td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td>1-Nov</td>
 <td>10-11</td>
-<td><a href="lectures/statistical_analysis_3.pdf">Lecture: Beta Diversity &amp; Ordination</a></td>
+<td><a href="lessons/relative_abundance.md">Hands-on: Relative Abundance #2</a></td>
 <td>Challenge 10</td>
 <td>11/22</td>
 <td>Duke</td>
 </tr>
+<tr class="even">
+<td></td>
+<td></td>
+<td><a href="lectures/statistical_analysis_2.pdf">Lecture: Beta Diversity: Basics</a></td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
 <tr class="odd">
+<td></td>
+<td></td>
+<td><a href="lectures/statistical_analysis_3.pdf">Lecture: Beta Diversity: Ordination and Comparisons</a></td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr class="even">
 <td></td>
 <td>11-12</td>
 <td>Benjamin Callahan (NCSU)</td>
@@ -330,7 +338,7 @@
 <td></td>
 <td></td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td></td>
 <td>12-1</td>
 <td>Lunch with Benjamin Callahan</td>
@@ -338,7 +346,7 @@
 <td></td>
 <td></td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td>8-Nov</td>
 <td>10-11</td>
 <td><a href="lessons/ordination.md">Hands-on: Beta Diversity &amp; Ordination</a></td>
@@ -346,7 +354,7 @@
 <td></td>
 <td></td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td></td>
 <td>11-12</td>
 <td>IBIEM Alums #1</td>
@@ -354,7 +362,7 @@
 <td></td>
 <td></td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td></td>
 <td>12-1</td>
 <td>Office Hours or Lunch</td>
@@ -362,7 +370,7 @@
 <td></td>
 <td></td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td>15-Nov</td>
 <td>10-11</td>
 <td>Class Cancelled for Food Symposium</td>
@@ -370,7 +378,7 @@
 <td></td>
 <td></td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td></td>
 <td>11-12</td>
 <td></td>
@@ -378,7 +386,7 @@
 <td></td>
 <td></td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td></td>
 <td>12-1</td>
 <td></td>
@@ -386,7 +394,7 @@
 <td></td>
 <td></td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td>22-Nov</td>
 <td>10-11</td>
 <td>Project Mentors 1 &amp; 2</td>
@@ -394,7 +402,7 @@
 <td></td>
 <td></td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td></td>
 <td>11-12</td>
 <td>Project Mentors 3 &amp; 4</td>
@@ -402,7 +410,7 @@
 <td></td>
 <td></td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td></td>
 <td>12-1</td>
 <td>Office Hours or Lunch</td>
