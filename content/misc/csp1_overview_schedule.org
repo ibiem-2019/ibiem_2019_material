@@ -37,13 +37,14 @@
 |                         |            | [Hands-on: Relative Abundance #1](lessons/relative_abundance.md)                                           |                 |       |          |
 |                         |       12-1 | Office Hours                                                                                               |                 |       |          |
 | 1-Nov                   |      10-11 | [Hands-on: Relative Abundance #2](lessons/relative_abundance.md)                                           | Challenge 10    | 11/22 | Duke     |
-|                         |            | [Lecture: Beta Diversity: Basics](lectures/statistical_analysis_2.pdf)                                     |                 |       |          |
-|                         |            | [Lecture: Beta Diversity: Ordination and Comparisons](lectures/statistical_analysis_3.pdf)                 |                 |       |          |
+|                         |            | [Lecture: Beta Diversity: Basics #1](lectures/statistical_analysis_2.pdf)                                  |                 |       |          |
 |                         |      11-12 | Benjamin Callahan (NCSU)                                                                                   |                 |       |          |
 |                         |       12-1 | Lunch with Benjamin Callahan                                                                               |                 |       |          |
-| 8-Nov                   |      10-11 | [Hands-on: Beta Diversity & Ordination](lessons/ordination.md)                                             |                 |       |          |
+| 8-Nov                   |      10-11 | [Lecture: Beta Diversity: Basics #2](lectures/statistical_analysis_2.pdf)                                  |                 |       |          |
+|                         |            | [Lecture: Beta Diversity: Ordination and Comparisons](lectures/statistical_analysis_3.pdf)                 |                 |       |          |
+|                         |            | [Hands-on: Beta Diversity & Ordination](lessons/ordination.md)                                             |                 |       |          |
 |                         |      11-12 | IBIEM Alums #1                                                                                             |                 |       |          |
-|                         |       12-1 | Office Hours or Lunch                                                                                      |                 |       |          |
+|                         |       12-1 | Office Hours                                                                                               |                 |       |          |
 | 15-Nov                  |      10-11 | Class Cancelled for Food Symposium                                                                         |                 |       |          |
 |                         |      11-12 |                                                                                                            |                 |       |          |
 |                         |       12-1 |                                                                                                            |                 |       |          |
