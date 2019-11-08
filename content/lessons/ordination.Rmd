@@ -106,18 +106,18 @@ set.seed(1)
 atacama.st_prune.even.nmds_bc <- ordinate(atacama.st_prune.even, "NMDS", "bray")
 ```
 
-The NMDS did not converge so we can try some of the suggestions in the *Convergence Problems* section of the help for the NMDS: `help("metaMDS", "vegan")`.  If none of those work, we need to take the NMDS results with a grain of salt or try a different ordination methods.
+We can try a different random seed . . .
+
+```{r}
+set.seed(6)
+atacama.st_prune.even.nmds_bc <- ordinate(atacama.st_prune.even, "NMDS", "bray")
+```
+
+The we can also try some of the suggestions in the *Convergence Problems* section of the help for the NMDS: `help("metaMDS", "vegan")`.  If none of those work, we need to take the NMDS results with a grain of salt or try a different ordination methods.
 
 Let's inrease the values for `try` and `trymax` (according to help(metaMDS): "Minimum and maximum numbers of random starts in search of stable solution. After try has been reached, the iteration will stop when two convergent solutions were found or trymax was reached.")
 ```{r}
 set.seed(1)
-atacama.st_prune.even.nmds_bc <- ordinate(atacama.st_prune.even, "NMDS", "bray",trymax=100,try=30)
-```
-
-That didn't work, but if we try a different random seed . . . 
-
-```{r}
-set.seed(6)
 atacama.st_prune.even.nmds_bc <- ordinate(atacama.st_prune.even, "NMDS", "bray",trymax=100,try=30)
 ```
 
