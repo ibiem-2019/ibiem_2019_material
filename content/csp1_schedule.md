@@ -357,7 +357,7 @@
 <tr class="odd">
 <td></td>
 <td></td>
-<td><a href="lessons/ordination.md">Hands-on: Beta Diversity &amp; Ordination</a></td>
+<td></td>
 <td></td>
 <td></td>
 <td></td>
@@ -405,7 +405,7 @@
 <tr class="odd">
 <td>22-Nov</td>
 <td>10-11</td>
-<td>Project Mentors 1 &amp; 2</td>
+<td><a href="lessons/ordination.md">Hands-on: Beta Diversity &amp; Ordination</a></td>
 <td></td>
 <td></td>
 <td></td>
@@ -413,7 +413,7 @@
 <tr class="even">
 <td></td>
 <td>11-12</td>
-<td>Project Mentors 3 &amp; 4</td>
+<td><a href="lessons/bootcamp/040_git_overview.md#collaborating">Git: Collaborating</a></td>
 <td></td>
 <td></td>
 <td></td>
@@ -421,7 +421,7 @@
 <tr class="odd">
 <td></td>
 <td>12-1</td>
-<td>Office Hours or Lunch</td>
+<td>Office Hours</td>
 <td></td>
 <td></td>
 <td></td>
