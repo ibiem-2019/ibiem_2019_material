@@ -58,14 +58,14 @@ atacama.ps %>%
 
 sample_sums(atacama.sample_prune) %>% sort
 ```
+
 ```{r}
 min_count = 3
-min_sample_frac = 0.10
+min_sample = 2
 
 prune.vec = filter_taxa(atacama.sample_prune, 
-                       function(x) sum(x >= min_count) >= (min_sample_frac*length(x)))
-atacama.st_prune = prune_taxa(prune.vec, atacama.sample_prune)
-ntaxa(atacama.st_prune)
+                       function(x) sum(x >= min_count) >= min_sample)
+sum(prune.vec)
 ```
 
 ### Transform to even sampling depth.
@@ -73,10 +73,14 @@ Here we are performing the same fractional abundance transformation we did befor
 
 Pay attention to the y-axes in these plots of the raw counts, the pruned counts, and the transformed counts.
 ```{r}
-atacama.st_prune.even = transform_sample_counts(atacama.st_prune, function(x) 1E6 * x/sum(x))
-plot_bar(atacama.ps)
-plot_bar(atacama.sample_prune)
-plot_bar(atacama.st_prune)
+atacama.even = transform_sample_counts(atacama.sample_prune, function(x) 1E6 * x/sum(x))
+
+atacama.st_prune.even = prune_taxa(prune.vec, atacama.even)
+ntaxa(atacama.st_prune.even)
+
+# plot_bar(atacama.ps)
+# plot_bar(atacama.sample_prune)
+# plot_bar(atacama.st_prune)
 plot_bar(atacama.st_prune.even)
 ```
 
@@ -102,18 +106,18 @@ set.seed(1)
 atacama.st_prune.even.nmds_bc <- ordinate(atacama.st_prune.even, "NMDS", "bray")
 ```
 
-The NMDS did not converge so we can try some of the suggestions in the *Convergence Problems* section of the help for the NMDS: `help("metaMDS", "vegan")`.  If none of those work, we need to take the NMDS results with a grain of salt or try a different ordination methods.
+We can try a different random seed . . .
+
+```{r}
+set.seed(6)
+atacama.st_prune.even.nmds_bc <- ordinate(atacama.st_prune.even, "NMDS", "bray")
+```
+
+The we can also try some of the suggestions in the *Convergence Problems* section of the help for the NMDS: `help("metaMDS", "vegan")`.  If none of those work, we need to take the NMDS results with a grain of salt or try a different ordination methods.
 
 Let's inrease the values for `try` and `trymax` (according to help(metaMDS): "Minimum and maximum numbers of random starts in search of stable solution. After try has been reached, the iteration will stop when two convergent solutions were found or trymax was reached.")
 ```{r}
 set.seed(1)
-atacama.st_prune.even.nmds_bc <- ordinate(atacama.st_prune.even, "NMDS", "bray",trymax=100,try=30)
-```
-
-That didn't work, but if we try a different random seed . . . 
-
-```{r}
-set.seed(6)
 atacama.st_prune.even.nmds_bc <- ordinate(atacama.st_prune.even, "NMDS", "bray",trymax=100,try=30)
 ```
 
