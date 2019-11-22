@@ -16,6 +16,7 @@
         -   [Cloning someone else's repo](#cloning-someone-elses-repo)
         -   [Modifying someone else's repo](#modifying-someone-elses-repo)
     -   [Conflicts](#conflicts)
+        -   [Creating a Conflict](#creating-a-conflict)
         -   [Merging](#merging)
     -   [Team Conflicts](#team-conflicts)
 -   [References](#references)
@@ -302,7 +303,10 @@ Conflicts
 
 As soon as people can work in parallel, it’s likely someone’s going to step on someone else’s toes. This will even happen with a single person: if we are working on a piece of software on both our laptop and a server in the lab, we could make different changes to each copy. Version control helps us manage these conflicts by giving us tools to resolve overlapping changes.
 
-To see how we can resolve conflicts, we must first create one. \#\#\# Creating a Conflict Continue working with the same partner you collaborated with above.
+To see how we can resolve conflicts, we must first create one.
+
+### Creating a Conflict 
+Continue working with the same partner you collaborated with above.
 
 1.  In the pairs, person **A** should add a line to the `mars.txt` file in **B's** repo: "This line added to Wolfman's copy".
 2.  Save, commit, and push.

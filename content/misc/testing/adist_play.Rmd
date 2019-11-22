@@ -29,7 +29,7 @@ xImp <- impCoda(x, method="ltsReg")$xImp
 aDist(xOrig, xImp)
 
 data("expenditures") 
-aDist(expenditures)  
+a = aDist(expenditures)  
 x <- expenditures[, 1]
 y <- expenditures[, 2]
 aDist(x, y)
@@ -38,9 +38,34 @@ aDist(expenditures, expenditures)
 
 ```
 
-Add a new chunk by clicking the *Insert Chunk* button on the toolbar or by pressing *Cmd+Option+I*.
 
-When you save the notebook, an HTML file containing the code and output will be saved alongside it (click the *Preview* button or press *Cmd+Shift+K* to preview the HTML file). 
 
-The preview shows you a rendered HTML copy of the contents of the editor. Consequently, unlike *Knit*, *Preview* does not run any R code chunks. Instead, the output of the chunk when it was last run in the editor is displayed.
+
+# Aitchison distance
+```{r}
+atacama.sample_prune %>%
+  otu_table %>%
+  as.data.frame ->
+  atacama.sample_prune.otu
+
+
+atacama.sample_prune.otu %>%
+  filter_all(any_vars(. == 0))
+
+
+num_cols=10
+colnames(atacama.sample_prune.otu) = seq(ncol(atacama.sample_prune.otu))
+atacama.sample_prune.otu[22:25, c(3:6, 15,16, 21, 37, 61, 73, 88)] %>%
+  aDist
+atacama.sample_prune.otu[1:num_cols,1:6]
+
+
+
+aDist(x)
+
+# Apparently Aitchison distance can't handle zeroes!
+
+```
+
+
 
