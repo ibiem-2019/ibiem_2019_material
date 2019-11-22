@@ -25,6 +25,7 @@ library(dplyr)
 library(vegan)
 library(ips)
 library(DECIPHER)
+library(fs)
 ```
 
 ```{r files_and_directories}
@@ -64,7 +65,7 @@ sample_sums(atacama.sample_prune) %>% sort
 ```
 ```{r}
 min_count = 3
-min_sample_frac = 0.10
+min_sample_frac = 0.05
 
 prune.vec = filter_taxa(atacama.sample_prune, 
                        function(x) sum(x >= min_count) >= (min_sample_frac*length(x)))
@@ -87,22 +88,18 @@ atacama.1pct.rds = "/data/tutorial_data/atacama_1pct.rds"
 atacama.1pct.ps = read_rds(atacama.1pct.rds)
 ```
 
-
+### Align ASVs
 ```{r}
 seqs = taxa_names(atacama.1pct.ps)
 names(seqs) <- seqs # This propagates to the tip labels of the tree
 alignment <- AlignSeqs(DNAStringSet(seqs), anchor=NA)
 ```
 
-```{r}
-seqs = taxa_names(atacama.1pct.ps)
-names(seqs) <- seqs # This propagates to the tip labels of the tree
-alignment <- AlignSeqs(DNAStringSet(seqs), anchor=NA)
-```
-
+### Build Tree
+This step takes 30 minutes or more
 ```{r}
 exec <- "/usr/bin/raxmlHPC-PTHREADS-SSE3" # replace by your RAxML path
-alignment2 %>%
+alignment %>%
   as.matrix %>%
   as.DNAbin %>%
   raxml(
@@ -113,7 +110,7 @@ alignment2 %>%
         N=100, # number of bootstrap replicates
         file="alignment", # name of output files
         exec=exec, # name of executable
-        threads=15) -> alignment.rax.gtr2
+        threads=10) -> alignment.rax.gtr2
 ```
 
 
@@ -123,20 +120,57 @@ atacama.1pct.wtree.ps = merge_phyloseq(atacama.1pct.ps,
 write_rds(atacama.1pct.wtree.ps, file.path(scratch.dir, "atacama_1pct_wtree.rds"))
 ```
 
+
+
+
+
+
+
+
+## Data Preprocessing
+Let's prune.
+
+### Prune 
+As with relative abundance plots, the decision about how to prune is important, we need to think about what we are throwing away, and how it might affect the analysis.  For starters, we will use the same parameters as last time - only include taxa that have at least 3 reads in at least 5% of samples
+```{r}
+sample_min_count = 50
+
+atacama.1pct.wtree.ps %>%
+  prune_samples(sample_sums(.)>=sample_min_count, .) ->
+  atacama.sample_prune
+
+sample_sums(atacama.sample_prune) %>% sort
+```
+```{r}
+min_count = 3
+min_sample_frac = 0.05
+
+prune.vec = filter_taxa(atacama.sample_prune, 
+                       function(x) sum(x >= min_count) >= (min_sample_frac*length(x)))
+atacama.st_prune = prune_taxa(prune.vec, atacama.sample_prune)
+ntaxa(atacama.st_prune)
+```
+
+
+
+
+
 ### Unifrac
 So far we have used the Bray-Curtis dissimilarity to summarize the differences between samples, but there are many others that we can use.  Another common option is Unifrac, which takes into account the phylogenetic relationship between taxa observed in the samples.  Recall that there are two versions of Unifrac:
 
 * Unweighted Unifrac: for each taxon, only takes into account whether or not it was observed in a sample
 * Weighted Unifrac: uses the abundance of each taxon in a sample in calculating the distance between samples
 
-You should make two more PCoA plots, one using Weighted Unifrac as a distance metric, and the other using Unweighted Unifrac.  Your plots should look somthing like these:
+Let's make two more PCoA plots, one using Weighted Unifrac as a distance metric, and the other using Unweighted Unifrac.
 
-```{r eval=FALSE, include=FALSE}
-atacama.st_prune.even.pcoa_wunifrac <- ordinate(atacama.st_prune.even, "PCoA", "unifrac", weighted=TRUE)
+```{r}
+atacama.st_prune.even.pcoa_wunifrac <- ordinate(atacama.1pct.wtree.ps, "PCoA", "unifrac", weighted=TRUE)
 plot_ordination(atacama.st_prune.even, atacama.st_prune.even.pcoa_wunifrac, type="samples", color="SpeciesName")  + 
   stat_ellipse(type = "norm") + 
   ggtitle("Weighted Unifrac")
 ```
+
+
 ```{r eval=FALSE, include=FALSE}
 atacama.st_prune.even.pcoa_uunifrac <- ordinate(atacama.st_prune.even, "PCoA", "unifrac", weighted=FALSE)
 plot_ordination(atacama.st_prune.even, atacama.st_prune.even.pcoa_uunifrac, type="samples", color="SpeciesName")  + 
