@@ -42,12 +42,12 @@
 |                         |       12-1 | Lunch with Benjamin Callahan                                                                               |                 |       |          |
 | 8-Nov                   |      10-11 | [Lecture: Beta Diversity: Basics #2](lectures/statistical_analysis_2.pdf)                                  |                 |       |          |
 |                         |            | [Lecture: Beta Diversity: Ordination and Comparisons](lectures/statistical_analysis_3.pdf)                 |                 |       |          |
-|                         |            | [Hands-on: Beta Diversity & Ordination](lessons/ordination.md)                                             |                 |       |          |
+|                         |            |                                                                                                            |                 |       |          |
 |                         |      11-12 | IBIEM Alums #1                                                                                             |                 |       |          |
 |                         |       12-1 | Office Hours                                                                                               |                 |       |          |
 | 15-Nov                  |      10-11 | Class Cancelled for Food Symposium                                                                         |                 |       |          |
 |                         |      11-12 |                                                                                                            |                 |       |          |
 |                         |       12-1 |                                                                                                            |                 |       |          |
-| 22-Nov                  |      10-11 | Project Mentors 1 & 2                                                                                      |                 |       |          |
-|                         |      11-12 | Project Mentors 3 & 4                                                                                      |                 |       |          |
-|                         |       12-1 | Office Hours or Lunch                                                                                      |                 |       |          |
+| 22-Nov                  |      10-11 | [Hands-on: Beta Diversity & Ordination](lessons/ordination.md)                                             |                 |       |          |
+|                         |      11-12 | [Git: Collaborating](lessons/bootcamp/040_git_overview.md#collaborating)                                   |                 |       |          |
+|                         |       12-1 | Office Hours                                                                                               |                 |       |          |
