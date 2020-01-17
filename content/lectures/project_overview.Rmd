@@ -1,30 +1,32 @@
 ---
-title: "Untitled"
+title: "Project Work Overview"
 output: ioslides_presentation
 ---
 
 ```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = FALSE)
+knitr::opts_chunk$set(echo = TRUE)
 ```
+
+# Start Reproducibility Demo
 
 # Project Organization
 
 ## Class, Group, and Individual
-  - Class: `/data`
-  - Group: `/sharedspace/OurProject`
-  - Individual: `/home/guest`
+  > - Class: `/data`
+  > - Group: `/sharedspace/OurProject`
+  > - Individual: `/home/guest`
   
 ## Name that Location
-  - Code?
-  - Taxonomic Reference (e.g. Silva)?
-  - Raw Data (e.g. FASTQs)?
-  - Intermediate Files (e.g. Filtered FASTQs)?
-  - Final Results (e.g. RDS of phyloseq object)
-  - Metadata
+  > - Code?
+  > - Taxonomic Reference (e.g. Silva)?
+  > - Raw Data (e.g. FASTQs)?
+  > - Intermediate Files (e.g. Filtered FASTQs)?
+  > - Final Results (e.g. RDS of phyloseq object)
+  > - Metadata
 
 ## Code
   - Git Repo in Home directory
-  - Project Remote repository on Github
+  - Remote repository on Github
     - All project members are collaborators
 
 ## Raw Data
@@ -35,11 +37,37 @@ knitr::opts_chunk$set(echo = FALSE)
     - New Data: Duke Data Service
     - Published Data: SRA
 
-## Space
+## Space: Availabile
 
-```{bash eval=FALSE, include=FALSE}
-# df -h
+```{bash}
+df -h
 ```
 
+## Space: Usage
 
+```{bash}
+du -h --max-depth 1 /home/guest
+```
 
+## Space: Usage (continued)
+
+```{bash}
+du --max-depth 1 /home/guest | sort -nr
+```
+
+# Project Timeline
+## Milestones
+  - January 31: Group Presentations on Project Background
+  - February 21: Group Presentations on Project Progress
+  - April 3: Poster/Figure Critique
+  - April 17:	Final Presentations
+
+# Collaboration
+
+## Git for Teams
+  - [Team Conflicts](https://github.com/ibiem-2019/ibiem_2019_material/blob/master/content/lessons/bootcamp/040_git_overview.md#team-conflicts)
+  - [Branching](https://git-scm.com/book/en/v2/Git-Branching-Basic-Branching-and-Merging)
+  - [Stashing](https://git-scm.com/book/en/v2/Git-Tools-Stashing-and-Cleaning)
+  - [Tagging](https://git-scm.com/book/en/v2/Git-Basics-Tagging)
+
+# Show Reproducibility Demo
