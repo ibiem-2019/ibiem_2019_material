@@ -1,0 +1,45 @@
+---
+title: "Untitled"
+output: ioslides_presentation
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE)
+```
+
+# Project Organization
+
+## Class, Group, and Individual
+  - Class: `/data`
+  - Group: `/sharedspace/OurProject`
+  - Individual: `/home/guest`
+  
+## Name that Location
+  - Code?
+  - Taxonomic Reference (e.g. Silva)?
+  - Raw Data (e.g. FASTQs)?
+  - Intermediate Files (e.g. Filtered FASTQs)?
+  - Final Results (e.g. RDS of phyloseq object)
+  - Metadata
+
+## Code
+  - Git Repo in Home directory
+  - Project Remote repository on Github
+    - All project members are collaborators
+
+## Raw Data
+  - Working Copy
+    - Group Directory
+    - Read Only
+  - Archive
+    - New Data: Duke Data Service
+    - Published Data: SRA
+
+## Space
+
+```{bash eval=FALSE, include=FALSE}
+# df -h
+```
+
+
+
