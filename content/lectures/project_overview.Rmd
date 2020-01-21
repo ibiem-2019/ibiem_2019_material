@@ -1,6 +1,12 @@
 ---
 title: "Project Work Overview"
-output: ioslides_presentation
+author: "Josh Granek"
+date: "January 17, 2020"
+output:
+  md_document:
+    variant: markdown_github
+  beamer_presentation: default
+  ioslides_presentation: default
 ---
 
 ```{r setup, include=FALSE}
