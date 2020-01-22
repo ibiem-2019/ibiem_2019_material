@@ -68,6 +68,9 @@ RepseqToTaxa <- function(spread.df, source.ps) {
 }
 
 GenerateLefseOutput = function(ps,output_columns,outfile){
+  stopifnot(length(output_columns)>=1,
+            length(output_columns)<=2)
+  
   base_columns = c("SampleID","OTU","Abundance")
   spread.df = psmelt(ps) %>% 
     mutate(SampleID = str_replace(Sample, pattern="\\.", replacement="_")) %>%
@@ -79,15 +82,27 @@ GenerateLefseOutput = function(ps,output_columns,outfile){
     write.table(file=outfile, 
                 sep="\t", quote = FALSE,
                 row.names = FALSE)
+  
+  if(length(output_columns)==1){
+    return("-f c -u 1 -c 2")
+  }else if(length(output_columns)==2){
+    return("-f c -u 1 -c 2 -s 3")
+  }
 }
 ```
+
+
 
 ```{r}
 sample_variables(atacama.ps)
 ```
 
 ```{r}
-GenerateLefseOutput(atacama.ps, "Vegetation", lefse.input.file)
+# format.flags = GenerateLefseOutput(atacama.ps, c("Vegetation","TransectName"), lefse.input.file)
+# format.flags = GenerateLefseOutput(atacama.ps, "Vegetation", lefse.input.file)
+format.flags = GenerateLefseOutput(atacama.ps, "TransectName", lefse.input.file)
+
+Sys.setenv(FORMAT_FLAGS=format.flags)
 ```
 
 
@@ -98,7 +113,7 @@ NORMALIZATION="-o 1000000"
 # NORMALIZATION=""
 BASENAME="${OUTDIR}/$(basename $LEFSE_INPUT_FILE '.tsv')"
 
-format_input.py $LEFSE_INPUT_FILE  "${BASENAME}.in" -f c -u 1 -c 2 $NORMALIZATION  --output_table ${BASENAME}.tab
+format_input.py $LEFSE_INPUT_FILE  "${BASENAME}.in" $FORMAT_FLAGS $NORMALIZATION  --output_table ${BASENAME}.tab
 # head ${BASENAME}.in ${BASENAME}.tab
 
 FORMAT="png"
