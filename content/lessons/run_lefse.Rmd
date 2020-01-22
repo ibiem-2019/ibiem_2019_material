@@ -9,27 +9,26 @@ library(readr)
 library(phyloseq)
 library(tibble)
 library(dplyr)
-# library(ggplot2)
 library(stringr)
 library(tidyr)
+library(fs)
 ```
 
 ```{r files_and_directories, include=FALSE}
 # Directories
 
-
-atacama.ps.rds = "/data/tutorial_data/atacama_1pct.rds"
-
 outdir=path.expand("~/scratch/lefse")
 dir.create(outdir)
 lefse.input.file=file.path(outdir,"data_for_lefse.tsv")
+lefse.bar=path_ext_set(lefse.input.file, ".png")
+
 
 Sys.setenv(LEFSE_INPUT_FILE=lefse.input.file)
 Sys.setenv(OUTDIR=outdir)
-
 ```
 
 ```{r}
+atacama.ps.rds = "/data/tutorial_data/atacama_1pct.rds"
 atacama.ps = read_rds(atacama.ps.rds)
 print(atacama.ps)
 ```
@@ -81,94 +80,22 @@ GenerateLefseOutput = function(ps,output_columns,outfile){
 sample_variables(atacama.ps)
 ```
 
-```{r eval=FALSE, include=FALSE}
-psmelt(atacama.ps) %>%
-  head
-```
-
-
-
 ```{r}
 GenerateLefseOutput(atacama.ps, "Vegetation", lefse.input.file)
 ```
 
 
-
-# Run Without Normalization
-
-```{bash}
-# PATH=$PATH:/usr/local/bin/lefse/
-
-# LEFSE_INPUT_FILE="/home/lf109/Ria_microbiome/prune_dat.tsv"
-# OUTDIR=$HOME/Ria_microbiome/no_lefse_normalization
-mkdir -p $OUTDIR
-# BASENAME="${OUTDIR}/${LEFSE_INPUT_FILE%.*}"
-BASENAME="${OUTDIR}/$(basename $LEFSE_INPUT_FILE '.tsv')"
-# NORMALIZATION="-o 1000000"
-NORMALIZATION=""
-
-format_input.py $LEFSE_INPUT_FILE  "${BASENAME}.in" -f c -u 1 -c 2 $NORMALIZATION  --output_table ${BASENAME}.tab
-head ${BASENAME}.in ${BASENAME}.tab
-
-FORMAT="png"
-#BASENAME="${LEFSE_INPUT_FILE%.*}"
-
-
-# run_lefse.py performs the actual statistica analysis
-#
-# Apply LEfSe on the formatted data producing the results (to be further processed
-# for visualization with the other modules). The option available
-# can be listed using the -h option 
-run_lefse.py "${BASENAME}.in" ${BASENAME}.res
-
-# plot_res.py visualizes the output
-#
-# Plot the list of biomarkers with their effect size
-# Severak graphical options are available for personalizing the output
-# ../plot_res.py hmp_aerobiosis_small.res hmp_aerobiosis_small.png
-plot_res.py --format ${FORMAT} ${BASENAME}.res ${BASENAME}.${FORMAT}
-
-# plot_cladogram.py visualizes the output on a hierarchical tree
-#
-# Plot the representation of the biomarkers on the hierarchical tree
-# specified in the input data (using | in the name of the features)
-# In this case we will obtain the RDP taxonomy.
-# This is an early implementation of the module. I'm working on an improved version
-# that will be released independently from LEfSe
-plot_cladogram.py ${BASENAME}.res ${BASENAME}.cladogram.${FORMAT} --format ${FORMAT}
-
-# Create a directory for storing the raw-data representation of the discovered biomarkers
-mkdir -p ${BASENAME}_biomarkers_raw_images
-
-# plot_features.py visualizes the raw-data features
-#
-# The module for exporting the raw-data representation of the features.
-# With the default options we will obtain the images for all the features that are
-# detected as biomarkers
-plot_features.py ${BASENAME}.in ${BASENAME}.res ${BASENAME}_biomarkers_raw_images/
-```
-
 # Run With Normalization=1000000
 
-
 ```{bash}
-# PATH=$PATH:/usr/local/bin/lefse/
-
 NORMALIZATION="-o 1000000"
-
-# LEFSE_INPUT_FILE="/home/lf109/Ria_microbiome/prune_dat.tsv"
-# OUTDIR=$HOME/Ria_microbiome/lefse_norm_1000000
-mkdir -p $OUTDIR
-# BASENAME="${OUTDIR}/${LEFSE_INPUT_FILE%.*}"
-BASENAME="${OUTDIR}/$(basename $LEFSE_INPUT_FILE '.tsv')"
 # NORMALIZATION=""
+BASENAME="${OUTDIR}/$(basename $LEFSE_INPUT_FILE '.tsv')"
 
 format_input.py $LEFSE_INPUT_FILE  "${BASENAME}.in" -f c -u 1 -c 2 $NORMALIZATION  --output_table ${BASENAME}.tab
-head ${BASENAME}.in ${BASENAME}.tab
+# head ${BASENAME}.in ${BASENAME}.tab
 
 FORMAT="png"
-#BASENAME="${LEFSE_INPUT_FILE%.*}"
-
 
 # run_lefse.py performs the actual statistica analysis
 #
@@ -203,3 +130,8 @@ mkdir -p ${BASENAME}_biomarkers_raw_images
 # detected as biomarkers
 plot_features.py ${BASENAME}.in ${BASENAME}.res ${BASENAME}_biomarkers_raw_images/
 ```
+
+```{r results="asis"}
+cat(paste0("![lefse results](", lefse.bar, ")"), fill = FALSE)
+```
+
