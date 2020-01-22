@@ -1,0 +1,205 @@
+---
+title: "Untitled"
+output: html_document
+---
+
+
+```{r libraries, message=FALSE, warning=FALSE}
+library(readr)
+library(phyloseq)
+library(tibble)
+library(dplyr)
+# library(ggplot2)
+library(stringr)
+library(tidyr)
+```
+
+```{r files_and_directories, include=FALSE}
+# Directories
+
+
+atacama.ps.rds = "/data/tutorial_data/atacama_1pct.rds"
+
+outdir=path.expand("~/scratch/lefse")
+dir.create(outdir)
+lefse.input.file=file.path(outdir,"data_for_lefse.tsv")
+
+Sys.setenv(LEFSE_INPUT_FILE=lefse.input.file)
+Sys.setenv(OUTDIR=outdir)
+
+```
+
+```{r}
+atacama.ps = read_rds(atacama.ps.rds)
+print(atacama.ps)
+```
+
+
+```{r}
+#' RepseqToTaxa:
+#' Convert Repseq column names to Taxa column names in a spread data frame
+#' The big problem here is that this needs to be done after all other 
+#' manipulations to the dataframe, otherwise most functions will balk if there
+#' are dataframe columns with identical names
+#'
+#' @param spread.df The dataframe generated from phyloseq object.
+#' @param source.ps phyloseq object from which spread.df was derived.
+RepseqToTaxa <- function(spread.df, source.ps) {
+  tax.df = as.data.frame(tax_table(source.ps)) %>%
+    rownames_to_column("repseq") %>%
+    mutate(taxonomy = paste(Kingdom,Phylum,Class,Order,Family,Genus, sep="|")) %>%
+    select(repseq, taxonomy)
+  
+  # need to preserve non-OTU column names (otherwise they get lost)
+  colname_match = match(names(spread.df), tax.df$repseq)
+  cols_to_keep = which(is.na(colname_match))
+  colnames_to_keep = names(spread.df)[cols_to_keep]
+  
+  # replace repseqs with taxonomies
+  names(spread.df) = tax.df$taxonomy[match(names(spread.df), tax.df$repseq)]
+  # now reset the non-OTU column names
+  names(spread.df)[cols_to_keep] = colnames_to_keep
+  return(spread.df)
+}
+
+GenerateLefseOutput = function(ps,output_columns,outfile){
+  base_columns = c("SampleID","OTU","Abundance")
+  spread.df = psmelt(ps) %>% 
+    mutate(SampleID = str_replace(Sample, pattern="\\.", replacement="_")) %>%
+    mutate(taxonomy = paste(Kingdom,Phylum,Class,Order,Family,Genus, sep="|")) %>%
+    select(one_of(c(base_columns,output_columns))) %>%
+    spread(OTU, Abundance)
+  
+  RepseqToTaxa(spread.df, ps) %>%
+    write.table(file=outfile, 
+                sep="\t", quote = FALSE,
+                row.names = FALSE)
+}
+```
+
+```{r}
+sample_variables(atacama.ps)
+```
+
+```{r eval=FALSE, include=FALSE}
+psmelt(atacama.ps) %>%
+  head
+```
+
+
+
+```{r}
+GenerateLefseOutput(atacama.ps, "Vegetation", lefse.input.file)
+```
+
+
+
+# Run Without Normalization
+
+```{bash}
+# PATH=$PATH:/usr/local/bin/lefse/
+
+# LEFSE_INPUT_FILE="/home/lf109/Ria_microbiome/prune_dat.tsv"
+# OUTDIR=$HOME/Ria_microbiome/no_lefse_normalization
+mkdir -p $OUTDIR
+# BASENAME="${OUTDIR}/${LEFSE_INPUT_FILE%.*}"
+BASENAME="${OUTDIR}/$(basename $LEFSE_INPUT_FILE '.tsv')"
+# NORMALIZATION="-o 1000000"
+NORMALIZATION=""
+
+format_input.py $LEFSE_INPUT_FILE  "${BASENAME}.in" -f c -u 1 -c 2 $NORMALIZATION  --output_table ${BASENAME}.tab
+head ${BASENAME}.in ${BASENAME}.tab
+
+FORMAT="png"
+#BASENAME="${LEFSE_INPUT_FILE%.*}"
+
+
+# run_lefse.py performs the actual statistica analysis
+#
+# Apply LEfSe on the formatted data producing the results (to be further processed
+# for visualization with the other modules). The option available
+# can be listed using the -h option 
+run_lefse.py "${BASENAME}.in" ${BASENAME}.res
+
+# plot_res.py visualizes the output
+#
+# Plot the list of biomarkers with their effect size
+# Severak graphical options are available for personalizing the output
+# ../plot_res.py hmp_aerobiosis_small.res hmp_aerobiosis_small.png
+plot_res.py --format ${FORMAT} ${BASENAME}.res ${BASENAME}.${FORMAT}
+
+# plot_cladogram.py visualizes the output on a hierarchical tree
+#
+# Plot the representation of the biomarkers on the hierarchical tree
+# specified in the input data (using | in the name of the features)
+# In this case we will obtain the RDP taxonomy.
+# This is an early implementation of the module. I'm working on an improved version
+# that will be released independently from LEfSe
+plot_cladogram.py ${BASENAME}.res ${BASENAME}.cladogram.${FORMAT} --format ${FORMAT}
+
+# Create a directory for storing the raw-data representation of the discovered biomarkers
+mkdir -p ${BASENAME}_biomarkers_raw_images
+
+# plot_features.py visualizes the raw-data features
+#
+# The module for exporting the raw-data representation of the features.
+# With the default options we will obtain the images for all the features that are
+# detected as biomarkers
+plot_features.py ${BASENAME}.in ${BASENAME}.res ${BASENAME}_biomarkers_raw_images/
+```
+
+# Run With Normalization=1000000
+
+
+```{bash}
+# PATH=$PATH:/usr/local/bin/lefse/
+
+NORMALIZATION="-o 1000000"
+
+# LEFSE_INPUT_FILE="/home/lf109/Ria_microbiome/prune_dat.tsv"
+# OUTDIR=$HOME/Ria_microbiome/lefse_norm_1000000
+mkdir -p $OUTDIR
+# BASENAME="${OUTDIR}/${LEFSE_INPUT_FILE%.*}"
+BASENAME="${OUTDIR}/$(basename $LEFSE_INPUT_FILE '.tsv')"
+# NORMALIZATION=""
+
+format_input.py $LEFSE_INPUT_FILE  "${BASENAME}.in" -f c -u 1 -c 2 $NORMALIZATION  --output_table ${BASENAME}.tab
+head ${BASENAME}.in ${BASENAME}.tab
+
+FORMAT="png"
+#BASENAME="${LEFSE_INPUT_FILE%.*}"
+
+
+# run_lefse.py performs the actual statistica analysis
+#
+# Apply LEfSe on the formatted data producing the results (to be further processed
+# for visualization with the other modules). The option available
+# can be listed using the -h option 
+run_lefse.py "${BASENAME}.in" ${BASENAME}.res
+
+# plot_res.py visualizes the output
+#
+# Plot the list of biomarkers with their effect size
+# Severak graphical options are available for personalizing the output
+# ../plot_res.py hmp_aerobiosis_small.res hmp_aerobiosis_small.png
+plot_res.py --format ${FORMAT} ${BASENAME}.res ${BASENAME}.${FORMAT}
+
+# plot_cladogram.py visualizes the output on a hierarchical tree
+#
+# Plot the representation of the biomarkers on the hierarchical tree
+# specified in the input data (using | in the name of the features)
+# In this case we will obtain the RDP taxonomy.
+# This is an early implementation of the module. I'm working on an improved version
+# that will be released independently from LEfSe
+plot_cladogram.py ${BASENAME}.res ${BASENAME}.cladogram.${FORMAT} --format ${FORMAT}
+
+# Create a directory for storing the raw-data representation of the discovered biomarkers
+mkdir -p ${BASENAME}_biomarkers_raw_images
+
+# plot_features.py visualizes the raw-data features
+#
+# The module for exporting the raw-data representation of the features.
+# With the default options we will obtain the images for all the features that are
+# detected as biomarkers
+plot_features.py ${BASENAME}.in ${BASENAME}.res ${BASENAME}_biomarkers_raw_images/
+```
