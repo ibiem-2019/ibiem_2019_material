@@ -16,19 +16,25 @@ library(fs)
 
 ```{r files_and_directories, include=FALSE}
 # Directories
-
+atacama.ps.rds = "/data/tutorial_data/atacama_1pct.rds"
 outdir=path.expand("~/scratch/lefse")
-dir.create(outdir)
-lefse.input.file=file.path(outdir,"data_for_lefse.tsv")
+# lefse.input.file=file.path(outdir,"data_for_lefse.tsv")
+atacama.ps.rds %>%
+  path_file %>%
+  path_ext_set(".tsv") %>%
+  path(outdir, .) ->
+  lefse.input.file
 lefse.bar=path_ext_set(lefse.input.file, ".png")
+
+if(dir_exists(outdir)){
+  dir_delete(outdir)
+}
+dir.create(outdir)
 
 
 Sys.setenv(LEFSE_INPUT_FILE=lefse.input.file)
 Sys.setenv(OUTDIR=outdir)
-```
 
-```{r}
-atacama.ps.rds = "/data/tutorial_data/atacama_1pct.rds"
 atacama.ps = read_rds(atacama.ps.rds)
 print(atacama.ps)
 ```
