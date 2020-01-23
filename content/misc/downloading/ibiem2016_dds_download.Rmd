@@ -1,10 +1,16 @@
 ---
 title: "Download IBIEM 2016 Data From DDS"
-output: html_document
+output:
+  md_document:
+    variant: markdown_github
+  html_document:
+    toc: false
 ---
 
+
+
 ```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = TRUE)
+knitr::opts_chunk$set(echo = TRUE,  eval=FALSE)
 ```
 
 
@@ -23,26 +29,27 @@ chmod 600 ~/.ddsclient
 ddsclient -h
 ```
 
-## Figure out which project to download
+Figure out which project to download
 ```{bash}
 ddsclient list
 ```
 
-## Check project contents
+Check project contents
 ```{bash}
 ddsclient list -p IBIEM_2016
 ```
 
-## Download data
+Check `ddsclient download` arguments
 ```{bash}
 ddsclient download -h
 ```
 
+Download datas
 ```{bash}
 ddsclient download -p IBIEM_2016 /data/tutorial_data
 ```
 
-## Set data directory read only
+Set data directory read only
 ```{bash}
 chmod -R a-w /data/tutorial_data/IBIEM_2016
 ```

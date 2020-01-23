@@ -1,0 +1,49 @@
+Setup ddsclient
+===============
+
+1.  Generate a DDS key following instruction from:
+    <a href="https://github.com/Duke-GCB/DukeDSClient/wiki/Agent-User-Keys-(setup)" class="uri">https://github.com/Duke-GCB/DukeDSClient/wiki/Agent-User-Keys-(setup)</a>
+2.  Open a new text file, paste in DDS key, and save as `~/.ddsclient`
+3.  Run the following chunk to set DDS key permissions
+
+``` bash
+# change permissions to make ddsclient happy
+chmod 600 ~/.ddsclient
+```
+
+Download Data
+=============
+
+``` bash
+ddsclient -h
+```
+
+Figure out which project to download
+
+``` bash
+ddsclient list
+```
+
+Check project contents
+
+``` bash
+ddsclient list -p IBIEM_2016
+```
+
+Check `ddsclient download` arguments
+
+``` bash
+ddsclient download -h
+```
+
+Download datas
+
+``` bash
+ddsclient download -p IBIEM_2016 /data/tutorial_data
+```
+
+Set data directory read only
+
+``` bash
+chmod -R a-w /data/tutorial_data/IBIEM_2016
+```
