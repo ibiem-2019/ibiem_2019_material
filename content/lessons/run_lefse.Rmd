@@ -19,12 +19,18 @@ library(fs)
 atacama.ps.rds = "/data/tutorial_data/atacama_1pct.rds"
 outdir=path.expand("~/scratch/lefse")
 # lefse.input.file=file.path(outdir,"data_for_lefse.tsv")
+
+
+
 atacama.ps.rds %>%
   path_file %>%
-  path_ext_set(".tsv") %>%
+  path_ext_remove %>%
   path(outdir, .) ->
-  lefse.input.file
-lefse.bar=path_ext_set(lefse.input.file, ".png")
+  output_basename 
+
+lefse.input.file = path_ext_set(output_basename, ".tsv")
+lefse.bar = path_ext_set(output_basename, ".png")
+
 
 if(dir_exists(outdir)){
   dir_delete(outdir)
@@ -34,6 +40,11 @@ dir.create(outdir)
 
 Sys.setenv(LEFSE_INPUT_FILE=lefse.input.file)
 Sys.setenv(OUTDIR=outdir)
+Sys.setenv(BASENAME=output_basename)
+
+# NORMALIZATION=""
+Sys.setenv(NORMALIZATION="-o 1000000")
+Sys.setenv(PLOT_FORMAT="png")
 
 atacama.ps = read_rds(atacama.ps.rds)
 print(atacama.ps)
@@ -105,28 +116,27 @@ Sys.setenv(FORMAT_FLAGS=format.flags)
 # Run With Normalization=1000000
 
 ```{bash}
-NORMALIZATION="-o 1000000"
-# NORMALIZATION=""
-BASENAME="${OUTDIR}/$(basename $LEFSE_INPUT_FILE '.tsv')"
-
 format_input.py $LEFSE_INPUT_FILE  "${BASENAME}.in" $FORMAT_FLAGS $NORMALIZATION  --output_table ${BASENAME}.tab
+```
 # head ${BASENAME}.in ${BASENAME}.tab
-
-FORMAT="png"
 
 # run_lefse.py performs the actual statistica analysis
 #
 # Apply LEfSe on the formatted data producing the results (to be further processed
 # for visualization with the other modules). The option available
 # can be listed using the -h option 
+```{bash}
 run_lefse.py "${BASENAME}.in" ${BASENAME}.res
+```
 
 # plot_res.py visualizes the output
 #
 # Plot the list of biomarkers with their effect size
 # Severak graphical options are available for personalizing the output
 # ../plot_res.py hmp_aerobiosis_small.res hmp_aerobiosis_small.png
-plot_res.py --format ${FORMAT} ${BASENAME}.res ${BASENAME}.${FORMAT}
+```{bash}
+plot_res.py --format ${PLOT_FORMAT} ${BASENAME}.res ${BASENAME}.${PLOT_FORMAT}
+```
 
 # plot_cladogram.py visualizes the output on a hierarchical tree
 #
@@ -135,16 +145,21 @@ plot_res.py --format ${FORMAT} ${BASENAME}.res ${BASENAME}.${FORMAT}
 # In this case we will obtain the RDP taxonomy.
 # This is an early implementation of the module. I'm working on an improved version
 # that will be released independently from LEfSe
-plot_cladogram.py ${BASENAME}.res ${BASENAME}.cladogram.${FORMAT} --format ${FORMAT}
+```{bash}
+plot_cladogram.py ${BASENAME}.res ${BASENAME}.cladogram.${PLOT_FORMAT} --format ${PLOT_FORMAT}
+```
 
 # Create a directory for storing the raw-data representation of the discovered biomarkers
+```{bash}
 mkdir -p ${BASENAME}_biomarkers_raw_images
+```
 
 # plot_features.py visualizes the raw-data features
 #
 # The module for exporting the raw-data representation of the features.
 # With the default options we will obtain the images for all the features that are
 # detected as biomarkers
+```{bash}
 plot_features.py ${BASENAME}.in ${BASENAME}.res ${BASENAME}_biomarkers_raw_images/
 ```
 
