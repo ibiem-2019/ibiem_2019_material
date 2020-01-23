@@ -11,7 +11,7 @@ R -e "rmarkdown::render('misc/argonne_download.Rmd', output_format=c('html_docum
 R -e "rmarkdown::render('misc/argonne_download.Rmd')" 
 -->
 
-># NOTE: This notebook is for example purposes only.  It no longer works because the data is not available for download anymore.
+> NOTE: This file will not work as-is because the URLs for data download are for one-time use.
 
 ```{r global_options, include=FALSE}
 library(knitr)
@@ -67,7 +67,13 @@ wget --content-disposition --no-verbose \
 ```
 
 ## Make MD5 sum file
-Argonne does not provide an MD5sum file, but MD5sums can be copied manually from the download webpage: https://sequencing.bio.anl.gov/index.html
+Annoyingly, the md5sum hashes are provided in the ANL web interface, not as a downloadable file, we have to manually construct the md5sum file by copying the md5 hash for each FASTQ from the web interface.
+
+
+
+
+
+
 
 ```{r}
 tribble(
@@ -81,16 +87,17 @@ tribble(
 ```
 
 ## Confirm Downloaded files
-```{bash}
-cd $RAW_DATA
-md5sum -c $UNCOMPRESSED_MD5
-```
+Annoyingly, the FASTQs are supplied unzipped, so we need to:
 
-## Compress FASTQs and generate MD5 sum
+  1. Run `md5sum -c` on the downloaded FASTQs using the manually constructed `unzipped_md5sum.txt`
+  2. gzip the FASTQs
+  3. Generate a new md5sum file for the gzipped FASTQs
+  4. It seems like a good idea to chain these together with `&&` so that the whole thing fails if one step fails, instead of giving the false impression that it worked if an intermediate step fails.
 ```{bash}
-cd $RAW_DATA
-gzip Undetermined_S0_L001_??_001.fastq
-md5sum Undetermined_S0_L001_??_001.fastq.gz 200114_McCumber_16SFW_AS_200110.txt > $COMPRESSED_MD5
+cd $RAW_DATA && \
+  md5sum -c $UNCOMPRESSED_MD5 && \
+  gzip Undetermined_S0_L001_??_001.fastq && \
+  md5sum Undetermined_S0_L001_??_001.fastq.gz 200114_McCumber_16SFW_AS_200110.txt > $COMPRESSED_MD5
 ```
 
 ## Make directory read-only
