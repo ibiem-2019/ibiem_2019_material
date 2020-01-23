@@ -39,8 +39,14 @@ dir.create(raw.data, recursive = TRUE, showWarnings = FALSE)
 ```
 
 
-# Download data
-One time URLs are from https://sequencing.bio.anl.gov/index.html
+# Download Data from Argonne
+## Download with wget
+These chunks will not work as-is because the one-time URLs have already been used.  New one-time URLs can be obtained by logging in to  https://sequencing.bio.anl.gov/index.html
+
+- `--no-verbose` tells `wget` to *not* print a lot of status information during the download.
+- `--content-disposition` tells `wget` to use the file name from the server (otherwise it will name files with the random charracters in the one-time URLs)
+- `--directory-prefix` tells `wget` what directory to download the files into
+
 
 ```{bash}
 wget --content-disposition --no-verbose \
@@ -60,8 +66,8 @@ wget --content-disposition --no-verbose \
   http://shock.metagenomics.anl.gov/preauth/UKdpX2Qk7nszU790SBDn
 ```
 
-# Make MD5 sum file
-MD5 checksums are copied manually from https://sequencing.bio.anl.gov/index.html
+## Make MD5 sum file
+Argonne does not provide an MD5sum file, but MD5sums can be copied manually from the download webpage: https://sequencing.bio.anl.gov/index.html
 
 ```{r}
 tribble(
@@ -74,30 +80,33 @@ tribble(
   write_tsv(uncompressed.md5, col_names = FALSE)
 ```
 
-# Confirm Downloaded files
+## Confirm Downloaded files
 ```{bash}
 cd $RAW_DATA
 md5sum -c $UNCOMPRESSED_MD5
 ```
 
-# Compress FASTQs and generate MD5 sum
+## Compress FASTQs and generate MD5 sum
 ```{bash}
 cd $RAW_DATA
 gzip Undetermined_S0_L001_??_001.fastq
 md5sum Undetermined_S0_L001_??_001.fastq.gz 200114_McCumber_16SFW_AS_200110.txt > $COMPRESSED_MD5
 ```
 
-# Make directory read-only
+## Make directory read-only
 ```{bash}
 chmod -R a-w $RAW_DATA
 ```
 
-# Upload data to DDS
+# Archive Data
+This is only necessary if data isn't already archived on DDS
+
+## Upload data to DDS
 ```{bash}
 ddsclient upload -p IBIEM_2019 $RAW_DATA
 ```
 
-# Confirm DDS upload
+## Confirm DDS upload
 ```{bash}
 ddsclient upload --dry-run -p IBIEM_2019 $RAW_DATA
 ```
