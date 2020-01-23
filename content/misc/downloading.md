@@ -5,3 +5,4 @@ Here are different examples of how to download data from different types of sour
 -   [Download Taxonomic References for DADA](downloading/download_dada_references.md)
 -   [Download From dropbox](downloading/dropbox_download.md)
 -   [Download From SRA](downloading/sra_download.md)
+-   [Download From DDS](downloading/ibiem2016_dds_download.md)
