@@ -5,6 +5,8 @@ This website can be reached at: https://bit.ly/2KbTnIa
 - [CSP1 Schedule](content/csp1_schedule.md)
 - [Bootcamp Schedule](content/bootcamp_schedule.md)
 - [Miscellany](content/reference_info.md)
+- [Downloading](content/misc/downloading.md)
+
 
 # 1/17/2020
 
