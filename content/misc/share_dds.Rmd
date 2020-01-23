@@ -1,0 +1,23 @@
+---
+title: "Share DDS"
+output: html_document
+---
+
+
+```{bash}
+ddsclient -h
+ddsclient list-auth-roles
+```
+```{bash}
+ddsclient share -h
+```
+
+
+```{bash}
+echo "you now have access to project data on DDS" > /tmp/dds_message.txt
+for CUR_USER in netid_1 netid_2 netid_3 ; do
+  ddsclient share --user $CUR_USER -p IBIEM_2019 --auth-role file_downloader --msg-file /tmp/dds_message.txt
+done
+```
+
+
