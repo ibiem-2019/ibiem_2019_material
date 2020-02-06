@@ -1,27 +1,46 @@
-| Week | Date | Lessons                                                                                               | Slides                                     | Assignments                                            | Due        |
-|------+------+-------------------------------------------------------------------------------------------------------+--------------------------------------------+--------------------------------------------------------+------------|
-|    1 | 1/18 | [Demultiplexing](lessons/demultiplex_tutorial.md) & [DADA2](lessons/dada2_tutorial_1_6.md)            | [PDF](lectures/dada2_pipeline.pdf)         | [Challenge 5](https://github.com/IBIEM/challenge_5/)   | 1/25 @ 6pm |
-|    2 | 1/25 | [DADA2](lessons/dada2_tutorial_1_6.md)                                                                |                                            | [Challenge 6](https://github.com/IBIEM/challenge_6/)   | 2/2 @ 6pm  |
-|    3 | 2/1  | Biological Significance of Diversity Analysis                                                         |                                            |                                                        |            |
-|    4 | 2/8  | [Phyloseq, Abundance, and Diversity](lessons/absolute_abundance_plots.md)                             | [PDF](lectures/statistical_analysis_1.pdf) | [Challenge 7](https://github.com/IBIEM/challenge_7/)   | 2/15 @ 6pm |
-|    5 | 2/15 | [Alpha Diversity](lessons/alpha_diversity.md) and [Relative Abundance](lessons/relative_abundance.md) |                                            | [Challenge 8](https://github.com/IBIEM/challenge_8/)   | 2/22 @ 6pm |
-|    6 | 2/22 | Beta Diversity                                                                                        | [PDF](lectures/statistical_analysis_2.pdf) |                                                        |            |
-|    7 | 3/1  | Beta Diversity & Ordination                                                                           | [PDF](lectures/statistical_analysis_3.pdf) | [Challenge 9](https://github.com/IBIEM/challenge_9/)   | 3/22 @ 6pm |
-|    8 | 3/8  | NO CLASS - Spring Break                                                                               |                                            |                                                        |            |
-|    9 | 3/15 | NO CLASS - Spring Break                                                                               |                                            |                                                        |            |
-|   10 | 3/22 | [Beta Diversity & Ordination](lessons/ordination.md)                                                  |                                            | [Challenge 10](https://github.com/IBIEM/challenge_10/) | 4/12 @ 6pm |
-
-
-
-
-| Date&nbsp; |        Time | Topic                                                                                                      |
-|------------+-------------+------------------------------------------------------------------------------------------------------------|
-|            | 10:45-12:00 | [Bash: Pipe & Filters](http://swcarpentry.github.io/shell-novice/04-pipefilter/index.html)                 |
-|            |             | [Bash: Loops](http://swcarpentry.github.io/shell-novice/05-loop/index.html)                                |
-| 30-Aug     |       10-11 | [Bash: Shell Scripts](http://swcarpentry.github.io/shell-novice/06-script/index.html)                      |
-|            |             | Bash: Finding Things                                                                                       |
-|            |             | Bash: Shell Extras                                                                                         |
-
-
-
-| 8-Nov                   |      10-11 | [Git: Collaborating](lessons/bootcamp/040_git_overview.md#collaborating)                                   |                                                              |       | Duke     |
+| Date&nbsp;&nbsp; &nbsp; | Time&nbsp; | Topic                                                                                      |
+|-------------------------+------------+--------------------------------------------------------------------------------------------|
+| 17-Jan                  |      10-11 | [Project Overview](lectures/project_overview.md)                                           |
+|                         |      11-12 | [Git: Team Conflict](lessons/bootcamp/040_git_overview.md#team-conflicts)                  |
+|                         |       12-1 | Office Hours                                                                               |
+| 24-Jan                  |      10-11 | [Git: Branching](https://git-scm.com/book/en/v2/Git-Branching-Basic-Branching-and-Merging) |
+|                         |            | [Git: Stashing](https://git-scm.com/book/en/v2/Git-Tools-Stashing-and-Cleaning)            |
+|                         |            | [Git: Tagging](https://git-scm.com/book/en/v2/Git-Basics-Tagging)                          |
+|                         |      11-12 | Rytas Vilgalys                                                                             |
+|                         |       12-1 | Office Hours                                                                               |
+| 31-Jan                  |      10-11 | *Group Presentations*: Project Background                                                  |
+|                         |      11-12 | William Parker                                                                             |
+|                         |     12-1pm | office hours                                                                               |
+| 7-Feb                   |      10-11 | Technical/Quantitative Presentation TBD                                                    |
+|                         |      11-12 | Xiling Shen                                                                                |
+|                         |     12-1pm | office hours                                                                               |
+| 14-Feb                  |      10-11 | Figure Design (Eric Monson)                                                                |
+|                         |      11-12 | Dana Hunt                                                                                  |
+|                         |     12-1pm | office hours                                                                               |
+| 21-Feb                  |      10-11 | David Singleton: Stuff                                                                     |
+|                         |      11-12 | *Group Presentations*: Project Progress                                                    |
+|                         |     12-1pm | office hours                                                                               |
+| 28-Feb                  |      10-11 | Technical/Quantitative Presentation TBD                                                    |
+|                         |      11-12 | John Rawls                                                                                 |
+|                         |     12-1pm | office hours                                                                               |
+| 6-Mar                   |      10-11 | NO CLASS: NC A&T Spring Break                                                              |
+|                         |      11-12 |                                                                                            |
+|                         |     12-1pm |                                                                                            |
+| 13-Mar                  |      10-11 | NO CLASS: Duke Spring Break                                                                |
+|                         |      11-12 |                                                                                            |
+|                         |     12-1pm |                                                                                            |
+| 20-Mar                  |      10-11 | Phylogenetic Placement (Daniel)                                                            |
+|                         |      11-12 | Short Research Presentations (4x)                                                          |
+|                         |     12-1pm | office hours                                                                               |
+| 27-Mar                  |      10-11 | Short Research Presentations (4x)                                                          |
+|                         |      11-12 | Guest Speaker TBD                                                                          |
+|                         |     12-1pm | office hours                                                                               |
+| 3-Apr                   |      10-11 | *Poster/Figure Critique* (Eric Monson)                                                     |
+|                         |      11-12 | Short Research Presentations (4x)                                                          |
+|                         |     12-1pm | office hours                                                                               |
+| 10-Apr                  |      10-11 | NO CLASS: NC A&T Spring Holiday                                                            |
+|                         |      11-12 |                                                                                            |
+|                         |     12-1pm | Office Hours or Guest Lunch                                                                |
+| 17-Apr                  |      10-11 | *Group Presentations*: Final Posters                                                       |
+|                         |      11-12 | *Group Presentations*: Final Posters                                                       |
+|                         |     12-1pm |                                                                                            |
