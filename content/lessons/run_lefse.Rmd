@@ -1,9 +1,10 @@
 ---
-title: "Untitled"
+title: "Lefse Analysis of Atacama Data"
 output: html_document
 ---
 
-
+# Setup
+## Load Libraries
 ```{r libraries, message=FALSE, warning=FALSE}
 library(readr)
 library(phyloseq)
@@ -14,6 +15,7 @@ library(tidyr)
 library(fs)
 ```
 
+## Setup Paths
 ```{r files_and_directories, include=FALSE}
 # Directories
 atacama.ps.rds = "/data/tutorial_data/atacama_1pct.rds"
@@ -29,7 +31,6 @@ atacama.ps.rds %>%
   output_basename 
 
 lefse.input.file = path_ext_set(output_basename, ".tsv")
-lefse.bar = path_ext_set(output_basename, ".png")
 
 
 if(dir_exists(outdir)){
@@ -50,7 +51,8 @@ atacama.ps = read_rds(atacama.ps.rds)
 print(atacama.ps)
 ```
 
-
+# Run Lefse
+## Define Functions
 ```{r}
 #' RepseqToTaxa:
 #' Convert Repseq column names to Taxa column names in a spread data frame
@@ -102,68 +104,67 @@ GenerateLefseOutput = function(ps,output_columns,outfile){
 }
 ```
 
+## Select variables
+List variables to select parameters of interest
 ```{r}
 sample_variables(atacama.ps)
 ```
 
 ```{r}
 # format.flags = GenerateLefseOutput(atacama.ps, c("Vegetation","TransectName"), lefse.input.file)
-format.flags = GenerateLefseOutput(atacama.ps, "Vegetation", lefse.input.file)
+grouping_parameter="Vegetation"
+format.flags = GenerateLefseOutput(atacama.ps, grouping_parameter, lefse.input.file)
 Sys.setenv(FORMAT_FLAGS=format.flags)
 ```
 
-
-# Run With Normalization=1000000
-
+## Format data for Lefse
 ```{bash}
 format_input.py $LEFSE_INPUT_FILE  "${BASENAME}.in" $FORMAT_FLAGS $NORMALIZATION  --output_table ${BASENAME}.tab
 ```
-# head ${BASENAME}.in ${BASENAME}.tab
 
-# run_lefse.py performs the actual statistica analysis
-#
-# Apply LEfSe on the formatted data producing the results (to be further processed
-# for visualization with the other modules). The option available
-# can be listed using the -h option 
+## Run Lefse itself
 ```{bash}
 run_lefse.py "${BASENAME}.in" ${BASENAME}.res
 ```
 
-# plot_res.py visualizes the output
-#
-# Plot the list of biomarkers with their effect size
-# Severak graphical options are available for personalizing the output
-# ../plot_res.py hmp_aerobiosis_small.res hmp_aerobiosis_small.png
+## Generate bar plot of significant taxa
 ```{bash}
 plot_res.py --format ${PLOT_FORMAT} ${BASENAME}.res ${BASENAME}.${PLOT_FORMAT}
 ```
 
-# plot_cladogram.py visualizes the output on a hierarchical tree
-#
-# Plot the representation of the biomarkers on the hierarchical tree
-# specified in the input data (using | in the name of the features)
-# In this case we will obtain the RDP taxonomy.
-# This is an early implementation of the module. I'm working on an improved version
-# that will be released independently from LEfSe
+
+```{r results="asis"}
+lefse.bar = path_ext_set(output_basename, ".png")
+cat(paste0("![Barplot of taxa associated with ", grouping_parameter, "](", lefse.bar, ")"), fill = FALSE)
+```
+
+
+## Generate cladogram plot of significant taxa
 ```{bash}
 plot_cladogram.py ${BASENAME}.res ${BASENAME}.cladogram.${PLOT_FORMAT} --format ${PLOT_FORMAT}
 ```
 
-# Create a directory for storing the raw-data representation of the discovered biomarkers
-```{bash}
-mkdir -p ${BASENAME}_biomarkers_raw_images
+```{r results="asis"}
+lefse.cladogram = path_ext_set(output_basename, ".cladogram.png")
+
+cat(paste0("![Cladogram of taxa associated with ", grouping_parameter, "](", lefse.cladogram, ")"), fill = FALSE)
 ```
 
-# plot_features.py visualizes the raw-data features
-#
-# The module for exporting the raw-data representation of the features.
-# With the default options we will obtain the images for all the features that are
-# detected as biomarkers
+
+## Generate separate plots for each significant taxon
 ```{bash}
-plot_features.py ${BASENAME}.in ${BASENAME}.res ${BASENAME}_biomarkers_raw_images/
+mkdir -p ${BASENAME}_individual_taxon_plots
+
+plot_features.py ${BASENAME}.in ${BASENAME}.res ${BASENAME}_individual_taxon_plots/
 ```
 
 ```{r results="asis"}
-cat(paste0("![lefse results](", lefse.bar, ")"), fill = FALSE)
+
+taxon_plots = paste0(output_basename, "_individual_taxon_plots")
+
+for (curplot in list.files(taxon_plots, full.names = TRUE)){
+  cat(paste0("![Individual Taxon Associated With ", grouping_parameter, "](", curplot, ")"), fill = FALSE)
+}
+
 ```
 
