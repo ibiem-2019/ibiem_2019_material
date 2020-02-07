@@ -17,22 +17,10 @@ knitr::opts_chunk$set(echo=TRUE, include=TRUE)
 
 ```{r load_libraries, echo=FALSE, results='hide'}
 
-# source("analysis_functions.R")
-
 ## Load Libraries
 library("tidyverse")
 library("phyloseq")
 library("vegan")
-
-# suppressPackageStartupMessages(library("ggplot2"))
-# suppressPackageStartupMessages(library("dplyr"))
-# suppressPackageStartupMessages(library("stringr"))
-# suppressPackageStartupMessages(library("tidyr"))
-# suppressPackageStartupMessages(library("tibble"))
-# suppressPackageStartupMessages(library("magrittr"))
-# suppressPackageStartupMessages(library("stringr"))
-# suppressPackageStartupMessages(library("tools"))
-
 ```
 
 
