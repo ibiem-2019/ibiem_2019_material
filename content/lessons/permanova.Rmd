@@ -1,0 +1,137 @@
+---
+title: "Permanova"
+params:
+  atacama_ps_rds: "/data/tutorial_data/atacama_10pct.rds"
+output:
+  html_document:
+    df_print: paged
+  md_document:
+     variant: markdown_github
+---
+
+
+
+```{r global_options, include=FALSE}
+knitr::opts_chunk$set(echo=TRUE, include=TRUE)
+```
+
+```{r load_libraries, echo=FALSE, results='hide'}
+
+# source("analysis_functions.R")
+
+## Load Libraries
+library("tidyverse")
+library("phyloseq")
+library("vegan")
+
+# suppressPackageStartupMessages(library("ggplot2"))
+# suppressPackageStartupMessages(library("dplyr"))
+# suppressPackageStartupMessages(library("stringr"))
+# suppressPackageStartupMessages(library("tidyr"))
+# suppressPackageStartupMessages(library("tibble"))
+# suppressPackageStartupMessages(library("magrittr"))
+# suppressPackageStartupMessages(library("stringr"))
+# suppressPackageStartupMessages(library("tools"))
+
+```
+
+
+## Data
+This tutorial uses the 10% Atacama subset data (note that for the demux and dada2 tutorial we used the 1% Atacama subset)
+There is a problem when running `ordinate` on the 1% dataset.  Not sure what it is!
+
+
+```{r files_and_directories}
+# Directories
+
+if(exists("params") && 
+   !is.null(params[["atacama_ps_rds"]])){
+  atacama.ps.rds=params[["atacama_ps_rds"]]
+} else {
+  atacama.ps.rds = "/data/tutorial_data/atacama_10pct.rds"
+}
+print(atacama.ps.rds)
+```
+
+```{r}
+atacama.ps = read_rds(atacama.ps.rds)
+print(atacama.ps)
+```
+
+## Data Preprocessing
+As with relative abundance plots and ordination, before performing a permanova test we will want to prune rare taxa and transform the data.  We prune because we don't want small differences in rare taxa to swamp out major trends.  The transformation is important because otherwise the permanova could be affected by meaningless differences in total counts between samples.
+
+### Prune 
+The decision about how to prune is important, we need to think about what we are throwing away, and how it might affect the analysis.  
+```{r}
+sample_min_count = 50
+
+atacama.ps %>%
+  prune_samples(sample_sums(.)>=sample_min_count, .) ->
+  atacama.sample_prune
+
+sample_sums(atacama.sample_prune) %>% sort
+```
+
+```{r}
+min_count = 3
+min_sample = 2
+
+prune.vec = filter_taxa(atacama.sample_prune, 
+                       function(x) sum(x >= min_count) >= min_sample)
+sum(prune.vec)
+```
+
+### Transform to even sampling depth.
+Here we are performing the same fractional abundance transformation we did before, then multiplying by 1 x 10^6 to convert those proprotions back into whole numbers.
+
+Pay attention to the y-axes in these plots of the raw counts, the pruned counts, and the transformed counts.
+```{r}
+atacama.even = transform_sample_counts(atacama.sample_prune, function(x) 1E6 * x/sum(x))
+
+atacama.st_prune.even = prune_taxa(prune.vec, atacama.even)
+ntaxa(atacama.st_prune.even)
+plot_bar(atacama.st_prune.even)
+```
+
+## Permanova
+The ordination plot, suggest that there is a differences in microbial communities between sites with and without vegetation. A permanova analysis allows us to quantify this. 
+
+```{r}
+atacama.st_prune.even %>%
+  sample_data %>%
+  as("data.frame") ->
+  atacama.st_prune.even.metadata
+
+atacama.st_prune.even %>%
+  distance(method="bray") ->
+  atacama.st_prune.even.bray
+
+adonis(atacama.st_prune.even.bray ~ Vegetation,
+       data = atacama.st_prune.even.metadata) ->
+  vegetation.adonis
+
+print(vegetation.adonis)
+```
+
+The permanova comparing with and without vegetation finds a **significant** difference with a p-value of `r vegetation.adonis$aov.tab$"Pr(>F)"[1]`. However, the permanova test is sensitive to differences in dispersion between the two groups, so we need to test for homogeneity of dispersion to examine whether differences in dispersion could lead us to falsely conclude that vegetation results in a signifcant differences between the groups. 
+
+## Homogeneity of Dispersion
+
+```{r}
+betadisper(atacama.st_prune.even.bray,
+           atacama.st_prune.even.metadata[["Vegetation"]]) ->
+  vegetation.beta
+
+permutest(vegetation.beta) ->
+  vegetation.beta.permute
+
+print(vegetation.beta.permute)
+```
+
+The test for homogeneity of dispersions is not significant (p-value of `r vegetation.beta.permute$tab$"Pr(>F)"[1]`).  In other words, there is not a significant difference in dispersion between the groups, so a difference in dispersion between the the two groups (with and without vegetation) is **not** the cause of the significant permanova result.  This provides strong evidence that vegetation is associated with differences in microbial community.
+
+# Session Info
+```{r}
+sessionInfo()
+```
