@@ -79,7 +79,7 @@ atacama.even = transform_sample_counts(atacama.sample_prune, function(x) 1E6 * x
 
 atacama.st_prune.even = prune_taxa(prune.vec, atacama.even)
 ntaxa(atacama.st_prune.even)
-plot_bar(atacama.st_prune.even)
+# plot_bar(atacama.st_prune.even)
 ```
 
 ## Permanova
