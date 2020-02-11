@@ -1,35 +1,66 @@
 ---
-title: "Demultiplex"
+title: "Demultiplex With fastq-multx"
+params:
+  atacama_data_percent: 1
+  data_dir : /data/tutorial_data
+  atacama_ps_rds: /data/tutorial_data/atacama_1pct.rds
 output:
   md_document:
     variant: markdown_github
+  html_document:
+    df_print: paged
 ---
 
+
 # Setup
+
+First we load libraries.
+```{r libraries, message=FALSE, warning=FALSE}
+library(readr)
+library(fs)
+# library(R.utils)
+```
+
 ## Paths, Directories, and Shell Variables
 To keep the code readable and portable, it is nice to assign paths to variables.  We also need to use the R `Sys.setenv` command to make shell variables that can be used in the bash chunks below.
 
-```{r files_and_directories}
+
+
+```{r files_and_directories, include=FALSE}
+# Params
+
+if(exists("params") && 
+   !is.null(params[["atacama_data_percent"]])){
+  atacama.data.percent=params[["atacama_data_percent"]]
+} else {
+  atacama.data.percent = "1"
+}
+if(exists("params") && 
+   !is.null(params[["data_dir"]])){
+  data.dir=params[["data_dir"]]
+} else {
+  data.dir = "/data/tutorial_data"
+}
+
 # Directories
-# data.dir = "/data/ibiem_2016_data"
-data.dir = "/data/tutorial_data/ibiem2016_subset"
-scratch.dir = path.expand("/tmp/scratch/demux_tutorial")
-demux.dir = file.path(scratch.dir, "demux")
+data.dir = file.path(data.dir, paste0("atacama_", atacama.data.percent, "pct"))
+output.dir = path.expand(file.path("~/scratch", paste0("atacama_", atacama.data.percent, "pct")))
+demux.dir = file.path(output.dir, "demux")
 
 # make directory for output
-# dir.create(scratch.dir, recursive = TRUE)
-dir.create(demux.dir, recursive = TRUE)
+if (dir_exists(demux.dir)) {dir_delete(demux.dir)}
+dir_create(demux.dir)
 
 # Files
-map.file = file.path(data.dir,"ibiem_2017_map_v3.txt")
-decoder.file = file.path(data.dir,"ibiem_2017_map_v3_decoder.csv")
-barcode.table = file.path(scratch.dir,"barcodes_for_fastqmultx.tsv")
-barcode.fastq = file.path(data.dir,"Undetermined_S0_L001_I1_001.fastq.gz")
-r1.fastq = file.path(data.dir,"Undetermined_S0_L001_R1_001.fastq.gz")
-r2.fastq = file.path(data.dir,"Undetermined_S0_L001_R2_001.fastq.gz")
+barcode.table = file.path(output.dir,"barcodes_for_fastqmultx.tsv")
+map.file = file.path(data.dir,"sample_metadata.tsv")
+barcode.fastq = file.path(data.dir,"barcodes.fastq.gz")
+r1.fastq = file.path(data.dir,"forward.fastq.gz")
+r2.fastq = file.path(data.dir,"reverse.fastq.gz")
 
 # Set variables for bash
 Sys.setenv(MAP_FILE = map.file)
+Sys.setenv(OUT_DIR = output.dir)
 Sys.setenv(DEMUX_DIR = demux.dir)
 Sys.setenv(RAW_FASTQ_DIR = data.dir)
 Sys.setenv(BARCODE_TABLE = barcode.table)
