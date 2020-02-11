@@ -18,6 +18,9 @@ First we load libraries.
 ```{r libraries, message=FALSE, warning=FALSE}
 library(readr)
 library(fs)
+library(dplyr)
+library(tibble)
+library(Biostrings)
 # library(R.utils)
 ```
 
@@ -53,6 +56,8 @@ dir_create(demux.dir)
 
 # Files
 barcode.table = file.path(output.dir,"barcodes_for_fastqmultx.tsv")
+rc.barcode.table = file.path(output.dir,"rc_barcodes_for_fastqmultx.tsv")
+
 map.file = file.path(data.dir,"sample_metadata.tsv")
 barcode.fastq = file.path(data.dir,"barcodes.fastq.gz")
 r1.fastq = file.path(data.dir,"forward.fastq.gz")
@@ -64,6 +69,7 @@ Sys.setenv(OUT_DIR = output.dir)
 Sys.setenv(DEMUX_DIR = demux.dir)
 Sys.setenv(RAW_FASTQ_DIR = data.dir)
 Sys.setenv(BARCODE_TABLE = barcode.table)
+Sys.setenv(RC_BARCODE_TABLE = rc.barcode.table)
 Sys.setenv(BARCODE_FASTQ = barcode.fastq)
 Sys.setenv(R1_FASTQ = r1.fastq)
 Sys.setenv(R2_FASTQ = r2.fastq)
@@ -116,8 +122,40 @@ fastq-multx -m 3 -d 2 -x -B $BARCODE_TABLE \
   $R1_FASTQ \
   $R2_FASTQ \
   -o $DEMUX_DIR/%_I1.fastq.gz \
-  -o $DEMUX_DIR/%_R1.fastq.gz \
-  -o $DEMUX_DIR/%_R2.fastq.gz
+  -o $DEMUX_DIR/%.forward.fastq.gz \
+  -o $DEMUX_DIR/%.reverse.fastq.gz
+```
+
+## The Unmatched Problem
+### Reverse Complement the barcodes
+```{r}
+read_tsv(map.file, comment= "#q2") %>% # read in map file, dropping the line that starts with "#q2"
+  select(Sample = "#SampleID", 
+         BarcodeSequence) %>%          # select only the columns with sample ID (renamed to get rid of "#") and the barcode itself
+  deframe %>%                          # convert to a named vector (expected input for DNAStringSet constructor)
+  DNAStringSet %>%                     # convert to DNAStringSet
+  reverseComplement %>%                # reverse complement the barcodes
+  as.data.frame %>%                    # convert to dataframe for write_delim
+  rownames_to_column %>% 
+  write_delim(rc.barcode.table,        # output barcodes to a file 
+              delim="\t", 
+              col_names=FALSE)
+
+# clean up the output from the previous demultiplexing step
+if (dir_exists(demux.dir)) {dir_delete(demux.dir)}
+dir_create(demux.dir)
+```
+
+### Run Demux with RC barcodes
+```{bash}
+set -u
+fastq-multx -m 3 -d 2 -x -B $RC_BARCODE_TABLE \
+  $BARCODE_FASTQ \
+  $R1_FASTQ \
+  $R2_FASTQ \
+  -o $DEMUX_DIR/%_I1.fastq.gz \
+  -o $DEMUX_DIR/%.forward.fastq.gz \
+  -o $DEMUX_DIR/%.reverse.fastq.gz
 ```
 
 # Session Info
