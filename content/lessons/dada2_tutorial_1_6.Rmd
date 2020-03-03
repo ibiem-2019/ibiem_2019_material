@@ -434,7 +434,7 @@ The [phyloseq R package is a powerful framework for further analysis of microbio
 We can construct a simple sample data.frame based on the filenames. Usually this step would instead involve reading the sample data in from a file.
 ```{r load_map}
 meta.df = read_tsv(map.file, comment= "#q2") %>%
-  rename(Sample = "#SampleID") %>%
+  dplyr::rename(Sample = "#SampleID") %>%
   column_to_rownames("Sample") %>%
   as.data.frame
 meta.df

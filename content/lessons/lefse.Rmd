@@ -1,7 +1,15 @@
 ---
 title: "Lefse Analysis of Atacama Data"
-output: html_document
+params:
+  atacama_ps_rds: "/data/tutorial_data/atacama_1pct.rds"
+output:
+  md_document:
+     variant: markdown_github
+  html_document:
+    df_print: paged
 ---
+
+
 
 # Setup
 ## Load Libraries
@@ -16,9 +24,21 @@ library(fs)
 ```
 
 ## Setup Paths
-```{r files_and_directories, include=FALSE}
+
+
+
+```{r files_and_directories}
 # Directories
-atacama.ps.rds = "/data/tutorial_data/atacama_1pct.rds"
+
+if(exists("params") && 
+   !is.null(params[["atacama_ps_rds"]])){
+  atacama.ps.rds=params[["atacama_ps_rds"]]
+} else {
+  atacama.ps.rds = "/data/tutorial_data/atacama_1pct.rds"
+}
+print(atacama.ps.rds)
+
+# atacama.ps.rds = "/data/tutorial_data/atacama_1pct.rds"
 outdir=path.expand("~/scratch/lefse")
 # lefse.input.file=file.path(outdir,"data_for_lefse.tsv")
 
