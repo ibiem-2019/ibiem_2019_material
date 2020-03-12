@@ -12,6 +12,7 @@ library(dplyr)
 library(stringr)
 library(tidyr)
 library(fs)
+library(knitr)
 ```
 
 Setup Paths
@@ -36,7 +37,10 @@ print(atacama.ps.rds)
 outdir=path.expand("~/scratch/lefse")
 # lefse.input.file=file.path(outdir,"data_for_lefse.tsv")
 
-
+if(fig_path()!="-1"){
+  fig_path() %>%
+    dirname() -> outdir
+}
 
 atacama.ps.rds %>%
   path_file %>%
@@ -47,6 +51,7 @@ atacama.ps.rds %>%
 lefse.input.file = path_ext_set(output_basename, ".tsv")
 
 
+
 if(dir_exists(outdir)){
   dir_delete(outdir)
 }
@@ -55,6 +60,7 @@ dir.create(outdir)
 
 Sys.setenv(LEFSE_INPUT_FILE=lefse.input.file)
 Sys.setenv(OUTDIR=outdir)
+# Sys.setenv(FIGURE_DIR=lefse_figure_dir)
 Sys.setenv(BASENAME=output_basename)
 
 # NORMALIZATION=""
@@ -188,7 +194,7 @@ cat(paste0("![Barplot of taxa associated with ", grouping_parameter, "](", lefse
 ```
 
 ![Barplot of taxa associated with
-Vegetation](/home/guest/scratch/lefse/atacama_1pct.png)
+Vegetation](lefse_files/figure-markdown_github/atacama_1pct.png)
 
 Generate cladogram plot of significant taxa
 -------------------------------------------
@@ -208,7 +214,7 @@ cat(paste0("![Cladogram of taxa associated with ", grouping_parameter, "](", lef
 ```
 
 ![Cladogram of taxa associated with
-Vegetation](/home/guest/scratch/lefse/atacama_1pct.cladogram.png)
+Vegetation](lefse_files/figure-markdown_github/atacama_1pct.cladogram.png)
 
 Generate separate plots for each significant taxon
 --------------------------------------------------
@@ -246,32 +252,32 @@ for (curplot in list.files(taxon_plots, full.names = TRUE)){
 ```
 
 ![Individual Taxon Associated With
-Vegetation](/home/guest/scratch/lefse/atacama_1pct_individual_taxon_plots/1_Bacteria-Actinobacteria-Actinobacteria-Micrococcales-Micrococcaceae-Pseudarthrobacter.png)![Individual
+Vegetation](lefse_files/figure-markdown_github/atacama_1pct_individual_taxon_plots/1_Bacteria-Actinobacteria-Actinobacteria-Micrococcales-Micrococcaceae-Pseudarthrobacter.png)![Individual
 Taxon Associated With
-Vegetation](/home/guest/scratch/lefse/atacama_1pct_individual_taxon_plots/1_Bacteria-Actinobacteria-Actinobacteria-Micrococcales-Micrococcaceae.png)![Individual
+Vegetation](lefse_files/figure-markdown_github/atacama_1pct_individual_taxon_plots/1_Bacteria-Actinobacteria-Actinobacteria-Micrococcales-Micrococcaceae.png)![Individual
 Taxon Associated With
-Vegetation](/home/guest/scratch/lefse/atacama_1pct_individual_taxon_plots/1_Bacteria-Actinobacteria-Actinobacteria-Micrococcales.png)![Individual
+Vegetation](lefse_files/figure-markdown_github/atacama_1pct_individual_taxon_plots/1_Bacteria-Actinobacteria-Actinobacteria-Micrococcales.png)![Individual
 Taxon Associated With
-Vegetation](/home/guest/scratch/lefse/atacama_1pct_individual_taxon_plots/1_Bacteria-Bacteroidetes-Bacteroidia-Chitinophagales-Chitinophagaceae.png)![Individual
+Vegetation](lefse_files/figure-markdown_github/atacama_1pct_individual_taxon_plots/1_Bacteria-Bacteroidetes-Bacteroidia-Chitinophagales-Chitinophagaceae.png)![Individual
 Taxon Associated With
-Vegetation](/home/guest/scratch/lefse/atacama_1pct_individual_taxon_plots/1_Bacteria-Bacteroidetes-Bacteroidia-Chitinophagales.png)![Individual
+Vegetation](lefse_files/figure-markdown_github/atacama_1pct_individual_taxon_plots/1_Bacteria-Bacteroidetes-Bacteroidia-Chitinophagales.png)![Individual
 Taxon Associated With
-Vegetation](/home/guest/scratch/lefse/atacama_1pct_individual_taxon_plots/1_Bacteria-Firmicutes-Bacilli-Bacillales-Paenibacillaceae-Ammoniphilus.png)![Individual
+Vegetation](lefse_files/figure-markdown_github/atacama_1pct_individual_taxon_plots/1_Bacteria-Firmicutes-Bacilli-Bacillales-Paenibacillaceae-Ammoniphilus.png)![Individual
 Taxon Associated With
-Vegetation](/home/guest/scratch/lefse/atacama_1pct_individual_taxon_plots/1_Bacteria-Gemmatimonadetes-Gemmatimonadetes-Gemmatimonadales-Gemmatimonadaceae-NA.png)![Individual
+Vegetation](lefse_files/figure-markdown_github/atacama_1pct_individual_taxon_plots/1_Bacteria-Gemmatimonadetes-Gemmatimonadetes-Gemmatimonadales-Gemmatimonadaceae-NA.png)![Individual
 Taxon Associated With
-Vegetation](/home/guest/scratch/lefse/atacama_1pct_individual_taxon_plots/1_Bacteria-Proteobacteria-Deltaproteobacteria-Myxococcales.png)![Individual
+Vegetation](lefse_files/figure-markdown_github/atacama_1pct_individual_taxon_plots/1_Bacteria-Proteobacteria-Deltaproteobacteria-Myxococcales.png)![Individual
 Taxon Associated With
-Vegetation](/home/guest/scratch/lefse/atacama_1pct_individual_taxon_plots/1_Bacteria-Proteobacteria-Deltaproteobacteria.png)![Individual
+Vegetation](lefse_files/figure-markdown_github/atacama_1pct_individual_taxon_plots/1_Bacteria-Proteobacteria-Deltaproteobacteria.png)![Individual
 Taxon Associated With
-Vegetation](/home/guest/scratch/lefse/atacama_1pct_individual_taxon_plots/1_Bacteria-Proteobacteria-Gammaproteobacteria-Methylococcales-Methylococcaceae-NA.png)![Individual
+Vegetation](lefse_files/figure-markdown_github/atacama_1pct_individual_taxon_plots/1_Bacteria-Proteobacteria-Gammaproteobacteria-Methylococcales-Methylococcaceae-NA.png)![Individual
 Taxon Associated With
-Vegetation](/home/guest/scratch/lefse/atacama_1pct_individual_taxon_plots/1_Bacteria-Proteobacteria-Gammaproteobacteria-Methylococcales-Methylococcaceae.png)![Individual
+Vegetation](lefse_files/figure-markdown_github/atacama_1pct_individual_taxon_plots/1_Bacteria-Proteobacteria-Gammaproteobacteria-Methylococcales-Methylococcaceae.png)![Individual
 Taxon Associated With
-Vegetation](/home/guest/scratch/lefse/atacama_1pct_individual_taxon_plots/1_Bacteria-Proteobacteria-Gammaproteobacteria-Methylococcales.png)![Individual
+Vegetation](lefse_files/figure-markdown_github/atacama_1pct_individual_taxon_plots/1_Bacteria-Proteobacteria-Gammaproteobacteria-Methylococcales.png)![Individual
 Taxon Associated With
-Vegetation](/home/guest/scratch/lefse/atacama_1pct_individual_taxon_plots/1_Bacteria-Proteobacteria-Gammaproteobacteria-Steroidobacterales-Steroidobacteraceae-Steroidobacter.png)![Individual
+Vegetation](lefse_files/figure-markdown_github/atacama_1pct_individual_taxon_plots/1_Bacteria-Proteobacteria-Gammaproteobacteria-Steroidobacterales-Steroidobacteraceae-Steroidobacter.png)![Individual
 Taxon Associated With
-Vegetation](/home/guest/scratch/lefse/atacama_1pct_individual_taxon_plots/1_Bacteria-Proteobacteria-Gammaproteobacteria-Steroidobacterales-Steroidobacteraceae.png)![Individual
+Vegetation](lefse_files/figure-markdown_github/atacama_1pct_individual_taxon_plots/1_Bacteria-Proteobacteria-Gammaproteobacteria-Steroidobacterales-Steroidobacteraceae.png)![Individual
 Taxon Associated With
-Vegetation](/home/guest/scratch/lefse/atacama_1pct_individual_taxon_plots/1_Bacteria-Proteobacteria-Gammaproteobacteria-Steroidobacterales.png)
+Vegetation](lefse_files/figure-markdown_github/atacama_1pct_individual_taxon_plots/1_Bacteria-Proteobacteria-Gammaproteobacteria-Steroidobacterales.png)

@@ -21,6 +21,7 @@ library(dplyr)
 library(stringr)
 library(tidyr)
 library(fs)
+library(knitr)
 ```
 
 ## Setup Paths
@@ -42,7 +43,10 @@ print(atacama.ps.rds)
 outdir=path.expand("~/scratch/lefse")
 # lefse.input.file=file.path(outdir,"data_for_lefse.tsv")
 
-
+if(fig_path()!="-1"){
+  fig_path() %>%
+    dirname() -> outdir
+}
 
 atacama.ps.rds %>%
   path_file %>%
@@ -53,6 +57,7 @@ atacama.ps.rds %>%
 lefse.input.file = path_ext_set(output_basename, ".tsv")
 
 
+
 if(dir_exists(outdir)){
   dir_delete(outdir)
 }
@@ -61,6 +66,7 @@ dir.create(outdir)
 
 Sys.setenv(LEFSE_INPUT_FILE=lefse.input.file)
 Sys.setenv(OUTDIR=outdir)
+# Sys.setenv(FIGURE_DIR=lefse_figure_dir)
 Sys.setenv(BASENAME=output_basename)
 
 # NORMALIZATION=""
