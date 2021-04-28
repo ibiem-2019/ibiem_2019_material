@@ -135,6 +135,20 @@ List variables to select parameters of interest
 ```{r}
 sample_variables(atacama.ps)
 ```
+```{r}
+sample_data(atacama.ps)
+```
+
+```{r}
+subset_samples(atacama.ps, Depth %in% c(1,3)) %>%
+  sample_data
+```
+```{r}
+# format.flags = GenerateLefseOutput(atacama.ps, c("Vegetation","TransectName"), lefse.input.file)
+grouping_parameter="Vegetation"
+format.flags = GenerateLefseOutput(atacama.ps, grouping_parameter, lefse.input.file)
+Sys.setenv(FORMAT_FLAGS=format.flags)
+```
 
 ```{r}
 # format.flags = GenerateLefseOutput(atacama.ps, c("Vegetation","TransectName"), lefse.input.file)
@@ -181,7 +195,7 @@ cat(paste0("![Cladogram of taxa associated with ", grouping_parameter, "](", lef
 ```{bash}
 mkdir -p ${BASENAME}_individual_taxon_plots
 
-plot_features.py ${BASENAME}.in ${BASENAME}.res ${BASENAME}_individual_taxon_plots/
+plot_features.py --class_font_size -10 ${BASENAME}.in ${BASENAME}.res ${BASENAME}_individual_taxon_plots/
 ```
 
 ```{r results="asis"}

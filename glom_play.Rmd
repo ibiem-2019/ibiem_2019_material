@@ -1,0 +1,58 @@
+---
+title: "Glom_play"
+output: html_document
+---
+
+## Data
+This tutorial uses the 1% Atacama subset data.
+
+# Getting ready
+
+First we load libraries.
+```{r libraries, message=FALSE, warning=FALSE}
+library(readr)
+library(phyloseq)
+library(tibble)
+library(dplyr)
+library(ggplot2)
+```
+
+```{r files_and_directories, eval=FALSE, include=FALSE}
+# Directories
+
+if(exists("params") && 
+   !is.null(params[["atacama_ps_rds"]])){
+  atacama.ps.rds=params[["atacama_ps_rds"]]
+} else {
+  atacama.ps.rds = "/data/tutorial_data/atacama_10pct.rds"
+  }
+```
+
+
+```{r}
+atacama.ps.rds = "/data/tutorial_data/atacama_10pct.rds"
+```
+
+
+```{r}
+atacama.ps = read_rds(atacama.ps.rds)
+print(atacama.ps)
+```
+
+```{r}
+sp_glom = tax_glom(atacama.ps,"Species")
+otu_table(sp_glom) %>%
+  dim
+
+```
+
+```{r}
+sp_glom = tax_glom(atacama.ps,"Species")
+tax_glom(atacama.ps,"Genus")
+tax_glom(atacama.ps,"Family")
+tax_glom(atacama.ps,"Genus") %>%
+otu_table
+
+```
+
+
